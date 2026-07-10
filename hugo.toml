@@ -10,12 +10,19 @@ enableEmoji = true
 [pagination]
   pagerSize = 10
 
+# Chroma 代码高亮配置
+[markup]
+  [markup.highlight]
+    noClasses = false
+    lineNos = true
+    lineNumbersInTable = true
+    tabWidth = 4
+
 [params]
   author = "WoAiXueXiHa"
 
-  # 代码高亮
+  # 代码高亮（PaperMod 用它决定是否加载 chroma CSS）
   highlight = true
-  highlightStyle = "dracula"
 
   # 显示阅读时间和字数
   ShowReadingTime = true
@@ -27,15 +34,53 @@ enableEmoji = true
   # 显示文章标签
   ShowCodeCopyButtons = true
 
-  # 默认主题模式
-  defaultTheme = "auto"
+  # 默认主题模式（VECT 暗色优先）
+  defaultTheme = "dark"
 
   # 日期格式
   dateFormat = "2006-01-02"
 
-[params.homeInfoParams]
-  title = "Hi，我在这里记录 Go 的学习过程 👋"
-  content = "从底层原理出发，逐行拆解 Go 的运行时、内存模型、调度器。正在找实习，欢迎联系。"
+  # ── VECT 自定义参数 ──
+  [params.vect]
+    heroTitle = "VECT / FIELD NOTES"
+    heroSubtitle = "Learning systems. Building software. Documenting the journey."
+    heroTags = ["Go Backend", "AI", "Algorithms", "Systems"]
+
+    [params.vect.currently]
+      learning = "Go 调度器源码分析"
+      building = "本博客的数字花园"
+      practicing = "系统编程与性能调优"
+      writing = "Go string 底层原理"
+
+    [[params.vect.builtWith]]
+      name = "Hugo"
+      description = "静态站点生成器 v0.154.5"
+      url = "https://gohugo.io"
+
+    [[params.vect.builtWith]]
+      name = "PaperMod"
+      description = "简约主题，深度定制"
+      url = "https://github.com/adityatelange/hugo-PaperMod"
+
+    [[params.vect.builtWith]]
+      name = "Vercel"
+      description = "持续部署，全球加速"
+      url = "https://vercel.com"
+
+    [[params.vect.builtWith]]
+      name = "Go"
+      description = "核心编程语言"
+      url = "https://golang.org"
+
+    [[params.vect.builtWith]]
+      name = "Content"
+      description = "中文优先，Markdown 写作"
+      url = ""
+
+    [[params.vect.builtWith]]
+      name = "Code"
+      description = "Hugo Chroma 语法高亮"
+      url = ""
 
 [[params.socialIcons]]
   name = "github"

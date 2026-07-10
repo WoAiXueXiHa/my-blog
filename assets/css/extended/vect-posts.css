@@ -1,0 +1,291 @@
+/* ===== VECT Posts (list + single) ===== */
+
+/* ── Post entry card (on /posts/ list) ── */
+.post-entry {
+  background: var(--vect-surface);
+  border: 1px solid var(--vect-border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: var(--gap);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-entry:hover,
+.post-entry:focus-within {
+  transform: none;
+  border-color: var(--vect-border);
+  box-shadow: var(--vect-shadow-sm);
+}
+
+.first-entry {
+  min-height: auto;
+  margin: var(--gap) 0;
+}
+
+.first-entry .entry-header h2 {
+  font-size: 1.5rem;
+}
+
+/* ── Entry header ── */
+.entry-header h2 {
+  font-size: 1.125rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.entry-header h2 a {
+  color: var(--vect-text);
+}
+
+.entry-header h2 a:hover {
+  color: var(--vect-accent);
+}
+
+/* ── Entry summary ── */
+.entry-content {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--vect-text-secondary);
+  line-height: 1.65;
+}
+
+/* ── Entry footer (meta) ── */
+.entry-footer {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--vect-text-muted);
+}
+
+/* ── Tag entry (on tag pages) ── */
+.tag-entry .entry-cover {
+  display: none;
+}
+
+.tag-entry .entry-header h2 {
+  font-size: 1rem;
+}
+
+/* ── Post tags (on article page) ── */
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-top: 1.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+.post-tags li {
+  margin: 0;
+}
+
+.post-tags a {
+  display: inline-block;
+  font-family: var(--vect-font-mono);
+  font-size: 0.6875rem;
+  color: var(--vect-text-muted);
+  background: var(--vect-surface);
+  border: 1px solid var(--vect-border-subtle);
+  border-radius: 3px;
+  padding: 0.125rem 0.625rem;
+  line-height: 1.6;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.post-tags a:hover {
+  color: var(--vect-accent);
+  border-color: var(--vect-accent-soft);
+  text-decoration: none;
+}
+
+/* ── Breadcrumbs ── */
+.breadcrumbs {
+  font-size: 0.75rem;
+  color: var(--vect-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.breadcrumbs a {
+  color: var(--vect-text-muted);
+}
+
+.breadcrumbs a:hover {
+  color: var(--vect-text);
+}
+
+/* ── Post title (single page) ── */
+.post-title {
+  font-size: 2rem;
+  line-height: 1.3;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Post meta ── */
+.post-meta {
+  font-size: 0.8125rem;
+  color: var(--vect-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.post-meta span:not(:last-child)::after {
+  content: '·';
+  margin: 0 0.5rem;
+  color: var(--vect-border);
+}
+
+/* ── Post description ── */
+.post-description {
+  font-size: 0.9375rem;
+  color: var(--vect-text-secondary);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+/* ── TOC ── */
+details.toc {
+  background: var(--vect-surface);
+  border: 1px solid var(--vect-border-subtle);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+}
+
+details.toc[open] {
+  padding-bottom: 1rem;
+}
+
+details.toc summary {
+  font-family: var(--vect-font-ui);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--vect-text-muted);
+  cursor: pointer;
+  list-style: none;
+}
+
+details.toc summary::-webkit-details-marker {
+  display: none;
+}
+
+details.toc a {
+  font-size: 0.8125rem;
+  color: var(--vect-text-secondary);
+  display: block;
+  padding: 0.15rem 0;
+}
+
+details.toc a:hover {
+  color: var(--vect-accent);
+}
+
+/* ── Pagination ── */
+.page-footer {
+  margin-top: 2rem;
+}
+
+.pagination {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.pagination a {
+  font-family: var(--vect-font-ui);
+  font-size: 0.8125rem;
+  color: var(--vect-text-secondary);
+  padding: 0.375rem 1rem;
+  border: 1px solid var(--vect-border-subtle);
+  border-radius: 4px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.pagination a:hover {
+  color: var(--vect-text);
+  border-color: var(--vect-border);
+  text-decoration: none;
+}
+
+/* ── Post nav (prev/next on single) ── */
+.paginav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--vect-surface);
+  border: 1px solid var(--vect-border-subtle);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-top: 2rem;
+}
+
+.paginav a {
+  font-family: var(--vect-font-ui);
+  font-size: 0.8125rem;
+  color: var(--vect-text-secondary);
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.paginav a:hover {
+  color: var(--vect-accent);
+}
+
+/* ── Terms page (tags/categories) ── */
+.terms-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+.terms-tags li {
+  margin: 0;
+}
+
+.terms-tags a {
+  display: inline-block;
+  font-family: var(--vect-font-mono);
+  font-size: 0.75rem;
+  color: var(--vect-text-muted);
+  background: var(--vect-surface);
+  border: 1px solid var(--vect-border-subtle);
+  border-radius: 4px;
+  padding: 0.25rem 0.75rem;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.terms-tags a:hover {
+  color: var(--vect-accent);
+  border-color: var(--vect-accent-soft);
+  text-decoration: none;
+}
+
+/* ── Page header (section titles) ── */
+.page-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .post-entry {
+    padding: 1rem;
+  }
+
+  .post-title {
+    font-size: 1.5rem;
+  }
+
+  .paginav {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .paginav a {
+    max-width: 100%;
+  }
+}

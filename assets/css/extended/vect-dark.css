@@ -1,0 +1,78 @@
+/* ===== VECT Mode Safeguards ===== */
+
+/* ── Dark mode ── */
+:root[data-theme="dark"] .list {
+  background: var(--vect-bg);
+}
+
+:root[data-theme="dark"] .md-content .highlight:not(table),
+:root[data-theme="dark"] .post-content .highlight:not(table) {
+  background: var(--vect-code-bg);
+}
+
+:root[data-theme="dark"] details.toc {
+  background: var(--vect-surface);
+}
+
+:root[data-theme="dark"] .post-tags a {
+  background: var(--vect-surface);
+  border-color: var(--vect-border-subtle);
+}
+
+/* ── Light mode ── */
+[data-theme="light"] .list {
+  background: var(--vect-bg);
+}
+
+[data-theme="light"] details.toc {
+  background: var(--vect-surface);
+}
+
+[data-theme="light"] .post-tags a {
+  background: var(--vect-surface);
+  border-color: var(--vect-border-subtle);
+}
+
+/* ── Sticky header background fallback ── */
+@media (min-width: 769px) {
+  .header {
+    background-color: var(--vect-surface);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background-color: color-mix(in srgb, var(--vect-bg) 92%, transparent);
+  }
+
+  [data-theme="light"] .header {
+    background-color: color-mix(in srgb, var(--vect-surface) 94%, transparent);
+  }
+}
+
+/* ── Footer link ── */
+.footer a:hover {
+  color: var(--vect-accent);
+}
+
+/* ── Archive page ── */
+.archive-year {
+  font-family: var(--vect-font-ui);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--vect-text);
+  margin: 1.5rem 0 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--vect-border-subtle);
+}
+
+.archive-month {
+  font-family: var(--vect-font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--vect-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 1rem 0 0.5rem;
+}
+
+.archive-entry {
+  padding: 0.375rem 0;
+}

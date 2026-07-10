@@ -1,0 +1,91 @@
+/* ===== VECT Design Tokens ===== */
+/* Dark-first palette — no pure black (#000) or pure white (#fff) */
+
+:root {
+  /* ── Surface & Background ── */
+  --vect-bg: #0d0f12;
+  --vect-surface: #14171c;
+  --vect-surface-hover: #191d23;
+  --vect-surface-raised: #1a1e25;
+
+  /* ── Text ── */
+  --vect-text: #e8e6df;
+  --vect-text-secondary: #a7abb2;
+  --vect-text-muted: #727780;
+  --vect-text-caption: #5a5f6b;
+
+  /* ── Borders ── */
+  --vect-border: #282d35;
+  --vect-border-subtle: #20242b;
+
+  /* ── Accent (sparingly — only links, focus, small decor) ── */
+  --vect-accent: #7dd3c7;
+  --vect-accent-soft: rgba(125, 211, 199, 0.08);
+  --vect-accent-hover: #5cc4b7;
+
+  /* ── Code ── */
+  --vect-code-bg: #181b20;
+
+  /* ── Shadows ── */
+  --vect-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --vect-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+  /* ── Layout ── */
+  --vect-content-width: 760px;
+
+  /* ── Typography ── */
+  --vect-font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+  --vect-font-body: 'Noto Sans SC', -apple-system, 'PingFang SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+  --vect-font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
+  --vect-font-ui-size: 0.875rem;
+  --vect-font-body-size: 1rem;
+  --vect-font-code-size: 0.8125rem;
+  --vect-line-height-body: 1.8;
+  --vect-line-height-heading: 1.35;
+}
+
+/* ── Map VECT tokens → PaperMod variables (dark) ── */
+:root,
+:root[data-theme="dark"] {
+  --theme: var(--vect-bg);
+  --entry: var(--vect-surface);
+  --primary: var(--vect-text);
+  --secondary: var(--vect-text-secondary);
+  --tertiary: var(--vect-border);
+  --content: var(--vect-text);
+  --code-block-bg: var(--vect-code-bg);
+  --code-bg: var(--vect-surface);
+  --border: var(--vect-border);
+  color-scheme: dark;
+}
+
+/* ── Light mode overrides ── */
+[data-theme="light"] {
+  --vect-bg: #f5f3ef;
+  --vect-surface: #ffffff;
+  --vect-surface-hover: #f0eee9;
+  --vect-surface-raised: #faf8f5;
+  --vect-text: #1a1c1e;
+  --vect-text-secondary: #5c6068;
+  --vect-text-muted: #90949c;
+  --vect-text-caption: #a8acb4;
+  --vect-border: #d6d3cc;
+  --vect-border-subtle: #e3e0d9;
+  --vect-accent: #2d7a6f;
+  --vect-accent-soft: rgba(45, 122, 111, 0.08);
+  --vect-accent-hover: #236b61;
+  --vect-code-bg: #edebe6;
+  --vect-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --vect-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.04);
+
+  --theme: var(--vect-bg);
+  --entry: var(--vect-surface);
+  --primary: var(--vect-text);
+  --secondary: var(--vect-text-secondary);
+  --tertiary: var(--vect-border);
+  --content: var(--vect-text);
+  --code-block-bg: var(--vect-code-bg);
+  --code-bg: var(--vect-surface);
+  --border: var(--vect-border);
+  color-scheme: light;
+}

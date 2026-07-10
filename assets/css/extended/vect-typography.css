@@ -1,0 +1,85 @@
+/* ===== VECT Typography ===== */
+
+/* ── Body: Chinese-first system stack ── */
+body {
+  font-family: var(--vect-font-body);
+  font-size: var(--vect-font-body-size);
+  line-height: var(--vect-line-height-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* ── UI text: nav, meta, small labels ── */
+.header-nav,
+.menu a,
+.logo a,
+.post-meta,
+.entry-footer,
+.footer,
+.breadcrumbs,
+.toc,
+.copy-code,
+.pagination a,
+.post-tags a,
+.page-footer,
+.paginav {
+  font-family: var(--vect-font-ui);
+  font-size: var(--vect-font-ui-size);
+  letter-spacing: 0.02em;
+}
+
+/* ── Mono for code ── */
+code,
+pre,
+.chroma,
+.highlight,
+kbd,
+samp {
+  font-family: var(--vect-font-mono) !important;
+  font-size: var(--vect-font-code-size);
+}
+
+/* ── Inline code ── */
+.post-content code:not(pre code),
+.md-content code:not(pre code) {
+  font-size: 0.8em;
+}
+
+/* ── Headings: UI font, tighter ── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--vect-font-ui);
+  line-height: var(--vect-line-height-heading);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.25rem; }
+h4 { font-size: 1.1rem; }
+
+/* ── Content width ── */
+.main,
+.footer {
+  max-width: var(--vect-content-width);
+}
+
+.post-content,
+.md-content {
+  max-width: var(--vect-content-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  body {
+    font-size: 0.9375rem;
+  }
+  h1 { font-size: 1.625rem; }
+  h2 { font-size: 1.25rem; }
+  h3 { font-size: 1.1rem; }
+}

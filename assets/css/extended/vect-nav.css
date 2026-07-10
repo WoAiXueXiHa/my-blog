@@ -1,0 +1,91 @@
+/* ===== VECT Navigation ===== */
+
+/* ── Header: sticky with frosted glass ── */
+.header {
+  border-bottom: none;
+  background: var(--vect-surface);
+  border-bottom: 1px solid var(--vect-border-subtle);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-nav {
+  max-width: var(--vect-content-width);
+  padding: 0 var(--gap);
+}
+
+/* ── Logo / site title ── */
+.logo a {
+  font-family: var(--vect-font-ui);
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vect-text);
+}
+
+.logo a:hover {
+  color: var(--vect-accent);
+  text-decoration: none;
+}
+
+/* ── Menu items ── */
+.menu a {
+  font-family: var(--vect-font-ui);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--vect-text-secondary);
+  transition: color 0.15s ease;
+}
+
+.menu a:hover {
+  color: var(--vect-text);
+  text-decoration: none;
+}
+
+.menu .active {
+  color: var(--vect-text);
+  font-weight: 600;
+  position: relative;
+}
+
+/* ── Active indicator: small accent underline ── */
+.menu .active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--vect-accent);
+  border-radius: 1px;
+}
+
+/* ── Theme toggle icon ── */
+.theme-toggle {
+  color: var(--vect-text-secondary);
+  transition: color 0.15s ease;
+}
+
+.theme-toggle:hover {
+  color: var(--vect-text);
+}
+
+/* ── Separator between logo and language switcher ── */
+.nav-sep {
+  color: var(--vect-border);
+}
+
+/* ── Responsive nav ── */
+@media (max-width: 768px) {
+  .header-nav {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .menu a {
+    font-size: 0.6875rem;
+  }
+}

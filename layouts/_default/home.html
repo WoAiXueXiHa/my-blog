@@ -1,0 +1,129 @@
+{{- define "main" }}
+
+{{/* ── HERO ── */}}
+<section class="vect-hero">
+  <h1 class="vect-hero-title">{{- site.Params.vect.heroTitle | default "VECT / FIELD NOTES" -}}</h1>
+  <p class="vect-hero-subtitle">{{- site.Params.vect.heroSubtitle | default "Learning systems. Building software. Documenting the journey." -}}</p>
+  {{- with site.Params.vect.heroTags }}
+  <ul class="vect-hero-tags">
+    {{- range . }}
+    <li>{{ . }}</li>
+    {{- end }}
+  </ul>
+  {{- end }}
+</section>
+
+{{/* ── CURRENTLY ── */}}
+{{- with site.Params.vect.currently }}
+<section class="vect-currently">
+  <h2 class="vect-section-label">Currently</h2>
+  <div class="vect-currently-grid">
+    {{- with .learning }}
+    <div class="vect-currently-item">
+      <span class="label">学习</span>
+      <span class="value">{{ . }}</span>
+    </div>
+    {{- end }}
+    {{- with .building }}
+    <div class="vect-currently-item">
+      <span class="label">构建</span>
+      <span class="value">{{ . }}</span>
+    </div>
+    {{- end }}
+    {{- with .practicing }}
+    <div class="vect-currently-item">
+      <span class="label">练习</span>
+      <span class="value">{{ . }}</span>
+    </div>
+    {{- end }}
+    {{- with .writing }}
+    <div class="vect-currently-item">
+      <span class="label">写作</span>
+      <span class="value">{{ . }}</span>
+    </div>
+    {{- end }}
+  </div>
+</section>
+{{- end }}
+
+{{/* ── RECENTLY TENDED ── */}}
+{{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
+{{- $pages = where $pages "Params.hiddenInHomeList" "!=" "true" }}
+{{- $paginator := .Paginate $pages 5 }}
+
+{{- if gt ($paginator.Pages | len) 0 }}
+<section class="vect-recently-tended">
+  <h2 class="vect-section-label">Recently Tended</h2>
+
+  {{- range $paginator.Pages }}
+  <article class="vect-post-entry">
+    <div class="vect-entry-meta">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006-01-02" }}</time>
+      {{- if site.Params.ShowReadingTime }}
+      <span>{{ .ReadingTime }} min read</span>
+      {{- end }}
+    </div>
+    <h3 class="vect-entry-title">
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+    </h3>
+    {{- if .Summary }}
+    <div class="vect-entry-summary">
+      {{ .Summary | plainify | htmlUnescape }}{{ if .Truncated }}...{{ end }}
+    </div>
+    {{- end }}
+    {{- with .Params.tags }}
+    <div class="vect-entry-tags">
+      {{- range . }}
+      <a href="{{ "/tags/" | relLangURL }}{{ . | urlize }}">#{{ . }}</a>
+      {{- end }}
+    </div>
+    {{- end }}
+  </article>
+  {{- end }}
+
+  {{- if gt $paginator.TotalPages 1 }}
+  <footer class="page-footer">
+    <nav class="pagination">
+      {{- if $paginator.HasPrev }}
+      <a class="prev" href="{{ $paginator.Prev.URL | absURL }}">« 上一页</a>
+      {{- end }}
+      {{- if $paginator.HasNext }}
+      <a class="next" href="{{ $paginator.Next.URL | absURL }}">下一页 »</a>
+      {{- end }}
+    </nav>
+  </footer>
+  {{- end }}
+</section>
+{{- end }}
+
+{{/* ── BUILT WITH ── */}}
+{{- with site.Params.vect.builtWith }}
+<section class="vect-built-with">
+  <h2 class="vect-section-label">Built With</h2>
+  <div class="vect-built-with-grid">
+    {{- range . }}
+    {{- if .url }}
+    <a href="{{ .url }}" target="_blank" rel="noopener" class="vect-built-with-item" style="text-decoration: none;">
+    {{- else }}
+    <div class="vect-built-with-item">
+    {{- end }}
+      <div class="tech-info">
+        <span class="tech-name">{{ .name }}</span>
+        <span class="tech-desc">{{ .description }}</span>
+      </div>
+    {{- if .url }}
+    </a>
+    {{- else }}
+    </div>
+    {{- end }}
+    {{- end }}
+  </div>
+</section>
+{{- end }}
+
+{{/* ── HOME FOOTER ── */}}
+<div class="vect-home-footer">
+  <p>Built slowly, one idea at a time.</p>
+</div>
+
+{{- end }}
