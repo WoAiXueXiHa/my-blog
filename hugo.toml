@@ -1,4 +1,4 @@
-baseURL = '/'
+baseURL = 'https://my-blog.vercel.app/'
 languageCode = 'zh-CN'
 title = 'Go 底层之旅'
 theme = 'PaperMod'
@@ -11,6 +11,8 @@ enableEmoji = true
   pagerSize = 10
 
 [params]
+  author = "WoAiXueXiHa"
+
   # 代码高亮
   highlight = true
   highlightStyle = "dracula"
