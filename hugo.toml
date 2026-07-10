@@ -1,4 +1,4 @@
-baseURL = 'https://my-blog.vercel.app/'
+baseURL = '/'
 languageCode = 'zh-CN'
 title = 'Go 底层之旅'
 theme = 'PaperMod'
