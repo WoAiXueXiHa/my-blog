@@ -1,0 +1,10 @@
+# Hugo
+/public/
+/resources/
+/.hugo_build.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

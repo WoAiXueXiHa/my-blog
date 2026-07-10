@@ -1,0 +1,62 @@
+baseURL = 'https://my-blog.vercel.app/'
+languageCode = 'zh-CN'
+title = 'Go 底层之旅'
+theme = 'PaperMod'
+
+# 启用 emoji 支持
+enableEmoji = true
+
+# 每页文章数
+[pagination]
+  pagerSize = 10
+
+[params]
+  # 代码高亮
+  highlight = true
+  highlightStyle = "dracula"
+
+  # 显示阅读时间和字数
+  ShowReadingTime = true
+  ShowWordCount = true
+
+  # 显示面包屑导航
+  ShowBreadCrumbs = true
+
+  # 显示文章标签
+  ShowCodeCopyButtons = true
+
+  # 默认主题模式
+  defaultTheme = "auto"
+
+  # 日期格式
+  dateFormat = "2006-01-02"
+
+[params.homeInfoParams]
+  title = "Hi，我在这里记录 Go 的学习过程 👋"
+  content = "从底层原理出发，逐行拆解 Go 的运行时、内存模型、调度器。正在找实习，欢迎联系。"
+
+[[params.socialIcons]]
+  name = "github"
+  url = "https://github.com/WoAiXueXiHa"
+
+[[params.socialIcons]]
+  name = "email"
+  url = "mailto:1760198676@qq.com"
+
+[menu]
+  [[menu.main]]
+    name = "文章"
+    url = "/posts/"
+    weight = 1
+  [[menu.main]]
+    name = "标签"
+    url = "/tags/"
+    weight = 2
+  [[menu.main]]
+    name = "关于"
+    url = "/about/"
+    weight = 3
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
