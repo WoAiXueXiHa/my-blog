@@ -1,109 +1,77 @@
-baseURL = 'https://my-blog.vercel.app/'
-languageCode = 'zh-CN'
-title = 'Go 底层之旅'
+baseURL = 'https://code-learn-build-evolve.vercel.app/'
 theme = 'PaperMod'
-
-# 启用 emoji 支持
+defaultContentLanguage = 'zh'
 enableEmoji = true
+title = 'VECT / FIELD NOTES'
 
-# 每页文章数
+[languages.zh]
+  languageCode = 'zh-CN'
+  languageName = '中文'
+  title = 'VECT / FIELD NOTES'
+  weight = 1
+
+[outputs]
+  home = ['HTML', 'RSS', 'JSON']
+  page = ['HTML']
+
 [pagination]
   pagerSize = 10
 
-# Chroma 代码高亮配置
-[markup]
-  [markup.highlight]
-    noClasses = false
-    lineNos = true
-    lineNumbersInTable = true
-    tabWidth = 4
+[markup.highlight]
+  noClasses = false
+  lineNos = true
+  lineNumbersInTable = true
+  tabWidth = 4
 
 [params]
-  author = "WoAiXueXiHa"
-
-  # 代码高亮（PaperMod 用它决定是否加载 chroma CSS）
-  highlight = true
-
-  # 显示阅读时间和字数
+  author = 'WoAiXueXiHa'
+  description = '关于代码、系统、项目与持续成长的现场笔记。'
+  mainSections = ['posts']
+  defaultTheme = 'auto'
+  disableThemeToggle = true
   ShowReadingTime = true
   ShowWordCount = true
-
-  # 显示面包屑导航
   ShowBreadCrumbs = true
-
-  # 显示文章标签
   ShowCodeCopyButtons = true
+  dateFormat = '2006-01-02'
 
-  # 默认主题模式（VECT 暗色优先）
-  defaultTheme = "dark"
+  [params.label]
+    text = 'VECT / FIELD NOTES'
 
-  # 日期格式
-  dateFormat = "2006-01-02"
-
-  # ── VECT 自定义参数 ──
   [params.vect]
-    heroTitle = "VECT / FIELD NOTES"
-    heroSubtitle = "Learning systems. Building software. Documenting the journey."
-    heroTags = ["Go Backend", "AI", "Algorithms", "Systems"]
-
-    [params.vect.currently]
-      learning = "Go 调度器源码分析"
-      building = "本博客的数字花园"
-      practicing = "系统编程与性能调优"
-      writing = "Go string 底层原理"
-
-    [[params.vect.builtWith]]
-      name = "Hugo"
-      description = "静态站点生成器 v0.154.5"
-      url = "https://gohugo.io"
-
-    [[params.vect.builtWith]]
-      name = "PaperMod"
-      description = "简约主题，深度定制"
-      url = "https://github.com/adityatelange/hugo-PaperMod"
-
-    [[params.vect.builtWith]]
-      name = "Vercel"
-      description = "持续部署，全球加速"
-      url = "https://vercel.com"
-
-    [[params.vect.builtWith]]
-      name = "Go"
-      description = "核心编程语言"
-      url = "https://golang.org"
-
-    [[params.vect.builtWith]]
-      name = "Content"
-      description = "中文优先，Markdown 写作"
-      url = ""
-
-    [[params.vect.builtWith]]
-      name = "Code"
-      description = "Hugo Chroma 语法高亮"
-      url = ""
+    heroSubtitle = 'Learning systems. Building software. Documenting the journey.'
 
 [[params.socialIcons]]
-  name = "github"
-  url = "https://github.com/WoAiXueXiHa"
+  name = 'github'
+  url = 'https://github.com/WoAiXueXiHa'
 
 [[params.socialIcons]]
-  name = "email"
-  url = "mailto:1760198676@qq.com"
+  name = 'email'
+  url = 'mailto:1760198676@qq.com'
 
 [menu]
   [[menu.main]]
-    name = "文章"
-    url = "/posts/"
+    name = '文章'
+    url = '/posts/'
     weight = 1
   [[menu.main]]
-    name = "标签"
-    url = "/tags/"
+    name = '知识地图'
+    url = '/topics/'
     weight = 2
   [[menu.main]]
-    name = "关于"
-    url = "/about/"
+    name = '项目'
+    url = '/projects/'
     weight = 3
+  [[menu.main]]
+    name = '关于'
+    url = '/about/'
+    weight = 4
+  [[menu.main]]
+    name = '搜索'
+    url = '/search/'
+    weight = 5
 
 [taxonomies]
-  tag = "tags"
-  category = "categories"
+  tag = 'tags'
+  category = 'categories'
+  series = 'series'

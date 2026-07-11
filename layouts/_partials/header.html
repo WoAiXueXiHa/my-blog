@@ -1,0 +1,9 @@
+<header class="header vect-site-header">
+  <nav class="header-nav" aria-label="主导航">
+    <a class="vect-logo" href="{{ "" | relLangURL }}" accesskey="h" aria-label="VECT / FIELD NOTES 首页">VECT <i>/</i> FIELD NOTES</a>
+    <div class="vect-nav-actions">
+      <ul id="menu" class="menu">{{- $current := . -}}{{- range site.Menus.main }}<li><a href="{{ .URL | relLangURL }}" {{ if $current.IsMenuCurrent "main" . }}aria-current="page"{{ end }}>{{ .Name }}</a></li>{{- end }}</ul>
+      <label class="vect-theme-control"><span class="screen-reader-text">颜色模式</span><select id="vect-theme" aria-label="颜色模式"><option value="auto">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option></select></label>
+    </div>
+  </nav>
+</header>

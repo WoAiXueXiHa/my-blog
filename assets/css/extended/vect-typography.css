@@ -1,6 +1,6 @@
-/* ===== VECT Typography ===== */
+/* ===== VECT Base & Typography ===== */
 
-/* ── Body: Chinese-first system stack ── */
+/* ── Body: Chinese-first system stack, no forced letter-spacing ── */
 body {
   font-family: var(--vect-font-body);
   font-size: var(--vect-font-body-size);
@@ -9,26 +9,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   font-weight: 400;
-  letter-spacing: 0.01em;
+  background-color: var(--vect-bg);
 }
 
-/* ── UI text: nav, meta, small labels ── */
+/* ── UI text: nav, meta, small labels (English-heavy, tighter spacing ok) ── */
 .header-nav,
 .menu a,
 .logo a,
 .post-meta,
 .entry-footer,
-.footer,
 .breadcrumbs,
 .toc,
 .copy-code,
 .pagination a,
 .post-tags a,
 .page-footer,
-.paginav {
+.paginav,
+.footer {
   font-family: var(--vect-font-ui);
   font-size: var(--vect-font-ui-size);
-  letter-spacing: 0.02em;
 }
 
 /* ── Mono for code ── */
@@ -38,14 +37,19 @@ pre,
 .highlight,
 kbd,
 samp {
-  font-family: var(--vect-font-mono) !important;
+  font-family: var(--vect-font-mono);
   font-size: var(--vect-font-code-size);
 }
 
 /* ── Inline code ── */
 .post-content code:not(pre code),
-.md-content code:not(pre code) {
-  font-size: 0.8em;
+.post-content :not(pre) > code {
+  font-size: 0.85em;
+  background: var(--vect-surface);
+  border: 1px solid var(--vect-border-subtle);
+  padding: 0.15em 0.4em;
+  border-radius: 3px;
+  color: var(--vect-accent);
 }
 
 /* ── Headings: UI font, tighter ── */
@@ -53,25 +57,77 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--vect-font-ui);
   line-height: var(--vect-line-height-heading);
   font-weight: 600;
-  letter-spacing: -0.02em;
 }
 
-h1 { font-size: 2rem; }
-h2 { font-size: 1.5rem; }
+h1 { font-size: clamp(1.5rem, 3vw, 2rem); }
+h2 { font-size: clamp(1.25rem, 2.5vw, 1.5rem); }
 h3 { font-size: 1.25rem; }
 h4 { font-size: 1.1rem; }
 
-/* ── Content width ── */
-.main,
-.footer {
-  max-width: var(--vect-content-width);
-}
-
-.post-content,
-.md-content {
-  max-width: var(--vect-content-width);
+/* ── Width hierarchy ── */
+/* Article reading width */
+.post-content {
+  max-width: var(--vect-width-reading);
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Header / footer use shell width */
+.header-nav {
+  max-width: var(--vect-width-shell);
+}
+
+.footer {
+  max-width: var(--vect-width-shell);
+}
+
+.main {
+  padding: var(--gap) var(--gap) calc(var(--gap) * 2);
+}
+
+/* Article list pages use content width */
+.list .main {
+  max-width: var(--vect-width-shell);
+  padding-left: var(--gap);
+  padding-right: var(--gap);
+}
+
+/* ── Selection ── */
+::selection {
+  background: var(--vect-accent-soft);
+  color: var(--vect-text);
+}
+
+/* ── Horizontal rules ── */
+.post-content hr {
+  margin: 2.5rem 0;
+  height: 1px;
+  background: var(--vect-border-subtle);
+  border: 0;
+}
+
+/* ── Focus-visible: accessible focus rings ── */
+:focus-visible {
+  outline: 2px solid var(--vect-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Don't show focus ring for mouse clicks */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ── Responsive ── */

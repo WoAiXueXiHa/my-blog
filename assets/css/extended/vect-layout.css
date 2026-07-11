@@ -1,88 +1,54 @@
-/* ===== VECT Layout ===== */
+/* ===== VECT Layout — scoped content styles ===== */
 
-/* ── Global background ── */
-body {
-  background-color: var(--vect-bg);
-}
-
-/* ── Main content spacing ── */
-.main {
-  padding-top: var(--gap);
-  padding-bottom: calc(var(--gap) * 2);
-}
-
-/* ── Horizontal rules: subtle ── */
-.md-content hr,
-.post-content hr {
-  margin: 2.5rem 0;
-  height: 1px;
-  background: var(--vect-border-subtle);
-  border: 0;
-}
-
-/* ── Selection color ── */
-::selection {
-  background: var(--vect-accent-soft);
-  color: var(--vect-text);
-}
-
-/* ── Links: accent only, no default blue ── */
-a {
-  color: var(--vect-accent);
-  text-decoration: none;
-  transition: color 0.15s ease;
-}
-
-a:hover {
-  color: var(--vect-accent-hover);
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-  text-decoration-thickness: 1px;
-}
-
-/* ── In-content links: subtle underline by default ── */
-.md-content a:not(.anchor):not(.entry-link),
+/* ── Links inside article body only ── */
 .post-content a:not(.anchor) {
   color: var(--vect-accent);
   text-underline-offset: 0.15em;
   text-decoration: underline;
   text-decoration-thickness: 1px;
+  transition: color 0.15s ease;
 }
 
-/* ── Remove default list styles for nav ── */
+.post-content a:not(.anchor):hover {
+  color: var(--vect-accent-hover);
+}
+
+/* ── Remove list styles for nav ── */
 nav ul,
 .menu {
   list-style: none;
 }
 
-/* ── Tables: clean, subdued ── */
-.md-content table {
+/* ── Tables: clean, scrollable on mobile ── */
+.post-content table {
   border-collapse: collapse;
   width: 100%;
   margin: 1.5rem 0;
   font-size: 0.875rem;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.md-content table th {
+.post-content table th {
   font-family: var(--vect-font-ui);
   font-weight: 600;
   font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   color: var(--vect-text-muted);
   text-align: left;
   padding: 0.5rem 0.75rem;
   border-bottom: 1px solid var(--vect-border);
+  white-space: nowrap;
 }
 
-.md-content table td {
+.post-content table td {
   padding: 0.5rem 0.75rem;
   border-bottom: 1px solid var(--vect-border-subtle);
   color: var(--vect-text-secondary);
 }
 
-/* ── Blockquote: subdued accent bar ── */
-.md-content blockquote,
+/* ── Blockquote: accent bar, no forced italic ── */
 .post-content blockquote {
   margin: 1.5rem 0;
   padding: 0.5rem 1rem;
@@ -90,11 +56,9 @@ nav ul,
   background: var(--vect-surface);
   border-radius: 0 4px 4px 0;
   color: var(--vect-text-secondary);
-  font-style: italic;
 }
 
 /* ── Images: rounded, contained ── */
-.md-content img,
 .post-content img {
   border-radius: 6px;
   max-width: 100%;

@@ -1,0 +1,14 @@
+{{- define "main" }}
+<header class="page-header vect-list-header"><div class="breadcrumbs"><a href="{{ "" | relURL }}">首页</a>{{ if not .IsHome }} » {{ .Title }}{{ end }}</div><h1>{{ .Title }}</h1>{{ with .Description }}<p>{{ . }}</p>{{ end }}</header>
+{{ .Content }}
+<div class="vect-list-grid">
+  {{- range .Pages.ByDate.Reverse }}
+  <article class="post-entry">
+    <header class="entry-header"><h2>{{ .Title }}</h2></header>
+    {{- with .Description | default .Summary }}<div class="entry-content"><p>{{ . | plainify | truncate 160 }}</p></div>{{ end }}
+    <footer class="entry-footer">{{ if not .Date.IsZero }}{{ .Date.Format "2006-01-02" }}{{ end }}{{ if .ReadingTime }} · {{ .ReadingTime }} 分钟{{ end }}</footer>
+    <a class="entry-link" aria-label="进入 {{ .Title }}" href="{{ .RelPermalink }}"></a>
+  </article>
+  {{- else }}<p class="vect-empty-state">这里还在生长，内容正在准备中。</p>{{- end }}
+</div>
+{{- end }}

@@ -1,13 +1,24 @@
 ---
 title: "Go string 原理剖析"
 date: 2026-07-10T00:00:00+08:00
+lastmod: 2026-07-10T00:00:00+08:00
 draft: false
+status: "evergreen"
+topic: "golang"
 tags: ["Go", "string", "底层原理", "源码分析"]
-categories: ["Go 底层原理"]
+categories: ["Golang 学习"]
+series: ["Go 底层之旅"]
+featured: true
+related: ["后端基础", "操作系统"]
 summary: "从 C 语言的 \\0 到 Go 的 stringStruct，深入剖析 string 的底层结构、不可变设计、遍历方式、内存共享与泄漏、零拷贝转换、以及六种拼接方式的性能对比。"
 ---
 
-# string 原理剖析
+<!--
+  Go version: 1.22
+  OS: linux/amd64
+  Benchmark CPU: (待补充)
+  Benchmark command: go test -bench=. -benchmem demo3/
+-->
 
 ## 从 C 语言的 `\0` 说起
 

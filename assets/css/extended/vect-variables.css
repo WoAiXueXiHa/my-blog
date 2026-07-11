@@ -3,25 +3,26 @@
 
 :root {
   /* ── Surface & Background ── */
-  --vect-bg: #0d0f12;
-  --vect-surface: #14171c;
+  --vect-bg: #151a17;
+  --vect-surface: #1c211d;
   --vect-surface-hover: #191d23;
   --vect-surface-raised: #1a1e25;
 
   /* ── Text ── */
-  --vect-text: #e8e6df;
-  --vect-text-secondary: #a7abb2;
-  --vect-text-muted: #727780;
-  --vect-text-caption: #5a5f6b;
+  --vect-text: #e8e4da;
+  --vect-text-secondary: #9fa69d;
+  --vect-text-muted: #a6aca4;
+  --vect-text-caption: #8e958e;
 
   /* ── Borders ── */
   --vect-border: #282d35;
   --vect-border-subtle: #20242b;
 
-  /* ── Accent (sparingly — only links, focus, small decor) ── */
-  --vect-accent: #7dd3c7;
-  --vect-accent-soft: rgba(125, 211, 199, 0.08);
-  --vect-accent-hover: #5cc4b7;
+  /* ── Accent (sparingly — links, focus, small decor) ── */
+  --vect-accent: #8fa997;
+  --vect-accent-soft: rgba(143, 169, 151, 0.09);
+  --vect-accent-hover: #a9beaf;
+  --vect-rust: #c77b66;
 
   /* ── Code ── */
   --vect-code-bg: #181b20;
@@ -30,23 +31,28 @@
   --vect-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --vect-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
 
-  /* ── Layout ── */
-  --vect-content-width: 760px;
+  /* ── Layout widths ── */
+  --vect-width-reading: 740px;    /* article body */
+  --vect-width-content: 760px;    /* article + padding */
+  --vect-width-wide: 960px;       /* wider content (home sections) */
+  --vect-width-shell: 1120px;     /* header / footer / home shell */
 
   /* ── Typography ── */
   --vect-font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
   --vect-font-body: 'Noto Sans SC', -apple-system, 'PingFang SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
+  --vect-font-literary: 'Noto Serif SC', 'Songti SC', Georgia, serif;
   --vect-font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
   --vect-font-ui-size: 0.875rem;
   --vect-font-body-size: 1rem;
   --vect-font-code-size: 0.8125rem;
   --vect-line-height-body: 1.8;
   --vect-line-height-heading: 1.35;
-}
 
-/* ── Map VECT tokens → PaperMod variables (dark) ── */
-:root,
-:root[data-theme="dark"] {
+  /* ── Radii ── */
+  --vect-radius-sm: 6px;
+  --vect-radius-md: 10px;
+
+  /* ── Map VECT tokens → PaperMod variables (dark default) ── */
   --theme: var(--vect-bg);
   --entry: var(--vect-surface);
   --primary: var(--vect-text);
@@ -61,19 +67,20 @@
 
 /* ── Light mode overrides ── */
 [data-theme="light"] {
-  --vect-bg: #f5f3ef;
-  --vect-surface: #ffffff;
+  --vect-bg: #f2efe6;
+  --vect-surface: #f8f5ed;
   --vect-surface-hover: #f0eee9;
   --vect-surface-raised: #faf8f5;
-  --vect-text: #1a1c1e;
-  --vect-text-secondary: #5c6068;
-  --vect-text-muted: #90949c;
-  --vect-text-caption: #a8acb4;
-  --vect-border: #d6d3cc;
-  --vect-border-subtle: #e3e0d9;
-  --vect-accent: #2d7a6f;
-  --vect-accent-soft: rgba(45, 122, 111, 0.08);
-  --vect-accent-hover: #236b61;
+  --vect-text: #20231f;
+  --vect-text-secondary: #676a61;
+  --vect-text-muted: #676a61;
+  --vect-text-caption: #76786f;
+  --vect-border: #c9c3b6;
+  --vect-border-subtle: #d9d4c8;
+  --vect-accent: #405849;
+  --vect-accent-soft: rgba(64, 88, 73, 0.08);
+  --vect-accent-hover: #304638;
+  --vect-rust: #984a37;
   --vect-code-bg: #edebe6;
   --vect-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
   --vect-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.04);

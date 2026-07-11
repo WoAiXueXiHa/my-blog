@@ -1,50 +1,27 @@
 /* ===== VECT Mode Safeguards ===== */
 
-/* ── Dark mode ── */
-:root[data-theme="dark"] .list {
-  background: var(--vect-bg);
-}
-
-:root[data-theme="dark"] .md-content .highlight:not(table),
-:root[data-theme="dark"] .post-content .highlight:not(table) {
-  background: var(--vect-code-bg);
-}
-
-:root[data-theme="dark"] details.toc {
-  background: var(--vect-surface);
-}
-
-:root[data-theme="dark"] .post-tags a {
-  background: var(--vect-surface);
-  border-color: var(--vect-border-subtle);
-}
-
-/* ── Light mode ── */
+/* ── List background ── */
+:root[data-theme="dark"] .list,
 [data-theme="light"] .list {
   background: var(--vect-bg);
 }
 
+/* ── Code block backgrounds ── */
+:root[data-theme="dark"] .post-content .highlight:not(table) {
+  background: var(--vect-code-bg);
+}
+
+/* ── TOC background ── */
+:root[data-theme="dark"] details.toc,
 [data-theme="light"] details.toc {
   background: var(--vect-surface);
 }
 
+/* ── Post tags background ── */
+:root[data-theme="dark"] .post-tags a,
 [data-theme="light"] .post-tags a {
   background: var(--vect-surface);
   border-color: var(--vect-border-subtle);
-}
-
-/* ── Sticky header background fallback ── */
-@media (min-width: 769px) {
-  .header {
-    background-color: var(--vect-surface);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    background-color: color-mix(in srgb, var(--vect-bg) 92%, transparent);
-  }
-
-  [data-theme="light"] .header {
-    background-color: color-mix(in srgb, var(--vect-surface) 94%, transparent);
-  }
 }
 
 /* ── Footer link ── */
@@ -52,27 +29,31 @@
   color: var(--vect-accent);
 }
 
-/* ── Archive page ── */
-.archive-year {
-  font-family: var(--vect-font-ui);
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--vect-text);
-  margin: 1.5rem 0 0.5rem;
-  padding-bottom: 0.25rem;
-  border-bottom: 1px solid var(--vect-border-subtle);
-}
-
-.archive-month {
-  font-family: var(--vect-font-ui);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--vect-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 1rem 0 0.5rem;
-}
-
-.archive-entry {
-  padding: 0.375rem 0;
+/* System light preference before PaperMod restores an explicit choice. */
+@media (prefers-color-scheme: light) {
+  :root[data-theme="auto"] {
+    --vect-bg: #f2efe6;
+    --vect-surface: #f8f5ed;
+    --vect-surface-hover: #ece8de;
+    --vect-surface-raised: #f8f5ed;
+    --vect-text: #20231f;
+    --vect-text-secondary: #676a61;
+    --vect-text-muted: #85877f;
+    --vect-text-caption: #9a9b94;
+    --vect-border: #c9c3b6;
+    --vect-border-subtle: #d9d4c8;
+    --vect-accent: #405849;
+    --vect-accent-soft: rgba(64, 88, 73, 0.08);
+    --vect-accent-hover: #304638;
+    --vect-rust: #984a37;
+    --vect-code-bg: #e8e4da;
+    --theme: var(--vect-bg);
+    --entry: var(--vect-surface);
+    --primary: var(--vect-text);
+    --secondary: var(--vect-text-secondary);
+    --tertiary: var(--vect-border);
+    --content: var(--vect-text);
+    --border: var(--vect-border);
+    color-scheme: light;
+  }
 }

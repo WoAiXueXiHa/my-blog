@@ -1,0 +1,1 @@
+{{- $labels := dict "seedling" "计划中" "growing" "持续生长" "evergreen" "成熟文章" -}}{{- index $labels (. | default "growing") | default "持续生长" -}}

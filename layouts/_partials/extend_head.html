@@ -1,19 +1,6 @@
-{{- /* VECT: Google Fonts + Brand Meta */ -}}
-
-{{- /* Preconnect for Google Fonts */ -}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-{{- /* Inter — UI font */ -}}
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-{{- /* Noto Sans SC — Chinese body text */ -}}
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-
-{{- /* JetBrains Mono — code */ -}}
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-{{- /* VECT brand meta */ -}}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
 <meta name="application-name" content="VECT / FIELD NOTES">
-<meta name="theme-color" content="#0d0f12" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#f5f3ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151a17" id="vect-theme-color">
+<script>document.documentElement.classList.add('js');(()=>{const p=localStorage.getItem('vect-theme');document.documentElement.dataset.theme=p==='light'||p==='dark'?p:'auto';})();</script>
