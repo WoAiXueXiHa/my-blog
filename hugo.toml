@@ -11,7 +11,10 @@ title = 'VECT / FIELD NOTES'
   weight = 1
 
 [outputs]
-  home = ['HTML', 'RSS', 'JSON']
+  home = ['HTML', 'JSON']
+  section = ['HTML']
+  taxonomy = ['HTML']
+  term = ['HTML']
   page = ['HTML']
 
 [pagination]
@@ -33,6 +36,8 @@ title = 'VECT / FIELD NOTES'
   ShowWordCount = true
   ShowBreadCrumbs = true
   ShowCodeCopyButtons = true
+  ShowToc = true
+  TocOpen = true
   dateFormat = '2006-01-02'
 
   [params.imageProxy]
