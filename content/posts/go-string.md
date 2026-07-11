@@ -1,8 +1,8 @@
 ---
 title: "Go string 底层原理剖析"
 date: 2026-07-11T21:34:11+08:00
-lastmod: 2026-07-11T21:35:34+08:00
-draft: true
+lastmod: 2026-07-11T21:38:31+08:00
+draft: false
 status: "evergreen"
 topic: "golang"
 tags: []
