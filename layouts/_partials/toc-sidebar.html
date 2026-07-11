@@ -1,0 +1,66 @@
+{{- /* 侧边栏目录，复用 PaperMod toc.html 的 heading 解析逻辑 */}}
+{{- $headers := findRE "<h[1-6].*?>(.|\n])+?</h[1-6]>" .Content -}}
+{{- $has_headers := ge (len $headers) 1 -}}
+{{- if $has_headers -}}
+
+{{- $largest := 6 -}}
+{{- range $headers -}}
+  {{- $headerLevel := index (findRE "[1-6]" . 1) 0 -}}
+  {{- $headerLevel := len (seq $headerLevel) -}}
+  {{- if lt $headerLevel $largest -}}{{- $largest = $headerLevel -}}{{- end -}}
+{{- end -}}
+
+{{- $firstHeaderLevel := len (seq (index (findRE "[1-6]" (index $headers 0) 1) 0)) -}}
+
+<aside class="toc-sidebar" id="toc-sidebar" aria-label="文章目录">
+  <div class="toc-sidebar-header">
+    <span class="toc-sidebar-title">目录</span>
+    <button class="toc-toggle" type="button" aria-label="收起目录" aria-expanded="true" title="收起目录">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+  </div>
+  <nav class="toc-nav">
+    <ul>
+      {{- /* 补齐顶层 ul 使得第一组 header 对齐 */}}
+      {{- range seq (sub $firstHeaderLevel $largest) -}}
+        <li><ul>
+      {{- end -}}
+
+      {{- range $i, $header := $headers -}}
+        {{- $headerLevel := index (findRE "[1-6]" . 1) 0 -}}
+        {{- $headerLevel := len (seq $headerLevel) -}}
+        {{- $id := index (findRE "(id=\"(.*?)\")" $header 9) 0 }}
+        {{- $cleanedID := replace (replace $id "id=\"" "") "\"" "" -}}
+        {{- $text := replaceRE "<h[1-6].*?>((.|\n])+?)</h[1-6]>" "$1" $header | plainify | safeHTML -}}
+
+        {{- if ne $i 0 -}}
+          {{- $prevHeaderLevel := index (findRE "[1-6]" (index $headers (sub $i 1)) 1) 0 -}}
+          {{- $prevHeaderLevel := len (seq $prevHeaderLevel) -}}
+          {{- if gt $headerLevel $prevHeaderLevel -}}
+            <ul>
+          {{- else if lt $headerLevel $prevHeaderLevel -}}
+            </li>
+            {{- range seq (sub $prevHeaderLevel 1) -1 $headerLevel -}}
+              </ul></li>
+            {{- end -}}
+          {{- else -}}
+            </li>
+          {{- end -}}
+        {{- end -}}
+
+        <li><a href="#{{- $cleanedID -}}" title="{{- $text -}}">{{- $text -}}</a>
+
+        {{- if eq $i (sub (len $headers) 1) -}}
+          {{- $lastHeaderLevel := len (seq (index (findRE "[1-6]" (index $headers (sub (len $headers) 1)) 1) 0)) -}}
+          </li>
+          {{- range seq (sub $lastHeaderLevel $firstHeaderLevel) -}}
+            </ul></li>
+          {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    </ul>
+  </nav>
+</aside>
+{{- end }}

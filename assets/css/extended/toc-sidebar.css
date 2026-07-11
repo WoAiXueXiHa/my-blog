@@ -1,0 +1,182 @@
+/* ── 双栏布局 ── */
+.post-body {
+    display: flex;
+    gap: 2.5rem;
+    align-items: flex-start;
+}
+
+.post-body.has-toc .post-content {
+    flex: 3;
+    min-width: 0; /* 防止 flex 子项撑开 */
+}
+
+/* ── 侧边栏 ── */
+.toc-sidebar {
+    flex: 1;
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    padding-right: 1rem;
+    border-right: 1px solid var(--border);
+    transition: all 0.3s ease;
+    min-width: 200px;
+    max-width: 280px;
+}
+
+/* ── 侧边栏头部 ── */
+.toc-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.toc-sidebar-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--primary);
+    letter-spacing: 0.03em;
+}
+
+/* ── 收起/展开按钮 ── */
+.toc-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--secondary);
+    cursor: pointer;
+    padding: 3px;
+    width: 26px;
+    height: 26px;
+    transition: all 0.2s ease;
+}
+
+.toc-toggle:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+    background: var(--code-bg);
+}
+
+/* ── 目录导航基础 ── */
+.toc-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.toc-nav li {
+    margin: 0;
+}
+
+.toc-nav a {
+    display: block;
+    padding: 0.2rem 0.5rem;
+    color: var(--secondary);
+    text-decoration: none;
+    border-radius: 4px;
+    border-left: 2px solid transparent;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.toc-nav a:hover {
+    color: var(--primary);
+    background: var(--code-bg);
+    border-left-color: var(--tertiary);
+}
+
+/* ── 当前激活项 ── */
+.toc-nav a.active {
+    color: var(--primary);
+    font-weight: 500;
+    border-left-color: var(--primary);
+    background: var(--code-bg);
+}
+
+/* ── 嵌套层级缩进 ── */
+.toc-nav ul ul {
+    padding-left: 1rem;
+}
+
+.toc-nav ul ul a {
+    font-size: 0.82rem;
+    padding-left: 0.8rem;
+}
+
+.toc-nav ul ul ul {
+    padding-left: 0.8rem;
+}
+
+.toc-nav ul ul ul a {
+    font-size: 0.78rem;
+    color: var(--tertiary);
+}
+
+.toc-nav ul ul ul a:hover,
+.toc-nav ul ul ul a.active {
+    color: var(--secondary);
+}
+
+/* ── 收起状态 ── */
+.toc-sidebar[aria-hidden="true"] {
+    min-width: 0;
+    max-width: 32px;
+    padding-right: 0;
+    border-right: none;
+    overflow: hidden;
+}
+
+.toc-sidebar[aria-hidden="true"] .toc-nav,
+.toc-sidebar[aria-hidden="true"] .toc-sidebar-title {
+    display: none;
+}
+
+.toc-sidebar[aria-hidden="true"] .toc-sidebar-header {
+    border-bottom: none;
+    justify-content: center;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.toc-sidebar[aria-hidden="true"] .toc-toggle svg {
+    transform: rotate(180deg);
+}
+
+/* ── 滚动条美化 ── */
+.toc-sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.toc-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.toc-sidebar::-webkit-scrollbar-thumb {
+    background: var(--tertiary);
+    border-radius: 2px;
+}
+
+.toc-sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary);
+}
+
+/* ── 响应式：窄屏隐藏侧边栏 ── */
+@media (max-width: 1024px) {
+    .post-body {
+        flex-direction: column;
+    }
+
+    .toc-sidebar {
+        display: none;
+    }
+}
