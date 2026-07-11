@@ -35,6 +35,11 @@ title = 'VECT / FIELD NOTES'
   ShowCodeCopyButtons = true
   dateFormat = '2006-01-02'
 
+  [params.imageProxy]
+    enabled = true
+    sourcePrefix = "https://gitee.com/binary-whispers/pic/raw/master/"
+    proxyPrefix = "/gitee-img/"
+
   [params.label]
     text = 'VECT / FIELD NOTES'
 

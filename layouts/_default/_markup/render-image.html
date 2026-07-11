@@ -1,0 +1,20 @@
+{{- $src := .Destination -}}
+
+{{- $proxyEnabled := site.Params.imageProxy.enabled | default false -}}
+{{- $sourcePrefix := site.Params.imageProxy.sourcePrefix | default "" -}}
+{{- $proxyPrefix := site.Params.imageProxy.proxyPrefix | default "/gitee-img/" -}}
+
+{{- if and $proxyEnabled $sourcePrefix (strings.HasPrefix $src $sourcePrefix) -}}
+    {{- $imagePath := strings.TrimPrefix $sourcePrefix $src -}}
+    {{- $imagePath = strings.TrimLeft "/" $imagePath -}}
+    {{- $src = printf "%s%s" $proxyPrefix $imagePath -}}
+{{- end -}}
+
+<img
+    src="{{ $src | safeURL }}"
+    alt="{{ .Text }}"
+    {{- with .Title }} title="{{ . }}"{{- end }}
+    loading="lazy"
+    decoding="async"
+    referrerpolicy="no-referrer"
+/>
