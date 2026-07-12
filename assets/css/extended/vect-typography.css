@@ -77,6 +77,18 @@ h4 { font-size: 1.1rem; }
   max-width: none;
 }
 
+.vect-static-page .main {
+  width: min(calc(100% - 48px), 960px);
+  max-width: none;
+}
+.vect-static-page .post-content,
+.vect-static-page .post-header,
+.vect-static-page .post-footer {
+  width: min(100%, var(--vect-width-reading));
+  max-width: var(--vect-width-reading);
+  margin-inline: auto;
+}
+
 .vect-article-page .post-single > .post-header,
 .vect-article-page .post-single > .post-footer {
   width: min(100%, var(--vect-width-reading));
@@ -168,6 +180,7 @@ h4 { font-size: 1.1rem; }
     width: 100%;
     padding-inline: 20px;
   }
+  .vect-static-page .main { width: 100%; padding-inline: 20px; }
   .vect-article-page .post-content {
     font-size: 1rem;
     line-height: 1.75;

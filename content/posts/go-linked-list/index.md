@@ -5,10 +5,11 @@ lastmod: 2026-07-12T21:12:04+08:00
 draft: false
 status: "evergreen"
 topic: "go-linked-list"
-tags: []
+categories: ["数据结构"]
+tags: ["Go", "数据结构", "链表"]
 series: []
 featured: false
-summary: ""
+summary: "从内存布局和节点关系出发，系统理解链表的增删查改、双向与循环结构、缓存局部性以及常见工程应用。"
 ---
 
 ## 一、链表的本质
@@ -1151,5 +1152,4 @@ func (this *LRUCache) removeLast() *Node {
 ```
 
 LFU 后续会有~
-
 

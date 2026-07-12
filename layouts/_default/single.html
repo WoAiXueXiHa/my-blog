@@ -1,6 +1,7 @@
 {{- define "main" }}
 
 <article class="post-single">
+  {{- $isArticle := and .IsPage (eq .Section "posts") -}}
   <header class="post-header">
     {{ partial "breadcrumbs.html" . }}
     <h1 class="post-title entry-hint-parent">
@@ -19,6 +20,10 @@
       {{ . }}
     </div>
     {{- end }}
+    {{- if $isArticle }}<div class="vect-post-taxonomy">
+      {{- with .Params.categories }}{{ range . }}<span>{{ . }}</span>{{ end }}{{ else }}{{ with .Params.topic }}<span>{{ . }}</span>{{ end }}{{ end -}}
+      {{- range .Params.tags }}<span>#{{ . }}</span>{{ end -}}
+    </div>{{- end }}
     {{- if not (.Param "hideMeta") }}
     <div class="post-meta">
       {{- partial "post_meta.html" . -}}
@@ -31,7 +36,7 @@
   {{- $isHidden := (.Param "cover.hiddenInSingle") | default (.Param "cover.hidden") | default false }}
   {{- partial "cover.html" (dict "cxt" . "IsSingle" true "isHidden" $isHidden) }}
 
-  {{- $showToc := (.Param "ShowToc") }}
+  {{- $showToc := and $isArticle (.Param "ShowToc") }}
   {{- $hasHeaders := false }}
   {{- $headers := findRE "<h[1-6].*?>(.|\n])+?</h[1-6]>" .Content }}
   {{- if ge (len $headers) 1 }}{{ $hasHeaders = true }}{{ end }}
@@ -64,10 +69,10 @@
       <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
       {{- end }}
     </ul>
-    {{- if (.Param "ShowPostNavLinks") }}
+    {{- if and $isArticle (.Param "ShowPostNavLinks") }}
     {{- partial "post_nav_links.html" . }}
     {{- end }}
-    {{- $current := . -}}
+    {{- if $isArticle }}{{- $current := . -}}
     {{- $sameTopic := where (where site.RegularPages "Section" "posts") "Params.topic" .Params.topic -}}
     {{- $related := where $sameTopic "RelPermalink" "ne" .RelPermalink -}}
     {{- if gt (len $related) 0 }}
@@ -75,6 +80,7 @@
       <span>CONTINUE EXPLORING</span><h2 id="related-posts-title">继续阅读</h2>
       <div>{{ range first 3 $related.ByLastmod.Reverse }}<a href="{{ .RelPermalink }}"><small>{{ .Params.topic | default "文章" }}</small><strong>{{ .Title }}</strong><p>{{ .Params.summary | default .Summary | plainify | truncate 90 }}</p></a>{{ end }}</div>
     </section>
+    {{- end }}
     {{- end }}
     {{- if (and site.Params.ShowShareButtons (ne .Params.disableShare true)) }}
     {{- partial "share_icons.html" . -}}
@@ -91,7 +97,7 @@
 <script defer src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>
 {{- end }}
 
-{{- $hasMath := or (strings.Contains .RawContent "$$") (strings.Contains .RawContent "\\(") (strings.Contains .RawContent "\\[") -}}
+{{- $hasMath := and $isArticle (or (strings.Contains .RawContent "$$") (strings.Contains .RawContent "\\(") (strings.Contains .RawContent "\\[")) -}}
 {{- if $hasMath }}
 <link rel="stylesheet" href="{{ "vendor/katex/katex.min.css" | relURL }}">
 <script defer src="{{ "vendor/katex/katex.min.js" | relURL }}"></script>

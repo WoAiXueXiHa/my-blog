@@ -1,13 +1,14 @@
 ---
-
-title: "关于"
+title: "关于我"
 date: 2026-07-10T00:00:00+08:00
 lastmod: 2026-07-11T00:00:00+08:00
 draft: false
 layout: "page"
---------------
+ShowToc: false
+hideMeta: true
+---
 
-# 🔍 见微知著，由内而外
+## 🔍 见微知著，由内而外
 
 你好，我是 Vect，一名正在深入后端、系统编程与 AI 工程化的学习者。
 
