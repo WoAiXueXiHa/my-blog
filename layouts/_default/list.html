@@ -4,9 +4,9 @@
 <div class="vect-list-grid">
   {{- range .Pages.ByDate.Reverse }}
   <article class="post-entry">
-    <header class="entry-header"><h2>{{ .Title }}</h2></header>
-    {{- with .Description | default .Summary }}<div class="entry-content"><p>{{ . | plainify | truncate 160 }}</p></div>{{ end }}
-    <footer class="entry-footer">{{ if not .Date.IsZero }}{{ .Date.Format "2006-01-02" }}{{ end }}{{ if .ReadingTime }} · {{ .ReadingTime }} 分钟{{ end }}</footer>
+    <header class="entry-header"><span class="vect-entry-topic">{{ .Params.topic | default .Section }}</span><h2>{{ .Title }}</h2></header>
+    {{- with .Params.summary | default .Description | default .Summary }}<div class="entry-content"><p>{{ . | plainify | truncate 160 }}</p></div>{{ end }}
+    <footer class="entry-footer">{{ if not .Lastmod.IsZero }}更新于 {{ .Lastmod.Format "2006-01-02" }}{{ end }}{{ if .ReadingTime }} · {{ .ReadingTime }} 分钟{{ end }}</footer>
     <a class="entry-link" aria-label="进入 {{ .Title }}" href="{{ .RelPermalink }}"></a>
   </article>
   {{- else }}<p class="vect-empty-state">这里还在生长，内容正在准备中。</p>{{- end }}

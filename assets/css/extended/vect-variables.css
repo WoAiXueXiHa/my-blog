@@ -35,7 +35,7 @@
   --vect-width-reading: 740px;    /* article body */
   --vect-width-content: 760px;    /* article + padding */
   --vect-width-wide: 960px;       /* wider content (home sections) */
-  --vect-width-shell: 1120px;     /* header / footer / home shell */
+  --vect-width-shell: 1280px;     /* header / footer / article shell */
 
   /* ── Typography ── */
   --vect-font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;

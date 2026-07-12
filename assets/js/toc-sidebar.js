@@ -6,6 +6,8 @@
   const toggleBtn = sidebar.querySelector('.toc-toggle');
   const nav = sidebar.querySelector('.toc-nav');
   const links = [...nav.querySelectorAll('a')];
+  const drawerTrigger = document.querySelector('.toc-drawer-trigger');
+  const backdrop = document.querySelector('.toc-backdrop');
 
   // ── Toggle 收起/展开 ──
   const STORAGE_KEY = 'toc-sidebar-hidden';
@@ -16,15 +18,44 @@
     toggleBtn.setAttribute('aria-label', hidden ? '展开目录' : '收起目录');
   }
 
+  function setDrawer(open, restoreFocus = true) {
+    sidebar.classList.toggle('is-open', open);
+    document.body.classList.toggle('toc-drawer-open', open);
+    drawerTrigger?.setAttribute('aria-expanded', String(open));
+    if (backdrop) backdrop.hidden = !open;
+    if (open) {
+      sidebar.setAttribute('aria-hidden', 'false');
+      toggleBtn.focus();
+    } else if (restoreFocus) {
+      drawerTrigger?.focus();
+    }
+  }
+
   // 恢复上次状态
   const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved === 'true') applyHidden(true);
+  if (window.innerWidth >= 1280 && saved === 'true') applyHidden(true);
 
   toggleBtn.addEventListener('click', () => {
+    if (window.innerWidth < 1280) {
+      setDrawer(false);
+      return;
+    }
     const hidden = sidebar.getAttribute('aria-hidden') === 'true';
     const next = !hidden;
     applyHidden(next);
     localStorage.setItem(STORAGE_KEY, next);
+  });
+
+  drawerTrigger?.addEventListener('click', () => setDrawer(true));
+  backdrop?.addEventListener('click', () => setDrawer(false));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && sidebar.classList.contains('is-open')) setDrawer(false);
+  });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 1280) {
+      if (sidebar.classList.contains('is-open')) setDrawer(false, false);
+      applyHidden(localStorage.getItem(STORAGE_KEY) === 'true');
+    }
   });
 
   // ── Scroll Spy: IntersectionObserver ──
@@ -93,9 +124,7 @@
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
       // 小屏下点击后自动收起（可选）
-      if (window.innerWidth < 1024) {
-        applyHidden(true);
-      }
+      if (window.innerWidth < 1280) setDrawer(false, false);
     });
   });
 })();

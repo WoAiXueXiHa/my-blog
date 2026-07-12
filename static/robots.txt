@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://code-learn-build-evolve.vercel.app/sitemap.xml

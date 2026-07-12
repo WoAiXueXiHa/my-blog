@@ -1,0 +1,9 @@
+{
+  "name": "VECT / FIELD NOTES",
+  "short_name": "VECT",
+  "description": "关于代码、系统、项目与持续成长的现场笔记。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#151a17",
+  "theme_color": "#151a17"
+}

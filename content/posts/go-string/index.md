@@ -10,10 +10,9 @@ categories: []
 series: []
 featured: false
 related: []
-summary: ""
+summary: "从字节序列、UTF-8、不可变性和内存共享出发，系统解释 Go string 的长度、索引、切片、转换与拼接行为。"
 ---
 
-# Go string 底层原理剖析
 
 先看一段很简单的代码：
 
@@ -94,7 +93,7 @@ type stringStruct struct {
 
 内存布局长这样：
 
-![image-20260704155932499](https://gitee.com/binary-whispers/pic/raw/master///20260704155935913.png)
+![image-20260704155932499](string-memory.png)
 
 在常见的 64 位平台上：
 
@@ -302,7 +301,7 @@ m := map[string]int{
 
 下面的图展示了两个字符串变量指向同一块底层内存：
 
-![image-20260704154127004](https://gitee.com/binary-whispers/pic/raw/master///20260704154128583.png)
+![image-20260704154127004](string-header.png)
 
 这种共享能力使子字符串截取可以避免不必要的复制，但也会带来后面将要讨论的内存滞留问题。
 
@@ -323,7 +322,7 @@ s = "world"
 
 可以将其理解为：字符串描述信息中的地址和长度发生了变化。
 
-![image-20260704154637568](https://gitee.com/binary-whispers/pic/raw/master///20260704154639314.png)
+![image-20260704154637568](string-slice.png)
 
 原来的 `"hello"` 并没有被修改。
 
@@ -490,7 +489,7 @@ for _, v := range word {
 
 输出如下图：
 
-![image-20260711193005506](https://gitee.com/binary-whispers/pic/raw/master///20260711193008920.png)
+![image-20260711193005506](string-conversion.png)
 
 但是需要保持一个关键认识：
 
@@ -903,7 +902,7 @@ func main() {
 
 下图展示了 `string` 转 `[]byte` 的过程：
 
-![image-20260704161326296](https://gitee.com/binary-whispers/pic/raw/master///20260704161328186.png)
+![image-20260704161326296](string-builder.png)
 
 从常见实现角度，转换过程通常需要：
 
@@ -937,7 +936,7 @@ func main() {
 
 下图展示了 `[]byte` 转 `string` 的过程：
 
-![image-20260704161209935](https://gitee.com/binary-whispers/pic/raw/master///20260704161212024.png)
+![image-20260704161209935](string-summary.png)
 
 从常见实现角度，转换通常需要：
 

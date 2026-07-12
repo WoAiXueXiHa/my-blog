@@ -9,6 +9,18 @@
   overflow-x: auto;
 }
 
+.post-content .katex-display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.35rem 0;
+}
+
+[data-theme="light"] .post-content .highlight,
+[data-theme="light"] .post-content pre {
+  background: #e7e4de;
+}
+
 /* ── Code block: pre > code ── */
 .post-content pre {
   background: var(--vect-code-bg);
@@ -22,10 +34,24 @@
   background: transparent;
   color: var(--vect-text);
   padding: 1rem 1.25rem;
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   line-height: 1.65;
   display: block;
   overflow-x: auto;
+}
+
+@media (max-width: 767px) {
+  .post-content .highlight {
+    margin-inline: -20px;
+    border-radius: 0;
+    border-inline: 0;
+  }
+  .post-content pre code { padding-inline: 20px; }
+}
+
+@media (max-width: 380px) {
+  .post-content .highlight { margin-inline: -16px; }
+  .post-content pre code { padding-inline: 16px; }
 }
 
 /* ── Copy button: always visible on touch, hover on desktop ── */

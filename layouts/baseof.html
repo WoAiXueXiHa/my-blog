@@ -19,7 +19,7 @@
 {{- if (or (ne .Kind `page` ) (eq .Layout `archives`) (eq .Layout `search`)) }}
 <body class="list{{ if .IsHome }} vect-home-page{{ end }}" id="top">
 {{- else }}
-<body class="{{ if .IsHome }}vect-home-page{{ end }}" id="top">
+<body class="{{ if .IsHome }}vect-home-page{{ end }}{{ if and .IsPage (eq .Section `posts`) }} vect-article-page{{ end }}" id="top">
 {{- end }}
     {{ partialCached "header.html" . .Page -}}
     <main class="main">

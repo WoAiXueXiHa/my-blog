@@ -11,7 +11,7 @@ title = 'VECT / FIELD NOTES'
   weight = 1
 
 [outputs]
-  home = ['HTML', 'JSON']
+  home = ['HTML', 'JSON', 'RSS']
   section = ['HTML']
   taxonomy = ['HTML']
   term = ['HTML']
@@ -26,6 +26,12 @@ title = 'VECT / FIELD NOTES'
   lineNumbersInTable = true
   tabWidth = 4
 
+[markup.goldmark.extensions.passthrough]
+  enable = true
+  [markup.goldmark.extensions.passthrough.delimiters]
+    block = [['\[', '\]'], ['$$', '$$']]
+    inline = [['\(', '\)'], ['$', '$']]
+
 [params]
   author = 'WoAiXueXiHa'
   description = '关于代码、系统、项目与持续成长的现场笔记。'
@@ -39,14 +45,15 @@ title = 'VECT / FIELD NOTES'
   ShowToc = true
   TocOpen = true
   dateFormat = '2006-01-02'
-
-  [params.imageProxy]
-    enabled = true
-    sourcePrefix = "https://gitee.com/binary-whispers/pic/raw/master/"
-    proxyPrefix = "/gitee-img/"
+  ShowPostNavLinks = true
 
   [params.label]
     text = 'VECT / FIELD NOTES'
+
+  [params.assets]
+    favicon = 'favicon.svg'
+    favicon16x16 = 'favicon.svg'
+    favicon32x32 = 'favicon.svg'
 
   [params.vect]
     heroSubtitle = 'Learning systems. Building software. Documenting the journey.'

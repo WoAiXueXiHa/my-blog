@@ -6,11 +6,5 @@
     "env": {
       "HUGO_VERSION": "0.154.5"
     }
-  },
-  "rewrites": [
-    {
-      "source": "/gitee-img/:path*",
-      "destination": "https://gitee.com/binary-whispers/pic/raw/master/:path*"
-    }
-  ]
+  }
 }

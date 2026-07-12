@@ -1,13 +1,7 @@
-<script>
-(()=>{
-  const root=document.documentElement,control=document.getElementById('vect-theme'),meta=document.getElementById('vect-theme-color'),system=matchMedia('(prefers-color-scheme: dark)');
-  const stored=localStorage.getItem('vect-theme');
-  const apply=value=>{root.dataset.theme=value;control&&(control.value=value);const dark=value==='dark'||(value==='auto'&&system.matches);meta&&meta.setAttribute('content',dark?'#151a17':'#f2efe6')};
-  apply(stored==='light'||stored==='dark'?stored:'auto');
-  control&&control.addEventListener('change',()=>{const value=control.value;if(value==='auto')localStorage.removeItem('vect-theme');else localStorage.setItem('vect-theme',value);apply(value)});
-  system.addEventListener&&system.addEventListener('change',()=>{if(root.dataset.theme==='auto')apply('auto')});
-})();
-</script>
+{{- $fuseJS := resources.Get "js/fuse.basic.min.js" | fingerprint }}
+<script defer src="{{ $fuseJS.RelPermalink }}" integrity="{{ $fuseJS.Data.Integrity }}"></script>
+{{- $siteJS := resources.Get "js/site.js" | js.Build (dict "minify" true) | fingerprint }}
+<script defer src="{{ $siteJS.RelPermalink }}" integrity="{{ $siteJS.Data.Integrity }}"></script>
 {{- if .IsHome }}
 <script>
 (()=>{

@@ -10,10 +10,9 @@ categories: []
 series: []
 featured: false
 related: []
-summary: ""
+summary: "从三元组结构、扩容、共享底层数组和内存滞留出发，建立可推导 Go slice 行为的完整模型。"
 ---
 
-# slice 原理剖析
 
 ## 为什么需要切片：从数组的定长说起
 
@@ -171,7 +170,7 @@ func nextslicecap(newLen, oldCap int) int {
 
 > nextslicecap 实现了从 2 倍到约 1.25 倍的平滑过渡。但这只是"预计算"——最终容量还要经过 malloc 规格取整。
 
-![slice扩容选择](https://gitee.com/binary-whispers/pic/raw/master///20260711211702025.png)
+![slice扩容选择](slice-growth.png)
 
 **roundupsize：malloc 规格取整**
 
@@ -226,7 +225,7 @@ func roundupsize(size uintptr, noscan bool) (reqSize uintptr) {
 2. 请求大小 `<= 1024` 字节：以 8 字节粒度查 `SizeToSizeClass8` 表（129 项）。例如要 6 字节 → `divRoundUp(6, 8) = 1` → 查表得 class 1 → `SizeClassToSize[1] = 8` → 返回 8。
 3. 请求大小 `1025 ~ 32760` 字节：以 128 字节粒度查 `SizeToSizeClass128` 表（249 项）。
 4. 请求大小 `> 32760` 字节：直接向上取整到页边界（默认 8192 字节）。
-![slice规格取整](https://gitee.com/binary-whispers/pic/raw/master///20260711220658128.png)
+![slice规格取整](slice-rounding.png)
 
 `SizeClassToSize` 表定义了所有 68 个 size class 的字节数（`internal/runtime/gc/sizeclasses.go`），部分如下：
 
@@ -701,4 +700,3 @@ roundupsize 让扩容后的 cap 不可精确预测，但换来零碎片的快速
 | 大截小，内存滞留 | 小窗口套着大底层 | GC 看的是底层不是窗口 |
 
 > 切片的本质是"带着长度信息的内存片段指针"。header 中的 {array, len, cap} 定义了窗口的位置、大小和扩展空间。理解了窗口如何被创建、复制和替换，也就理解了切片。
-
