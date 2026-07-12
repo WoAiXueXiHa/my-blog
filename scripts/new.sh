@@ -21,3 +21,21 @@ mkdir -p "$DIR"
 NOW=$(date +%Y-%m-%dT%H:%M:%S+08:00)
 sed -e "s|__TITLE__|$TITLE|g" -e "s|__TOPIC__|$TOPIC|g" -e "s|__NOW__|$NOW|g" archetypes/posts.md > "$DIR/index.md"
 echo "已创建 $DIR/index.md；图片直接放入 $DIR 并使用相对路径引用。"
+
+FILE="$DIR/index.md"
+if [[ -n "${EDITOR:-}" ]]; then
+  "$EDITOR" "$FILE"
+elif command -v nano >/dev/null 2>&1; then
+  nano "$FILE"
+elif command -v vim >/dev/null 2>&1; then
+  vim "$FILE"
+elif command -v vi >/dev/null 2>&1; then
+  vi "$FILE"
+else
+  echo "未找到终端编辑器，请手动打开 $FILE"
+  exit 0
+fi
+
+echo
+echo "文章已保存。确认内容后运行："
+echo "  ./scripts/publish.sh \"add: $TITLE\""
