@@ -8,7 +8,6 @@ from pathlib import Path
 
 CATEGORY_BY_TOPIC = {
     "golang": "Go 语言",
-    "go-linked-list": "数据结构",
     "data-structures": "数据结构",
     "algorithms": "算法",
     "backend": "后端工程",
@@ -20,34 +19,163 @@ CATEGORY_BY_TOPIC = {
     "frontend": "前端工程",
 }
 TOPIC_ALIASES = {
+    # ── data-structures 变体 ──
     "go-linked-list": "data-structures",
     "datastructure-linked-list": "data-structures",
     "datastructure-heap": "data-structures",
+    "datastructure-tree": "data-structures",
+    "datastructure-graph": "data-structures",
+    "datastructure-stack": "data-structures",
+    "datastructure-queue": "data-structures",
+    "datastructure-hash": "data-structures",
+    "datastructure-array": "data-structures",
     "data-structure": "data-structures",
+    # ── golang 变体 ──
+    "go-string": "golang",
+    "go-slice": "golang",
+    "go-map": "golang",
+    "go-channel": "golang",
+    "go-concurrency": "golang",
+    "go-interface": "golang",
+    "go-defer": "golang",
+    "go-panic": "golang",
+    "go-context": "golang",
+    "go-struct": "golang",
+    # ── 网络变体 ──
     "network": "networks",
+    # ── OS 变体 ──
     "operating-system": "os",
+    # ── 常见拼写变体 ──
+    "database": "backend",
+    "databases": "backend",
+    "distributed": "backend",
+    "microservice": "backend",
+    "docker": "devops",
+    "kubernetes": "devops",
+    "testing": "backend",
+    "security": "backend",
 }
 
 KEYWORDS = {
-    "Go": ("go ", "golang", "goroutine", "channel", "defer", "panic", "interface"),
-    "数据结构": ("数据结构", "数组", "栈", "队列", "树", "哈希表", "堆", "图", "二叉树"),
-    "链表": ("链表", "listnode", "linked list", "单链表", "双向链表", "环形链表"),
-    "算法": ("算法", "复杂度", "leetcode", "排序", "搜索", "动态规划", "贪心", "二分", "递归"),
-    "并发": ("并发", "goroutine", "线程", "协程", "channel", "锁", "同步", "原子"),
-    "内存": ("内存", "指针", "gc", "逃逸", "内存分配", "栈内存", "堆内存", "分配器"),
-    "字符串": ("string", "字符串", "utf", "rune", "字节", "字符"),
-    "切片": ("slice", "切片", "扩容", "append", "底层数组", "容量"),
-    "网络": ("网络", "tcp", "http", "socket", "epoll", "协议"),
-    "缓存": ("缓存", "cache", "lru", "lfu", "淘汰"),
-    "AI": ("人工智能", "大模型", "llm", "agent", "rag", "prompt", "模型训练", "深度学习"),
+    "Go": (
+        "go ", "golang", "goroutine", "channel", "defer", "panic", "interface",
+        "map", "struct", "select", "context", "iota", "make", "new", "comparable",
+    ),
+    "数据结构": (
+        "数据结构", "数组", "栈", "队列", "树", "哈希表", "堆", "图", "二叉树",
+        "优先队列", "跳表", "skip list", "并查集", "union find", "trie", "字典树",
+        "b树", "红黑树", "red-black", "前缀树", "tree", "graph", "stack", "queue",
+        "deque", "binary search tree", "bst",
+    ),
+    "链表": (
+        "链表", "listnode", "linked list", "单链表", "双向链表", "环形链表",
+        "双向", "环形", "头节点", "dummy", "哨兵", "singly", "doubly", "circular",
+    ),
+    "算法": (
+        "算法", "复杂度", "leetcode", "排序", "搜索", "动态规划", "贪心", "二分", "递归",
+        "回溯", "分治", "前缀和", "滑动窗口", "sliding window", "单调栈", "单调队列",
+        "kmp", "bfs", "dfs", "拓扑排序", "topological", "记忆化", "memo", "双指针",
+        "位运算", "bit manipulation", "堆排序", "快速排序", "归并排序", "top k", "heapify",
+    ),
+    "并发": (
+        "并发", "goroutine", "线程", "协程", "channel", "锁", "同步", "原子",
+        "mutex", "waitgroup", "semaphore", "rwmutex", "原子操作", "cas",
+        "sync.once", "errgroup",
+    ),
+    "内存": (
+        "内存", "指针", "gc", "逃逸", "内存分配", "栈内存", "堆内存", "分配器",
+        "arena", "对齐", "内存对齐", "tcmalloc", "copy-on-write", "写时复制",
+        "mark-sweep", "引用计数", "stack vs heap",
+    ),
+    "字符串": (
+        "string", "字符串", "utf", "rune", "字节", "字符",
+        "utf-8", "unicode", "ascii", "编码", "拼接", "builder", "clone", "compare",
+    ),
+    "切片": (
+        "slice", "切片", "扩容", "append", "底层数组", "容量",
+        "subslice", "copy", "grow", "memmove", "clear",
+    ),
+    "网络": (
+        "网络", "tcp", "http", "socket", "epoll", "协议",
+        "udp", "dns", "tls", "ssl", "websocket", "grpc", "rpc",
+        "负载均衡", "反向代理", "cdn", "quic", "路由", "nginx",
+    ),
+    "缓存": (
+        "缓存", "cache", "lru", "lfu", "淘汰",
+        "redis", "memcached", "过期", "淘汰策略", "ttl",
+        "cache aside", "write-through", "write-back",
+        "缓存穿透", "缓存击穿", "缓存雪崩", "一致性哈希",
+    ),
+    "AI": (
+        "人工智能", "大模型", "llm", "agent", "rag", "prompt", "模型训练", "深度学习",
+        "transformer", "attention", "embedding", "tokenizer", "fine-tune", "微调",
+        "推理", "inference", "training", "gpu", "npu", "rlhf", "reinforcement",
+        "function calling",
+    ),
+    # ── 新增 7 组 ──
+    "数据库": (
+        "数据库", "database", "sql", "mysql", "postgresql", "mongodb", "redis",
+        "索引", "index", "事务", "transaction", "acid", "orm", "连接池",
+        "分库分表", "主从", "binlog", "wal", "b+树", "lsm",
+    ),
+    "分布式": (
+        "分布式", "distributed", "raft", "paxos", "共识", "consensus", "一致性",
+        "etcd", "zookeeper", "消息队列", "mq", "kafka", "spanner",
+        "微服务", "microservices", "cap theorem",
+    ),
+    "测试": (
+        "测试", "testing", "unit test", "单元测试", "mock", "stub",
+        "integration", "benchmark", "e2e", "覆盖率", "coverage",
+        "table-driven", "fuzz", "tdd",
+    ),
+    "容器": (
+        "docker", "kubernetes", "k8s", "pod", "镜像",
+        "编排", "helm", "istio", "service mesh", "sidecar", "dockerfile",
+        "docker-compose", "containerd",
+    ),
+    "安全": (
+        "安全", "security", "auth", "认证", "授权", "jwt", "oauth",
+        "加密", "解密", "aes", "rsa", "tls", "https", "xss", "csrf", "注入",
+    ),
+    "编译": (
+        "编译", "compiler", "汇编", "assembly", "ast", "ir", "ssa",
+        "链接器", "linker", "jit", "llvm", "parser", "lexer",
+    ),
+    "设计模式": (
+        "设计模式", "design pattern", "单例", "singleton", "工厂", "factory",
+        "观察者", "observer", "策略", "strategy", "装饰器", "decorator", "solid", "ddd",
+    ),
 }
 
 SERIES_RULES = (
-    ("Go 底层原理", ("go string", "go slice", "go map", "interface", "defer", "panic", "goroutine", "golang")),
-    ("数据结构基础", ("链表", "数组", "栈", "队列", "二叉树", "哈希表", "堆", "heap", "linked list", "listnode")),
-    ("计算机网络基础", ("tcp", "http", "socket", "epoll", "网络协议")),
+    ("Go 底层原理", (
+        "go string", "go slice", "go map", "interface", "defer", "panic", "goroutine", "golang",
+        "go struct", "go context", "go channel", "go defer", "go panic",
+    )),
+    ("数据结构基础", (
+        "链表", "数组", "栈", "队列", "二叉树", "哈希表", "堆", "heap",
+        "linked list", "listnode", "优先队列", "跳表", "skip list", "trie",
+        "红黑树", "red-black", "b树", "b-tree", "graph", "图", "tree", "树",
+    )),
+    ("计算机网络基础", (
+        "tcp", "http", "socket", "epoll", "网络协议",
+        "udp", "dns", "tls", "ssl", "websocket", "grpc", "rpc", "quic", "负载均衡", "nginx",
+    )),
     ("操作系统基础", ("进程", "线程", "虚拟内存", "文件系统", "操作系统")),
     ("AI 工程实践", ("rag", "agent", "llm", "大模型", "人工智能")),
+    # ── 新增系列 ──
+    ("数据库与存储", (
+        "数据库", "database", "sql", "mysql", "postgresql", "redis", "mongodb",
+        "索引", "事务", "acid", "lsm", "b+树", "binlog", "wal",
+    )),
+    ("分布式系统", (
+        "分布式", "distributed", "raft", "paxos", "共识", "consensus",
+        "etcd", "kafka", "消息队列", "mq", "微服务", "microservices",
+    )),
+    ("软件设计", (
+        "设计模式", "design pattern", "solid", "ddd", "clean architecture",
+        "mvc", "重构", "refactor",
+    )),
 )
 
 

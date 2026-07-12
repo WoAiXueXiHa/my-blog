@@ -14,6 +14,14 @@ if [[ ! "$SLUG" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
   echo 'slug 只能包含小写字母、数字和连字符。'
   exit 1
 fi
+
+KNOWN_TOPICS=("golang" "data-structures" "algorithms" "backend" "networks" "os" "ai" "reading" "devops" "frontend")
+if [[ ! " ${KNOWN_TOPICS[*]} " =~ " $TOPIC " ]]; then
+  echo "⚠️  主题 \"$TOPIC\" 不在已知列表中：${KNOWN_TOPICS[*]}"
+  echo "  建议使用上述之一，或在 enrich-article.py 中添加映射"
+  read -r -p '  继续使用当前 topic？[Y/n] ' ANS
+  [[ "${ANS,,}" == "n" || "${ANS,,}" == "no" ]] && exit 0
+fi
 DIR="content/posts/$SLUG"
 [[ ! -e "$DIR" ]] || { echo "文章已存在: $DIR"; exit 1; }
 mkdir -p "$DIR"
