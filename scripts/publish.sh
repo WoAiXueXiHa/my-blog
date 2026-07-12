@@ -14,6 +14,7 @@ done
 NOW=$(date +%Y-%m-%dT%H:%M:%S+08:00)
 for file in "${changed[@]}"; do
   [[ "$file" == */index.md && -f "$file" ]] || continue
+  ./scripts/import-images.sh "$file"
   sed -i "s|^lastmod: .*|lastmod: $NOW|" "$file"
   sed -i 's/^draft: true$/draft: false/' "$file"
 done
