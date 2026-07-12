@@ -8,6 +8,7 @@ topic: "__TOPIC__"
 categories: []
 tags: []
 series: []
+seriesOrder:
 featured: false
 summary: ""
 ---

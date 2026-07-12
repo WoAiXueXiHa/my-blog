@@ -5,14 +5,14 @@ lastmod: 2026-07-11T21:38:31+08:00
 draft: false
 status: "evergreen"
 topic: "golang"
-tags: []
-categories: []
-series: []
+tags: ["Go", "数据结构", "算法", "并发"]
+categories: ["Go 语言"]
+series: ["Go 底层原理"]
 featured: false
 related: []
 summary: "从字节序列、UTF-8、不可变性和内存共享出发，系统解释 Go string 的长度、索引、切片、转换与拼接行为。"
+seriesOrder: 1
 ---
-
 
 先看一段很简单的代码：
 

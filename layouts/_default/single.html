@@ -24,6 +24,7 @@
       {{- with .Params.categories }}{{ range . }}<span>{{ . }}</span>{{ end }}{{ else }}{{ with .Params.topic }}<span>{{ . }}</span>{{ end }}{{ end -}}
       {{- range .Params.tags }}<span>#{{ . }}</span>{{ end -}}
     </div>{{- end }}
+    {{- if and $isArticle .Params.series }}<a class="vect-series-note" href="{{ printf "paths/#%s" (index .Params.series 0 | urlize) | relURL }}">{{ index .Params.series 0 }} · 第 {{ .Params.seriesOrder }} 篇 →</a>{{ end }}
     {{- if not (.Param "hideMeta") }}
     <div class="post-meta">
       {{- partial "post_meta.html" . -}}
@@ -72,9 +73,7 @@
     {{- if and $isArticle (.Param "ShowPostNavLinks") }}
     {{- partial "post_nav_links.html" . }}
     {{- end }}
-    {{- if $isArticle }}{{- $current := . -}}
-    {{- $sameTopic := where (where site.RegularPages "Section" "posts") "Params.topic" .Params.topic -}}
-    {{- $related := where $sameTopic "RelPermalink" "ne" .RelPermalink -}}
+    {{- if $isArticle }}{{- $related := site.RegularPages.Related . -}}
     {{- if gt (len $related) 0 }}
     <section class="vect-related-posts" aria-labelledby="related-posts-title">
       <span>CONTINUE EXPLORING</span><h2 id="related-posts-title">继续阅读</h2>

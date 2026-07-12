@@ -1,0 +1,17 @@
+{{- define "main" }}
+<header class="page-header vect-list-header"><div class="breadcrumbs"><a href="{{ "" | relURL }}">首页</a> » 学习路径</div><h1>学习路径</h1><p>把同一系列的文章按理解顺序连接起来，从第一篇开始，也可以从任意章节进入。</p></header>
+<div class="vect-learning-paths">
+  {{- $shown := false -}}
+  {{- range site.Taxonomies.series.Alphabetical }}
+    {{- if ge .Count 2 }}{{ $shown = true }}
+    {{- $ordered := .Pages.ByParam "seriesOrder" -}}
+    {{- $minutes := 0 -}}{{- range $ordered }}{{ $minutes = add $minutes .ReadingTime }}{{ end -}}
+    <section class="vect-learning-path" id="{{ .Term | urlize }}">
+      <header><span>LEARNING PATH</span><h2>{{ .Page.Title }}</h2><p>{{ .Count }} 篇文章 · 预计 {{ $minutes }} 分钟</p></header>
+      <ol>{{ range $ordered }}<li><a href="{{ .RelPermalink }}"><span>{{ printf "%02d" (.Params.seriesOrder | default 1) }}</span><div><strong>{{ .Title }}</strong><p>{{ .Params.summary }}</p><small>{{ .ReadingTime }} 分钟 · 更新于 {{ .Lastmod.Format "2006-01-02" }}</small></div><b>↗</b></a></li>{{ end }}</ol>
+    </section>
+    {{- end }}
+  {{- end }}
+  {{- if not $shown }}<p class="vect-empty-state">当一个系列积累到两篇文章时，学习路径会自动出现在这里。</p>{{ end }}
+</div>
+{{- end }}

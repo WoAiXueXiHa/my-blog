@@ -8,10 +8,6 @@
   const home=document.querySelector('[data-vect-home]');if(!home)return;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,reveals=[...home.querySelectorAll('.vect-reveal')];
   if(reduced||!('IntersectionObserver'in window))reveals.forEach(el=>el.classList.add('is-visible'));else{document.documentElement.classList.add('reveal-ready');const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target)}}),{threshold:.08});reveals.forEach(el=>observer.observe(el))}
-  const topics=[...home.querySelectorAll('[data-topic]')],nodes=[...home.querySelectorAll('[data-node]')],copy=home.querySelector('[data-constellation-copy]'),status=home.querySelector('[data-related]'),names=Object.fromEntries(topics.map(el=>[el.dataset.topic,el.querySelector('h3').textContent]));
-  const activate=topic=>{const links=topic.dataset.links.split(',').filter(Boolean);topic.parentElement.classList.add('has-active');topics.forEach(el=>{el.classList.toggle('is-active',el===topic);el.classList.toggle('is-related',links.includes(el.dataset.topic))});nodes.forEach(el=>{el.classList.toggle('is-active',el.dataset.node===topic.dataset.topic);el.classList.toggle('is-related',links.includes(el.dataset.node))});copy.textContent=topic.querySelector('p').textContent;status.textContent=`${names[topic.dataset.topic]} 的关联主题：${links.map(id=>names[id]).join('、')}`};
-  topics.forEach(topic=>{topic.addEventListener('mouseenter',()=>activate(topic));topic.addEventListener('focusin',()=>activate(topic));const button=topic.querySelector('.vect-related-toggle'),panel=topic.querySelector('.vect-topic-related');button&&button.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));button.textContent=open?'查看关联':'收起关联';panel.hidden=open})});
-  if(topics[0])activate(topics[0]);
 })();
 </script>
 {{- end }}

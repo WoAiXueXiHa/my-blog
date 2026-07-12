@@ -150,6 +150,7 @@
 .vect-post-taxonomy{display:flex;flex-wrap:wrap;gap:.4rem;margin:-.5rem 0 1.25rem}
 .vect-post-taxonomy span{padding:.18rem .5rem;border:1px solid var(--vect-border-subtle);color:var(--vect-text-muted);font:500 .68rem var(--vect-font-ui)}
 .vect-post-taxonomy span:first-child{border-color:var(--vect-rust);color:var(--vect-rust)}
+.vect-writing small{display:block;margin-top:.5rem;color:var(--vect-text-muted);font:.7rem var(--vect-font-ui)}
 
 .vect-related-posts{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--vect-border-subtle)}
 .vect-related-posts>span{font:.68rem var(--vect-font-ui);letter-spacing:.12em;color:var(--vect-rust)}

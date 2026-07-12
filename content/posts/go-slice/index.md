@@ -5,14 +5,14 @@ lastmod: 2026-07-11T22:24:09+08:00
 draft: false
 status: "evergreen"
 topic: "golang"
-tags: []
-categories: []
-series: []
+tags: ["Go", "数据结构", "链表", "并发"]
+categories: ["Go 语言"]
+series: ["Go 底层原理"]
 featured: false
 related: []
 summary: "从三元组结构、扩容、共享底层数组和内存滞留出发，建立可推导 Go slice 行为的完整模型。"
+seriesOrder: 2
 ---
-
 
 ## 为什么需要切片：从数组的定长说起
 

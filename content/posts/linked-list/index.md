@@ -1,15 +1,16 @@
 ---
 title: "链表深度解析"
-date: 2026-07-12T21:05:51+08:00
-lastmod: 2026-07-12T21:12:04+08:00
+date: 2026-07-12T21:24:53+08:00
+lastmod: 2026-07-12T21:24:53+08:00
 draft: false
 status: "evergreen"
-topic: "go-linked-list"
+topic: "data-structures"
 categories: ["数据结构"]
-tags: ["Go", "数据结构", "链表"]
-series: []
+tags: ["Go", "数据结构", "链表", "算法"]
+series: ["数据结构基础"]
 featured: false
-summary: "从内存布局和节点关系出发，系统理解链表的增删查改、双向与循环结构、缓存局部性以及常见工程应用。"
+summary: "链表由多个离散节点组成，每个节点除了保存数据，还保存下一个节点的位置： Go 中最基础的单链表节点："
+seriesOrder: 1
 ---
 
 ## 一、链表的本质
@@ -183,7 +184,7 @@ func insertNode(node1 *ListNode, newNode *ListNode) {
 // 删除 node 之后的第一个节点
 func removeItem(node *ListNode) {
     if node.Next == nil {
-        return 
+        return
     }
     // node -> P -> V
     P := node.Next
@@ -840,7 +841,7 @@ func insertAfer(a, x *DNode) {
 代码：
 ```go
 func remove(node *DNode) {
-    node.Prev.Next = node.Next 
+    node.Prev.Next = node.Next
     node.Next.Prev = node.Prev
 
     node.Prev = nil
@@ -896,7 +897,7 @@ CPU ←→ Cache ←→ 内存
 读取数据时：
 1. 先检查 Cache
 2. Cache 中存在，直接读取        -> 缓存命中
-3. Cache 中不存在，再访问内存    ->  缓存未命中 
+3. Cache 中不存在，再访问内存    ->  缓存未命中
 4. 把读取的数据放进 Cache
 
 为什么这样设计？
@@ -912,14 +913,14 @@ CPU ←→ Cache ←→ 内存
 >   变量`count`会被频繁访问
 >
 >- 空间局部性：一个数据被访问后，它附近的数据也可能很快被访问
-> 
+>
 >   例如遍历数组：
 >   ```go
 >   for i := 0; i < len(nums); i++ {
 >       fmt.Prinln(nums[i])
 >   }
 >   ```
->   数组的内存地址是连续的，访问顺序也是连续的，当CPU读取`nums[0]`的时候，会把附近一整块数据一起加载到 Cache 
+>   数组的内存地址是连续的，访问顺序也是连续的，当CPU读取`nums[0]`的时候，会把附近一整块数据一起加载到 Cache
 
 ### 3. 数据结构的内存效率
 > 为了保存同样数量的有效数据，需要额外消耗多少内存？
@@ -1101,7 +1102,7 @@ func (this *LRUCache) Put(key int, value int)  {
     if node, ok := this.cache[key]; ok {
         node.value = value
         this.moveToFront(node)
-        return 
+        return
     }
 
     // key 不存在：创建新的节点
@@ -1128,7 +1129,7 @@ func (this *LRUCache) remove(node *Node) {
     node.next.prev = node.prev
 }
 
-// 头插 
+// 头插
 func (this *LRUCache) addToFront(node *Node) {
     node.prev = this.head
     node.next = this.head.next
@@ -1152,4 +1153,3 @@ func (this *LRUCache) removeLast() *Node {
 ```
 
 LFU 后续会有~
-

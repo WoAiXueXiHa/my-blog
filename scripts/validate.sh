@@ -18,5 +18,7 @@ while IFS= read -r -d '' file; do
   done < <(grep -oE '!\[[^]]+\]\([^ )]+' "$file" | sed 's/^.*](//' || true)
 done < <(find content/posts -name index.md -print0)
 (( errors == 0 )) || exit 1
-hugo --gc --minify --printPathWarnings
+./scripts/validate-metadata.py
+hugo --gc --minify --cleanDestinationDir --printPathWarnings
+./scripts/validate-links.py
 echo '内容校验与 Hugo 构建通过。'

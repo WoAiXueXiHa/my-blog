@@ -72,15 +72,15 @@ title = 'VECT / FIELD NOTES'
     url = '/posts/'
     weight = 1
   [[menu.main]]
-    name = '知识地图'
-    url = '/topics/'
+    name = '学习路径'
+    url = '/paths/'
     weight = 2
   [[menu.main]]
-    name = '项目'
-    url = '/projects/'
+    name = '知识地图'
+    url = '/topics/'
     weight = 3
   [[menu.main]]
-    name = '关于'
+    name = '关于我'
     url = '/about/'
     weight = 4
   [[menu.main]]
@@ -92,3 +92,17 @@ title = 'VECT / FIELD NOTES'
   tag = 'tags'
   category = 'categories'
   series = 'series'
+
+[related]
+  threshold = 20
+  includeNewer = true
+  toLower = true
+  [[related.indices]]
+    name = 'series'
+    weight = 100
+  [[related.indices]]
+    name = 'categories'
+    weight = 70
+  [[related.indices]]
+    name = 'tags'
+    weight = 50

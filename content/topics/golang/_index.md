@@ -1,5 +1,5 @@
 ---
-title: 'Golang 学习'
+title: 'Go 语言'
 slug: 'golang'
 nameEn: 'LANGUAGE / RUNTIME'
 description: '从语言机制深入运行时与工程实践。'
