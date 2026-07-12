@@ -1,11 +1,11 @@
 ---
 title: "Go slice 底层原理剖析"
 date: 2026-07-11T22:22:36+08:00
-lastmod: 2026-07-11T22:24:09+08:00
+lastmod: 2026-07-12T21:55:47+08:00
 draft: false
 status: "evergreen"
 topic: "golang"
-tags: ["Go", "数据结构", "链表", "并发"]
+tags: ["Go", "切片", "内存", "扩容"]
 categories: ["Go 语言"]
 series: ["Go 底层原理"]
 featured: false
