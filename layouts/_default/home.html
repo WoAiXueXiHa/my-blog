@@ -5,7 +5,7 @@
 {{- $topics := (site.GetPage "/topics").Pages.ByWeight -}}
 <div class="vect-home" data-vect-home>
   <section class="vect-hero vect-reveal" aria-labelledby="vect-hero-title">
-    <div class="vect-hero-copy"><span class="vect-kicker">FIELD NOTES · {{ now.Year }}</span><h1 id="vect-hero-title">理解技术，<br><em>也记录理解的路径。</em></h1><p>从代码现象进入底层机制，把零散知识连接成可以继续探索的路径。</p><div class="vect-hero-actions"><a class="vect-primary-link" href="{{ "posts/" | relURL }}">开始阅读 <span>→</span></a><a class="vect-text-link" href="{{ "paths/" | relURL }}">浏览学习路径 <span>↗</span></a></div></div>
+    <div class="vect-hero-copy"><span class="vect-kicker">FIELD NOTES · {{ now.Year }}</span><h1 id="vect-hero-title">思考，<br><em>需要一片安静的旷野。</em></h1><p>从代码现象进入底层机制，把零散知识连接成可以继续探索的路径。</p><div class="vect-hero-actions"><a class="vect-primary-link" href="{{ "posts/" | relURL }}">开始阅读 <span>→</span></a><a class="vect-text-link" href="{{ "paths/" | relURL }}">浏览学习路径 <span>↗</span></a></div></div>
     <aside class="vect-featured" aria-labelledby="featured-title"><span>FEATURED / 精选文章</span>{{ with index $featured 0 }}<h2 id="featured-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2><p>{{ .Params.summary | default .Summary | plainify | truncate 120 }}</p><a href="{{ .RelPermalink }}">阅读全文 ↗</a>{{ end }}</aside>
   </section>
 

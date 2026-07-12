@@ -28,15 +28,17 @@ TOPIC_ALIASES = {
 }
 
 KEYWORDS = {
-    "Go": ("go ", "golang", "goroutine", "channel", "slice", "string", "map"),
-    "数据结构": ("数据结构", "链表", "数组", "栈", "队列", "树", "哈希"),
-    "链表": ("链表", "listnode", "linked list"),
-    "算法": ("算法", "复杂度", "leetcode", "排序", "搜索"),
-    "并发": ("并发", "goroutine", "线程", "协程", "锁"),
-    "内存": ("内存", "指针", "gc", "逃逸", "分配"),
-    "网络": ("网络", "tcp", "http", "socket", "epoll"),
-    "后端": ("后端", "服务", "数据库", "api"),
-    "AI": (" ai ", "人工智能", "大模型", "llm"),
+    "Go": ("go ", "golang", "goroutine", "channel", "defer", "panic", "interface"),
+    "数据结构": ("数据结构", "数组", "栈", "队列", "树", "哈希表", "堆", "图", "二叉树"),
+    "链表": ("链表", "listnode", "linked list", "单链表", "双向链表", "环形链表"),
+    "算法": ("算法", "复杂度", "leetcode", "排序", "搜索", "动态规划", "贪心", "二分", "递归"),
+    "并发": ("并发", "goroutine", "线程", "协程", "channel", "锁", "同步", "原子"),
+    "内存": ("内存", "指针", "gc", "逃逸", "内存分配", "栈内存", "堆内存", "分配器"),
+    "字符串": ("string", "字符串", "utf", "rune", "字节", "字符"),
+    "切片": ("slice", "切片", "扩容", "append", "底层数组", "容量"),
+    "网络": ("网络", "tcp", "http", "socket", "epoll", "协议"),
+    "缓存": ("缓存", "cache", "lru", "lfu", "淘汰"),
+    "AI": ("ai", "人工智能", "大模型", "llm", "agent", "rag"),
 }
 
 SERIES_RULES = (
@@ -85,6 +87,49 @@ def infer_series(title: str, topic: str, body: str) -> str:
     return ""
 
 
+def score_tags(title: str, topic: str, body: str) -> list[str]:
+    """Weighted keyword scoring for tag inference.
+    - Title match: weight 3
+    - Section heading match: weight 2
+    - Body text match: weight 1
+    Only tags with total score >= 3 are included.
+    """
+    title_lower = f" {title.lower()} "
+    topic_lower = f" {topic.lower()} "
+
+    # Extract headings
+    headings: list[str] = []
+    for line in body.splitlines():
+        m = re.match(r"^#{1,6}\s+(.+)", line)
+        if m:
+            headings.append(m.group(1).strip().lower())
+    headings_text = " ".join(headings)
+
+    body_lower = body.lower()
+
+    scores: dict[str, int] = {}
+    for tag, words in KEYWORDS.items():
+        score = 0
+        for word in words:
+            w = word.lower()
+            # Title: weight 3
+            if w in title_lower:
+                score += 3
+            # Section headings: weight 2 (each heading counted separately)
+            h_count = headings_text.count(w)
+            if h_count > 0:
+                score += min(h_count, 3) * 2  # cap at 3 heading matches
+            # Body: weight 1
+            if w in body_lower:
+                score += 1
+        if score >= 3:
+            scores[tag] = score
+
+    # Return top 4 tags by score
+    ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    return [tag for tag, _ in ranked[:4]]
+
+
 def next_series_order(current: Path, series_name: str) -> int:
     highest = 0
     for candidate in current.parents[1].glob("*/index.md"):
@@ -126,8 +171,7 @@ def main() -> int:
         front = replace_field(front, "categories", f'["{category}"]')
 
     if not field(front, "tags").strip("[] "):
-        haystack = f" {topic} {body} ".lower()
-        tags = [tag for tag, words in KEYWORDS.items() if any(word.lower() in haystack for word in words)][:4]
+        tags = score_tags(title, topic, body)
         if not tags:
             tags = [CATEGORY_BY_TOPIC.get(topic, topic or "技术笔记")]
         front = replace_field(front, "tags", "[" + ", ".join(f'"{tag}"' for tag in tags) + "]")
