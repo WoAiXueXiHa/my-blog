@@ -58,7 +58,7 @@ def read_article(path: Path) -> tuple[str, str]:
 
 def field(front: str, name: str) -> str:
     """Extract a single frontmatter field value."""
-    m = re.search(rf"(?m)^{re.escape(name)}:\s*[\"']?(.*?)[\"']?\s*$", front)
+    m = re.search(rf"(?m)^{re.escape(name)}:[ \t]*[\"']?(.*?)[\"']?[ \t]*$", front)
     return m.group(1).strip().strip('"\'') if m else ""
 
 
@@ -289,7 +289,11 @@ def main() -> int:
     new_front = replace_field(front, "summary", summary.replace('"', "'"))
     # Ensure the related field exists if other articles have it
     if not field(front, "related"):
-        new_front = replace_field(new_front, "related", "[]")
+        if re.search(rf"(?m)^{re.escape('related')}:", new_front):
+            new_front = re.sub(rf"(?m)^{re.escape('related')}:.*$",
+                              "related: []", new_front, count=1)
+        else:
+            new_front = new_front.rstrip() + "\nrelated: []"
 
     path.write_text(f"---\n{new_front}\n---\n\n{body.lstrip()}", encoding="utf-8")
     print(f"  已更新: {path}")

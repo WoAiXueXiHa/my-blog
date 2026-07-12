@@ -22,6 +22,7 @@ CATEGORY_BY_TOPIC = {
 TOPIC_ALIASES = {
     "go-linked-list": "data-structures",
     "datastructure-linked-list": "data-structures",
+    "datastructure-heap": "data-structures",
     "data-structure": "data-structures",
     "network": "networks",
     "operating-system": "os",
@@ -38,12 +39,12 @@ KEYWORDS = {
     "切片": ("slice", "切片", "扩容", "append", "底层数组", "容量"),
     "网络": ("网络", "tcp", "http", "socket", "epoll", "协议"),
     "缓存": ("缓存", "cache", "lru", "lfu", "淘汰"),
-    "AI": ("ai", "人工智能", "大模型", "llm", "agent", "rag"),
+    "AI": ("人工智能", "大模型", "llm", "agent", "rag", "prompt", "模型训练", "深度学习"),
 }
 
 SERIES_RULES = (
     ("Go 底层原理", ("go string", "go slice", "go map", "interface", "defer", "panic", "goroutine", "golang")),
-    ("数据结构基础", ("链表", "数组", "栈", "队列", "二叉树", "哈希表", "linked list", "listnode")),
+    ("数据结构基础", ("链表", "数组", "栈", "队列", "二叉树", "哈希表", "堆", "heap", "linked list", "listnode")),
     ("计算机网络基础", ("tcp", "http", "socket", "epoll", "网络协议")),
     ("操作系统基础", ("进程", "线程", "虚拟内存", "文件系统", "操作系统")),
     ("AI 工程实践", ("rag", "agent", "llm", "大模型", "人工智能")),
@@ -51,7 +52,7 @@ SERIES_RULES = (
 
 
 def field(front: str, name: str) -> str:
-    match = re.search(rf"(?m)^{re.escape(name)}:\s*[\"']?(.*?)[\"']?\s*$", front)
+    match = re.search(rf"(?m)^{re.escape(name)}:[ \t]*[\"']?(.*?)[\"']?[ \t]*$", front)
     return match.group(1).strip().strip('"\'') if match else ""
 
 
@@ -80,11 +81,15 @@ def yaml_list(value: str) -> list[str]:
 
 
 def infer_series(title: str, topic: str, body: str) -> str:
+    """Pick the series with the most keyword matches (not just the first)."""
     haystack = f" {title} {topic} {body[:4000]} ".lower()
+    best_name, best_count = "", 0
     for name, words in SERIES_RULES:
-        if any(word.lower() in haystack for word in words):
-            return name
-    return ""
+        count = sum(1 for w in words if w.lower() in haystack)
+        if count > best_count:
+            best_count = count
+            best_name = name
+    return best_name
 
 
 def score_tags(title: str, topic: str, body: str) -> list[str]:
