@@ -19,37 +19,6 @@ nav ul,
   list-style: none;
 }
 
-.vect-watermark {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.vect-watermark-grid {
-  position: absolute;
-  inset: -10%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  align-content: space-around;
-  gap: 5rem 3rem;
-  color: var(--vect-text);
-  font: 600 17px/1 var(--vect-font-ui);
-  letter-spacing: 0.12em;
-}
-
-.vect-watermark-grid span {
-  text-align: center;
-  white-space: nowrap;
-  opacity: 0.085;
-  transform: rotate(-24deg);
-}
-
-@media print {
-  .vect-watermark { position: fixed; }
-  .vect-watermark-grid span { opacity: 0.1; }
-}
 
 /* ── Tables: clean, scrollable on mobile ── */
 .post-content table {

@@ -2,8 +2,6 @@
 <script defer src="{{ $fuseJS.RelPermalink }}" integrity="{{ $fuseJS.Data.Integrity }}"></script>
 {{- $siteJS := resources.Get "js/site.js" | js.Build (dict "minify" true) | fingerprint }}
 <script defer src="{{ $siteJS.RelPermalink }}" integrity="{{ $siteJS.Data.Integrity }}"></script>
-{{- $watermarkJS := resources.Get "js/watermark.js" | js.Build (dict "minify" true) | fingerprint }}
-<script defer src="{{ $watermarkJS.RelPermalink }}" integrity="{{ $watermarkJS.Data.Integrity }}"></script>
 {{- if .IsHome }}
 {{- $homeJS := resources.Get "js/home-reveal.js" | js.Build (dict "minify" true) | fingerprint }}
 <script defer src="{{ $homeJS.RelPermalink }}" integrity="{{ $homeJS.Data.Integrity }}"></script>

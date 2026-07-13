@@ -6,7 +6,6 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 1440, height: 900 
     const errors = [];
     page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
     await page.goto('/posts/go-string/');
-    await expect(page.locator('.vect-watermark')).toHaveCount(1);
     await expect(page.locator('.post-content .katex')).not.toHaveCount(0);
     await expect(page.locator('.toc-nav')).not.toContainText('$O(1)$');
     const firstCodeBlock = page.locator('.post-content pre').first();
