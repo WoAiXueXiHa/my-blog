@@ -7,7 +7,7 @@
   {{- end -}}
   {{- if $include -}}
     {{- $category := delimit (.Params.categories | default (slice .Params.topic)) " · " -}}
-    {{- $items = $items | append (dict "title" .Title "content" (.Plain | truncate 500) "permalink" .RelPermalink "summary" (.Params.summary | default .Description | default .Summary | plainify | truncate 150) "section" .Section "topic" $category) -}}
+    {{- $items = $items | append (dict "title" .Title "permalink" .RelPermalink "summary" (.Params.summary | default .Description | default .Summary | plainify | truncate 150) "section" .Section "topic" $category) -}}
   {{- end -}}
 {{- end -}}
 {{- $items | jsonify -}}

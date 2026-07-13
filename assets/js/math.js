@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const content = document.querySelector('.post-content');
-  if (!content || typeof renderMathInElement !== 'function') return;
-  renderMathInElement(content, {
+  const roots = document.querySelectorAll('.post-content, .toc-nav');
+  if (!roots.length || typeof renderMathInElement !== 'function') return;
+  const options = {
     delimiters: [
       { left: '$$', right: '$$', display: true },
       { left: '\\[', right: '\\]', display: true },
@@ -10,5 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ],
     throwOnError: false,
     ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-  });
+  };
+  roots.forEach(root => renderMathInElement(root, options));
 });

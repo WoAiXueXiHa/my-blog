@@ -1,0 +1,51 @@
+name: Site quality
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  schedule:
+    - cron: '20 2 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-browser:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.154.5'
+          extended: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: ./scripts/validate.sh
+      - run: npm run test:browser
+
+  production-smoke:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check production after Vercel deployment
+        if: github.event_name == 'push'
+        run: |
+          for attempt in {1..10}; do
+            ./scripts/smoke-test.sh && exit 0
+            echo "Vercel 尚未就绪，30 秒后重试（$attempt/10）"
+            sleep 30
+          done
+          exit 1
+      - name: Check current production
+        if: github.event_name != 'push'
+        run: ./scripts/smoke-test.sh

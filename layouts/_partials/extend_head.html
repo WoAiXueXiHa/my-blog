@@ -2,4 +2,5 @@
 <meta name="theme-color" content="#151a17" id="vect-theme-color">
 <link rel="manifest" href="{{ "site.webmanifest" | relURL }}">
 <link rel="alternate" type="application/rss+xml" title="{{ site.Title }}" href="{{ "index.xml" | absURL }}">
-<script>document.documentElement.classList.add('js');(()=>{const p=localStorage.getItem('vect-theme');document.documentElement.dataset.theme=p==='light'||p==='dark'?p:'auto';})();</script>
+{{- $bootstrapJS := resources.Get "js/bootstrap.js" | js.Build (dict "minify" true) | fingerprint }}
+<script src="{{ $bootstrapJS.RelPermalink }}" integrity="{{ $bootstrapJS.Data.Integrity }}"></script>

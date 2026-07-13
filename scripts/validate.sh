@@ -16,6 +16,10 @@ while IFS= read -r -d '' file; do
     [[ "$image" =~ ^https?:// ]] && { fail "$file 使用外部图片 $image"; continue; }
     [[ -f "$(dirname "$file")/$image" || -f "static/${image#/}" ]] || fail "$file 图片不存在: $image"
   done < <(grep -oE '!\[[^]]+\]\([^ )]+' "$file" | sed 's/^.*](//' || true)
+  while IFS= read -r asset; do
+    size=$(stat -c %s "$asset")
+    (( size <= 8388608 )) || fail "$asset 超过 8 MiB，请压缩后再发布"
+  done < <(find "$(dirname "$file")" -maxdepth 1 -type f ! -name index.md -print)
 done < <(find content/posts -name index.md -print0)
 (( errors == 0 )) || exit 1
 ./scripts/validate-metadata.py

@@ -2,6 +2,7 @@
 <footer class="footer vect-site-footer"><span>© {{ now.Year }} VECT / FIELD NOTES</span><nav aria-label="页脚导航"><a href="https://github.com/WoAiXueXiHa">GitHub</a><a href="mailto:1760198676@qq.com">Email</a></nav></footer>
 {{- end }}
 {{- if and (eq .Kind "page") (ne .Layout "archives") (ne .Layout "search") (.Param "ShowCodeCopyButtons") }}
-<script>document.querySelectorAll('pre > code').forEach(code=>{const pre=code.closest('pre');if(!pre||pre.querySelector('.copy-code'))return;const button=document.createElement('button');button.className='copy-code';button.type='button';button.textContent='复制';button.addEventListener('click',async()=>{await navigator.clipboard.writeText(code.textContent);button.textContent='已复制';setTimeout(()=>button.textContent='复制',1600)});pre.appendChild(button)});</script>
+{{- $copyJS := resources.Get "js/code-copy.js" | js.Build (dict "minify" true) | fingerprint }}
+<script defer src="{{ $copyJS.RelPermalink }}" integrity="{{ $copyJS.Data.Integrity }}"></script>
 {{- end }}
 {{- partial "extend_footer.html" . }}

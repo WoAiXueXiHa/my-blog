@@ -19,6 +19,32 @@ nav ul,
   list-style: none;
 }
 
+.vect-watermark {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.055;
+}
+
+.vect-watermark::before {
+  content: attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text);
+  position: absolute;
+  inset: -20%;
+  color: var(--vect-text);
+  font: 500 11px/9rem var(--vect-font-ui);
+  letter-spacing: 0.08em;
+  word-spacing: 1.5rem;
+  transform: rotate(-24deg);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media print {
+  .vect-watermark { opacity: 0.09; position: fixed; }
+}
+
 /* ── Tables: clean, scrollable on mobile ── */
 .post-content table {
   border-collapse: collapse;

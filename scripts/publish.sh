@@ -24,5 +24,9 @@ done
 git add -- content/posts
 git diff --cached --quiet && { echo '没有可提交的文章变更。'; exit 1; }
 git commit -m "$MSG"
-if [[ "$MODE" != "--no-push" ]]; then git push; fi
-echo '文章已安全发布；Vercel 将自动完成部署。'
+if [[ "$MODE" != "--no-push" ]]; then
+  git push
+  echo '文章已推送；Vercel 正在自动部署。线上健康检查将由 GitHub Actions 完成。'
+else
+  echo '文章已提交但未推送（--no-push）。'
+fi

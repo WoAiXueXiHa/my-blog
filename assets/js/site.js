@@ -51,13 +51,13 @@
     input?.focus();
     if (!searchData) {
       searchData = await fetch('/index.json').then(r => r.json()).catch(() => []);
-      if (typeof Fuse === 'function') fuse = new Fuse(searchData, { keys: [{name:'title',weight:0.45},{name:'topic',weight:0.2},{name:'summary',weight:0.2},{name:'content',weight:0.15}], threshold: 0.38, ignoreLocation: true });
+      if (typeof Fuse === 'function') fuse = new Fuse(searchData, { keys: [{name:'title',weight:0.55},{name:'topic',weight:0.2},{name:'summary',weight:0.25}], threshold: 0.38, ignoreLocation: true });
     }
   };
   const renderResults = query => {
     if (!results || !searchData) return;
     const terms = query.toLocaleLowerCase().trim().split(/\s+/).filter(Boolean);
-    const matches = terms.length ? (fuse ? fuse.search(query, { limit: 8 }).map(result => ({ item: result.item })) : searchData.filter(item => `${item.title} ${item.summary} ${item.content} ${item.topic}`.toLocaleLowerCase().includes(query.toLocaleLowerCase())).slice(0,8).map(item => ({item}))) : [];
+    const matches = terms.length ? (fuse ? fuse.search(query, { limit: 8 }).map(result => ({ item: result.item })) : searchData.filter(item => `${item.title} ${item.summary} ${item.topic}`.toLocaleLowerCase().includes(query.toLocaleLowerCase())).slice(0,8).map(item => ({item}))) : [];
     selected = matches.length ? 0 : -1;
     results.innerHTML = matches.map(({item}, index) => `<li role="option" aria-selected="${index === selected}"><a href="${item.permalink}"><b>${escapeHTML(item.title)}</b><span>${escapeHTML(item.summary || item.content || '')}</span><small>${escapeHTML(item.topic || item.section || '文章')}</small></a></li>`).join('') || (terms.length ? '<li class="is-empty">没有找到匹配内容，换个关键词试试。</li>' : '');
   };

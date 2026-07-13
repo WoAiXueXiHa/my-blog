@@ -1,8 +1,15 @@
 {{- $src := .Destination -}}
 {{- $resource := .Page.Resources.GetMatch .Destination -}}
 {{- with $resource -}}{{- $src = .RelPermalink -}}{{- end -}}
+{{- $small := false -}}
+{{- $large := false -}}
+{{- if and $resource (in (slice "jpeg" "png") $resource.MediaType.SubType) -}}
+  {{- $small = $resource.Fit "720x7200 webp q82" -}}
+  {{- $large = $resource.Fit "1200x12000 webp q84" -}}
+{{- end -}}
 <img
-  src="{{ $src | safeURL }}"
+  src="{{ with $large }}{{ .RelPermalink }}{{ else }}{{ $src | safeURL }}{{ end }}"
+  {{- if and $small $large }} srcset="{{ $small.RelPermalink }} {{ $small.Width }}w, {{ $large.RelPermalink }} {{ $large.Width }}w" sizes="(max-width: 760px) 100vw, 760px"{{ end }}
   alt="{{ .Text }}"
   {{- with .Title }} title="{{ . }}"{{ end }}
   {{- with $resource }} width="{{ .Width }}" height="{{ .Height }}"{{ end }}
