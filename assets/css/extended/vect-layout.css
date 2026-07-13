@@ -25,24 +25,30 @@ nav ul,
   z-index: 20;
   pointer-events: none;
   overflow: hidden;
-  opacity: 0.055;
 }
 
-.vect-watermark::before {
-  content: attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text) "   " attr(data-text);
+.vect-watermark-grid {
   position: absolute;
-  inset: -20%;
+  inset: -10%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  align-content: space-around;
+  gap: 5rem 3rem;
   color: var(--vect-text);
-  font: 500 11px/9rem var(--vect-font-ui);
-  letter-spacing: 0.08em;
-  word-spacing: 1.5rem;
+  font: 600 17px/1 var(--vect-font-ui);
+  letter-spacing: 0.12em;
+}
+
+.vect-watermark-grid span {
+  text-align: center;
+  white-space: nowrap;
+  opacity: 0.085;
   transform: rotate(-24deg);
-  white-space: normal;
-  overflow-wrap: anywhere;
 }
 
 @media print {
-  .vect-watermark { opacity: 0.09; position: fixed; }
+  .vect-watermark { position: fixed; }
+  .vect-watermark-grid span { opacity: 0.1; }
 }
 
 /* ── Tables: clean, scrollable on mobile ── */
