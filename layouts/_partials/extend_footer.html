@@ -1,5 +1,5 @@
-{{- $fuseJS := resources.Get "js/fuse.basic.min.js" | fingerprint }}
-<script defer src="{{ $fuseJS.RelPermalink }}" integrity="{{ $fuseJS.Data.Integrity }}"></script>
+{{- $searchCore := resources.Get "js/search-core.js" | js.Build (dict "minify" true) | fingerprint }}
+<script defer src="{{ $searchCore.RelPermalink }}" integrity="{{ $searchCore.Data.Integrity }}"></script>
 {{- $siteJS := resources.Get "js/site.js" | js.Build (dict "minify" true) | fingerprint }}
 <script defer src="{{ $siteJS.RelPermalink }}" integrity="{{ $siteJS.Data.Integrity }}"></script>
 {{- if .IsHome }}

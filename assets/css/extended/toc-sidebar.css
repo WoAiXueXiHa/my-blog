@@ -1,8 +1,8 @@
 /* Article grid: intentional reading column with a stable navigation rail. */
 .post-body.has-toc {
   display: grid;
-  grid-template-columns: 232px minmax(0, var(--vect-width-reading)) minmax(0, 1fr);
-  gap: 48px;
+  grid-template-columns: clamp(168px, 20vw, 232px) minmax(0, var(--vect-width-reading)) minmax(0, 1fr);
+  gap: clamp(24px, 3vw, 48px);
   align-items: start;
 }
 
@@ -16,7 +16,7 @@
   grid-column: 1;
   position: sticky;
   top: 96px;
-  width: 232px;
+  width: 100%;
   max-height: calc(100vh - 120px);
   overflow-y: auto;
   padding-right: 12px;
@@ -98,15 +98,16 @@
 .toc-sidebar::-webkit-scrollbar-thumb { background: var(--tertiary); border-radius: 2px; }
 .toc-drawer-trigger, .toc-backdrop { display: none; }
 
-@media (min-width: 1280px) {
+@media (min-width: 640px) {
   .vect-article-page .post-single > .post-header,
   .vect-article-page .post-single > .post-footer {
-    margin-left: 280px;
+    width: min(calc(80% - clamp(24px, 3vw, 48px)), var(--vect-width-reading));
+    margin-left: calc(clamp(168px, 20vw, 232px) + clamp(24px, 3vw, 48px));
     margin-right: 0;
   }
 }
 
-@media (max-width: 1279px) {
+@media (max-width: 639px) {
   .post-body.has-toc { display: block; }
   .post-body.has-toc .post-content { width: min(100%, var(--vect-width-reading)); margin-inline: auto; }
   .toc-drawer-trigger {
@@ -155,7 +156,7 @@
   body.toc-drawer-open { overflow: hidden; }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 639px) {
   .toc-drawer-trigger { margin-bottom: 1.25rem; }
   .toc-sidebar, .toc-sidebar[aria-hidden="true"] { width: min(340px, calc(100vw - 32px)); padding: 20px 16px; }
 }

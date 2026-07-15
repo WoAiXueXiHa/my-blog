@@ -5,7 +5,7 @@ MSG="${1:-}"
 MODE="${2:-}"
 [[ -n "$MSG" ]] || { echo '用法: ./scripts/publish.sh "文章标题" [--no-push]'; exit 1; }
 
-mapfile -t changed < <({ git diff --name-only; git ls-files --others --exclude-standard; } | sort -u)
+mapfile -t changed < <({ git diff --name-only; git diff --cached --name-only; git ls-files --others --exclude-standard; } | sort -u)
 (( ${#changed[@]} > 0 )) || { echo '没有需要发布的文章变更。'; exit 1; }
 for file in "${changed[@]}"; do
   [[ "$file" == content/posts/* ]] || { echo "检测到非文章变更，已停止: $file"; exit 1; }

@@ -1,22 +1,54 @@
 {{- define "main" }}
 {{- $posts := where site.RegularPages "Section" "posts" -}}
-{{- $featured := where $posts "Params.featured" true -}}
-{{- if eq (len $featured) 0 }}{{ $featured = where $posts "Params.status" "evergreen" }}{{ end -}}
 {{- $topics := (site.GetPage "/topics").Pages.ByWeight -}}
 <div class="vect-home" data-vect-home>
   <section class="vect-hero vect-reveal" aria-labelledby="vect-hero-title">
-    <div class="vect-hero-copy"><span class="vect-kicker">FIELD NOTES · {{ now.Year }}</span><h1 id="vect-hero-title">思考，<br><em>需要一片安静的旷野。</em></h1><p>从代码现象进入底层机制，把零散知识连接成可以继续探索的路径。</p><div class="vect-hero-actions"><a class="vect-primary-link" href="{{ "posts/" | relURL }}">开始阅读 <span>→</span></a><a class="vect-text-link" href="{{ "paths/" | relURL }}">浏览学习路径 <span>↗</span></a></div></div>
-    <aside class="vect-featured" aria-labelledby="featured-title"><span>FEATURED / 精选文章</span>{{ with index $featured 0 }}<h2 id="featured-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2><p>{{ .Params.summary | default .Summary | plainify | truncate 120 }}</p><a href="{{ .RelPermalink }}">阅读全文 ↗</a>{{ end }}</aside>
+    <div class="vect-hero-copy">
+      <span class="vect-kicker">FIELD NOTES · {{ now.Year }}</span>
+      <h1 id="vect-hero-title">思考，<br><em>需要一片安静的旷野。</em></h1>
+      <p>从代码现象进入底层机制，把零散知识连接成可以持续探索的路径。</p>
+      <div class="vect-hero-actions">
+        <a class="vect-primary-link" href="{{ "posts/" | relURL }}">开始阅读 <span>→</span></a>
+        <a class="vect-text-link" href="{{ "paths/" | relURL }}">浏览学习路径 <span>→</span></a>
+      </div>
+    </div>
+    <aside class="vect-home-search" aria-labelledby="home-search-title">
+      <span>SEARCH / 快速检索</span>
+      <h2 id="home-search-title">今天想找什么？</h2>
+      <p>支持标题、标签、摘要、系列和正文标题组合匹配。</p>
+      <button type="button" data-search-open aria-haspopup="dialog">
+        <span aria-hidden="true">⌕</span><strong>搜索知识库</strong><kbd>Ctrl K</kbd>
+      </button>
+      <div class="vect-home-search-hints"><span>试试：</span><button type="button" data-search-seed="Go 内存">Go 内存</button><button type="button" data-search-seed="字符串">字符串</button><button type="button" data-search-seed="大模型">大模型</button></div>
+    </aside>
   </section>
 
-  <section class="vect-recent vect-reveal" aria-labelledby="recent-title"><div class="vect-section-heading"><span>01 / LATEST</span><h2 id="recent-title">最近更新</h2><a href="{{ "posts/" | relURL }}">全部文章 →</a></div>{{ range first 6 $posts.ByLastmod.Reverse }}<article class="vect-writing"><time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "01 · 02" }}</time><div><span class="vect-status">{{ with .Params.categories }}{{ delimit . " · " }}{{ else }}技术笔记{{ end }}</span>{{ range first 2 .Params.tags }}<span class="vect-writing-tag">#{{ . }}</span>{{ end }}<h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3><p>{{ .Params.summary | plainify | truncate 120 }}</p><small>{{ .ReadingTime }} 分钟阅读</small></div><a class="vect-writing-arrow" href="{{ .RelPermalink }}" aria-label="阅读《{{ .Title }}》">↗</a></article>{{ end }}</section>
+  <section class="vect-recent vect-reveal" aria-labelledby="recent-title">
+    <div class="vect-section-heading"><span>01 / LATEST</span><h2 id="recent-title">最近更新</h2><a href="{{ "posts/" | relURL }}">全部文章 →</a></div>
+    {{ range first 6 $posts.ByLastmod.Reverse }}
+    <article class="vect-writing">
+      <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "01 · 02" }}</time>
+      <div><span class="vect-status">{{ with .Params.categories }}{{ delimit . " · " }}{{ else }}技术笔记{{ end }}</span>{{ range first 2 .Params.tags }}<span class="vect-writing-tag">#{{ . }}</span>{{ end }}<h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3><p>{{ .Params.summary | default .Summary | plainify | truncate 120 }}</p><small>{{ .ReadingTime }} 分钟阅读</small></div>
+      <a class="vect-writing-arrow" href="{{ .RelPermalink }}" aria-label="阅读《{{ .Title }}》">→</a>
+    </article>
+    {{ end }}
+  </section>
 
-  {{- $hasPaths := false -}}{{- range site.Taxonomies.series }}{{ if ge .Count 2 }}{{ $hasPaths = true }}{{ end }}{{ end -}}
-  {{- if $hasPaths }}<section class="vect-paths vect-reveal" aria-labelledby="paths-title"><div class="vect-section-heading"><span>02 / PATHS</span><h2 id="paths-title">学习路径</h2><a href="{{ "paths/" | relURL }}">全部路径 →</a></div><div class="vect-path-grid">{{ range site.Taxonomies.series.Alphabetical }}{{ if ge .Count 2 }}<a href="{{ printf "paths/#%s" (.Term | urlize) | relURL }}"><span>{{ .Count }} 篇 · {{ .Pages.ByParam "seriesOrder" | len }} 个章节</span><h3>{{ .Page.Title }}</h3><p>{{ (index (.Pages.ByParam "seriesOrder") 0).Params.summary | plainify | truncate 90 }}</p><b>开始学习 ↗</b></a>{{ end }}{{ end }}</div></section>{{ end }}
+  <section class="vect-paths vect-reveal" aria-labelledby="paths-title">
+    <div class="vect-section-heading"><span>02 / PATHS</span><h2 id="paths-title">学习路径</h2><a href="{{ "paths/" | relURL }}">全部路径 →</a></div>
+    <div class="vect-path-grid">{{ range first 4 site.Taxonomies.series.Alphabetical }}<a href="{{ printf "paths/#%s" (.Term | urlize) | relURL }}"><span>{{ .Count }} 篇内容</span><h3>{{ .Page.Title }}</h3><p>{{ with index (.Pages.ByParam "seriesOrder") 0 }}{{ .Params.summary | default .Summary | plainify | truncate 90 }}{{ end }}</p><b>开始学习 →</b></a>{{ end }}</div>
+  </section>
 
-  <section class="vect-atlas vect-reveal" id="atlas" aria-labelledby="atlas-title"><div class="vect-section-heading"><span>03 / ATLAS</span><h2 id="atlas-title">知识地图</h2><a href="{{ "topics/" | relURL }}">完整地图 →</a></div><p class="vect-section-intro">从一个真实主题进入，查看相关内容与继续探索的方向。</p><div class="vect-topic-grid vect-topic-grid-compact">{{ range $topics }}{{ $topicPosts := where $posts "Params.topic" .Params.slug }}{{ if gt (len $topicPosts) 0 }}<article class="vect-topic"><a class="vect-topic-main" href="{{ .RelPermalink }}"><span class="vect-topic-en">{{ .Params.nameEn }}</span><h3>{{ .Title }}</h3><p>{{ .Description }}</p><span class="vect-topic-state">{{ len $topicPosts }} 篇内容 · 更新于 {{ (index $topicPosts.ByLastmod.Reverse 0).Lastmod.Format "2006-01-02" }}</span></a></article>{{ end }}{{ end }}</div></section>
+  <section class="vect-atlas vect-reveal" id="atlas" aria-labelledby="atlas-title">
+    <div class="vect-section-heading"><span>03 / ATLAS</span><h2 id="atlas-title">知识地图</h2><a href="{{ "topics/" | relURL }}">完整地图 →</a></div>
+    <p class="vect-section-intro">从一个真实主题进入，查看对应目录、相关文章与继续探索的方向。</p>
+    <div class="vect-topic-grid vect-topic-grid-compact">{{ range $topics }}{{ $topicPosts := where $posts "Params.topic" .Params.slug }}{{ if gt (len $topicPosts) 0 }}<article class="vect-topic"><a class="vect-topic-main" href="{{ .RelPermalink }}"><span class="vect-topic-en">{{ .Params.nameEn }}</span><h3>{{ .Title }}</h3><p>{{ .Description }}</p><span class="vect-topic-state">{{ len $topicPosts }} 篇内容 · 更新于 {{ (index $topicPosts.ByLastmod.Reverse 0).Lastmod.Format "2006-01-02" }}</span></a></article>{{ end }}{{ end }}</div>
+  </section>
 
-  <section class="vect-home-links vect-reveal"><a href="{{ "archives/" | relURL }}"><span>ARCHIVE</span><strong>文章归档</strong><small>按时间回看全部内容 →</small></a><a href="{{ "about/" | relURL }}"><span>ABOUT</span><strong>关于我</strong><small>了解这个站点与写作者 →</small></a></section>
+  <section class="vect-home-about vect-reveal" aria-labelledby="home-about-title">
+    <div><span>04 / ABOUT</span><h2 id="home-about-title">关于我</h2><p class="vect-about-motto" aria-label="见微知著，由内而外"><strong>见微知著</strong><i>由内而外</i></p><p>这里记录技术学习、系统理解和持续写作。完整的自我介绍、经历与写作说明保留在“关于我”正文中，不做截断。</p><a href="{{ "about/" | relURL }}">阅读完整文章 →</a></div>
+    <nav aria-label="联系方式"><a href="https://github.com/WoAiXueXiHa" rel="me">GitHub <span>↗</span></a><a href="mailto:1760198676@qq.com">1760198676@qq.com <span>↗</span></a></nav>
+  </section>
   <footer class="vect-home-footer"><span>© {{ now.Year }} VECT</span><nav aria-label="页脚导航"><a href="https://github.com/WoAiXueXiHa">GitHub</a><a href="mailto:1760198676@qq.com">Email</a></nav><p>Built slowly, kept open.</p></footer>
 </div>
 {{- end }}

@@ -1,20 +1,26 @@
 name: Site quality
 
+concurrency:
+  group: site-quality-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [master]
   pull_request:
   schedule:
-    - cron: '20 2 * * 1'
+    - cron: '20 2 * * *'
   workflow_dispatch:
 
 permissions:
   contents: read
+  statuses: read
 
 jobs:
   build-and-browser:
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,24 +33,44 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - run: npm install
+      - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: ./scripts/validate.sh
+      - run: npm run test:unit
       - run: npm run test:browser
 
   production-smoke:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - name: Check production after Vercel deployment
         if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          for attempt in {1..10}; do
-            ./scripts/smoke-test.sh && exit 0
-            echo "Vercel 尚未就绪，30 秒后重试（$attempt/10）"
-            sleep 30
+          expected_paths=()
+          while IFS= read -r file; do
+            slug=$(basename "$(dirname "$file")")
+            expected_paths+=("/posts/$slug/")
+          done < <(git diff --name-only HEAD^ HEAD -- 'content/posts/*/index.md')
+
+          for attempt in {1..20}; do
+            state=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/status" \
+              --jq '[.statuses[] | select(.context == "Vercel")][0].state // "pending"')
+            if [[ "$state" == "success" ]]; then
+              ./scripts/smoke-test.sh "https://code-learn-build-evolve.vercel.app" "${expected_paths[@]}" && exit 0
+            elif [[ "$state" == "failure" || "$state" == "error" ]]; then
+              echo "Vercel deployment failed for $GITHUB_SHA" >&2
+              exit 1
+            fi
+            echo "Waiting for Vercel deployment ($attempt/20)..."
+            sleep 15
           done
+          echo "Timed out waiting for Vercel deployment: $GITHUB_SHA" >&2
           exit 1
       - name: Check current production
         if: github.event_name != 'push'

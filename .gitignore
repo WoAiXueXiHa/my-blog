@@ -1,5 +1,6 @@
 # Hugo
 /public/
+/public-review/
 /resources/
 /.hugo_build.lock
 
@@ -13,3 +14,5 @@
 /node_modules/
 /test-results/
 /playwright-report/
+__pycache__/
+*.pyc

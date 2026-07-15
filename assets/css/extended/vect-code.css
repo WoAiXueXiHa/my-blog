@@ -18,7 +18,7 @@
 
 [data-theme="light"] .post-content .highlight,
 [data-theme="light"] .post-content pre {
-  background: #e7e4de;
+  background: var(--vect-code-bg);
 }
 
 /* ── Code block: pre > code ── */
@@ -169,3 +169,62 @@
 /* GenericSubheading */  .chroma .gu { color: #fab387; font-weight: bold; }
 /* GenericTraceback */   .chroma .gt { color: #f38ba8; }
 /* GenericUnderline */   .chroma .gl { text-decoration: underline; }
+
+/* Unified editorial syntax: the same semantic hierarchy in day and night modes. */
+:root {
+  --vect-code-syntax-text: #d7dbd4;
+  --vect-code-syntax-keyword: #e28b9a;
+  --vect-code-syntax-type: #c3a2e5;
+  --vect-code-syntax-name: #84afd7;
+  --vect-code-syntax-string: #8fbe91;
+  --vect-code-syntax-number: #d3a676;
+  --vect-code-syntax-operator: #7fb9b1;
+  --vect-code-syntax-comment: #879087;
+  --vect-code-syntax-error: #ef8f88;
+}
+
+[data-theme="light"] {
+  --vect-code-syntax-text: #242823;
+  --vect-code-syntax-keyword: #863f4b;
+  --vect-code-syntax-type: #694f7c;
+  --vect-code-syntax-name: #315d79;
+  --vect-code-syntax-string: #3f694b;
+  --vect-code-syntax-number: #765333;
+  --vect-code-syntax-operator: #3f625e;
+  --vect-code-syntax-comment: #6e756e;
+  --vect-code-syntax-error: #963f3b;
+}
+
+@media (prefers-color-scheme: light) {
+  :root[data-theme="auto"] {
+    --vect-code-syntax-text: #242823;
+    --vect-code-syntax-keyword: #863f4b;
+    --vect-code-syntax-type: #694f7c;
+    --vect-code-syntax-name: #315d79;
+    --vect-code-syntax-string: #3f694b;
+    --vect-code-syntax-number: #765333;
+    --vect-code-syntax-operator: #3f625e;
+    --vect-code-syntax-comment: #6e756e;
+    --vect-code-syntax-error: #963f3b;
+  }
+}
+
+:root .chroma { color: var(--vect-code-syntax-text); }
+:root .chroma :is(.k,.kd,.kp,.kr,.nt) { color: var(--vect-code-syntax-keyword); }
+:root .chroma :is(.kc,.kt,.no,.nc,.ne,.sa) { color: var(--vect-code-syntax-type); }
+:root .chroma :is(.na,.nb,.bp,.nd,.ni,.nf,.fm,.nl,.nn,.py,.nv,.vc,.vg,.vi,.vm,.kn) { color: var(--vect-code-syntax-name); }
+:root .chroma :is(.s,.sb,.sc,.dl,.s2,.se,.si,.sx,.sr,.s1,.ss) { color: var(--vect-code-syntax-string); }
+:root .chroma :is(.sd,.sh,.c,.ch,.cm,.c1,.cs,.cp,.cpf) { color: var(--vect-code-syntax-comment); }
+:root .chroma :is(.m,.mb,.mf,.mh,.mi,.il,.mo) { color: var(--vect-code-syntax-number); }
+:root .chroma :is(.o,.ow) { color: var(--vect-code-syntax-operator); }
+:root .chroma :is(.err,.gr,.gt,.gd) { color: var(--vect-code-syntax-error); }
+:root .chroma .gi { color: var(--vect-code-syntax-string); }
+:root .chroma :is(.gh,.gu) { color: var(--vect-code-syntax-number); }
+
+/* Keep every layer of a highlighted block on the same paper surface. */
+.post-content .highlight,
+.post-content .highlight > .chroma,
+.post-content .highlight pre,
+.post-content .highlight pre code {
+  background-color: var(--vect-code-bg) !important;
+}

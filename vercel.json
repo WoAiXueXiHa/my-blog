@@ -1,5 +1,6 @@
 {
-  "buildCommand": "hugo --gc --minify",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run test:unit && ./scripts/validate.sh",
   "outputDirectory": "public",
   "framework": "hugo",
   "build": {

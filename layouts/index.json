@@ -6,8 +6,24 @@
     {{- if eq (len (where $posts "Params.topic" .Params.slug)) 0 -}}{{- $include = false -}}{{- end -}}
   {{- end -}}
   {{- if $include -}}
-    {{- $category := delimit (.Params.categories | default (slice .Params.topic)) " · " -}}
-    {{- $items = $items | append (dict "title" .Title "permalink" .RelPermalink "summary" (.Params.summary | default .Description | default .Summary | plainify | truncate 150) "section" .Section "topic" $category) -}}
+    {{- $headings := slice -}}
+    {{- range findRE `(?m)^#{2,6}\s+(.+)$` .RawContent -}}{{- $headings = $headings | append (replaceRE `^#{2,6}\s+` "" . | plainify) -}}{{- end -}}
+    {{- $type := "page" -}}{{- if eq .Section "posts" }}{{ $type = "article" }}{{ else if eq .Section "topics" }}{{ $type = "topic" }}{{ else if eq .Section "paths" }}{{ $type = "path" }}{{ end -}}
+    {{- $items = $items | append (dict
+      "title" .Title
+      "permalink" .RelPermalink
+      "summary" (.Params.summary | default .Description | default .Summary | plainify | truncate 180)
+      "excerpt" (.Plain | truncate 700)
+      "section" .Section
+      "type" $type
+      "topic" (.Params.topic | default "")
+      "categories" (.Params.categories | default (slice))
+      "tags" (.Params.tags | default (slice))
+      "series" (.Params.series | default (slice))
+      "keywords" (.Params.keywords | default (slice))
+      "headings" $headings
+      "lastmod" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")
+    ) -}}
   {{- end -}}
 {{- end -}}
 {{- $items | jsonify -}}

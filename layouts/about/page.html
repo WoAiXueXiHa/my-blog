@@ -1,0 +1,14 @@
+{{- define "main" }}
+<article class="post-single vect-about-page">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="{{ "" | relURL }}">首页</a> › {{ .Title }}</div>
+    <span class="vect-page-kicker">ABOUT / VECT</span>
+    <h1 class="post-title">{{ .Title }}</h1>
+    <p class="post-description">完整介绍、学习方向、写作原则与公开触点。</p>
+    <nav class="vect-about-contacts" aria-label="联系方式"><a href="https://github.com/WoAiXueXiHa" rel="me">GitHub ↗</a><a href="mailto:1760198676@qq.com">Email ↗</a></nav>
+  </header>
+  <div class="post-content md-content vect-about-content" data-full-article>
+    {{- if not (.Param "disableAnchoredHeadings") }}{{ partial "anchored_headings.html" .Content }}{{ else }}{{ .Content }}{{ end }}
+  </div>
+</article>
+{{- end }}

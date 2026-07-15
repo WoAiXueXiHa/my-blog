@@ -33,10 +33,10 @@
 
   // 恢复上次状态
   const saved = localStorage.getItem(STORAGE_KEY);
-  if (window.innerWidth >= 1280 && saved === 'true') applyHidden(true);
+  if (window.innerWidth >= 640 && saved === 'true') applyHidden(true);
 
   toggleBtn.addEventListener('click', () => {
-    if (window.innerWidth < 1280) {
+    if (window.innerWidth < 640) {
       setDrawer(false);
       return;
     }
@@ -52,7 +52,7 @@
     if (event.key === 'Escape' && sidebar.classList.contains('is-open')) setDrawer(false);
   });
   window.addEventListener('resize', () => {
-    if (window.innerWidth >= 1280) {
+    if (window.innerWidth >= 640) {
       if (sidebar.classList.contains('is-open')) setDrawer(false, false);
       applyHidden(localStorage.getItem(STORAGE_KEY) === 'true');
     }
@@ -124,7 +124,7 @@
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
       // 小屏下点击后自动收起（可选）
-      if (window.innerWidth < 1280) setDrawer(false, false);
+      if (window.innerWidth < 640) setDrawer(false, false);
     });
   });
 })();

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const roots = document.querySelectorAll('.post-content, .toc-nav');
+  const roots = document.querySelectorAll('.post-content');
   if (!roots.length || typeof renderMathInElement !== 'function') return;
   const options = {
     delimiters: [

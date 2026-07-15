@@ -6,8 +6,8 @@ draft: false
 status: "evergreen"
 topic: "ai"
 categories: ["AI 工程"]
-tags: ["AI", "数据库", "数据结构", "字符串"]
-series: ["数据库与存储"]
+tags: ["AI", "LLM", "Transformer", "注意力机制"]
+series: ["AI 工程实践"]
 seriesOrder: 1
 featured: false
 summary: "本文从参数、训练数据、与传统程序区别等角度通俗解释大模型本质，并深入剖析Transformer架构的核心机制（注意力机制、自注意力等），帮助读者建立对LLM底层原理的系统认知。"

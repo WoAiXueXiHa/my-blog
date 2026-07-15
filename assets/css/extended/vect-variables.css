@@ -1,58 +1,45 @@
-/* ===== VECT Design Tokens ===== */
-/* Dark-first palette — no pure black (#000) or pure white (#fff) */
+/* ===== VECT Design Tokens: 静谧纸本 × 东方索引 ===== */
 
 :root {
-  /* ── Surface & Background ── */
-  --vect-bg: #151a17;
-  --vect-surface: #1c211d;
-  --vect-surface-hover: #191d23;
-  --vect-surface-raised: #1a1e25;
+  /* Night: deep ink, charcoal paper, grey pine and muted seal red. */
+  --vect-bg: #121713;
+  --vect-surface: #19201b;
+  --vect-surface-hover: #202820;
+  --vect-surface-raised: #242c25;
+  --vect-text: #e9e3d6;
+  --vect-text-secondary: #b7b1a4;
+  --vect-text-muted: #969b91;
+  --vect-text-caption: #858b82;
+  --vect-border: #41483f;
+  --vect-border-subtle: #2d352f;
+  --vect-rule-strong: #596158;
+  --vect-accent: #91aa96;
+  --vect-accent-soft: rgba(145, 170, 150, 0.11);
+  --vect-accent-hover: #b2c2b3;
+  --vect-rust: #bd705b;
+  --vect-rust-soft: rgba(189, 112, 91, 0.12);
+  --vect-code-bg: #0f1411;
+  --vect-overlay: rgba(7, 10, 8, 0.72);
+  --vect-shadow-sm: 0 1px 0 rgba(255, 255, 255, 0.025);
+  --vect-shadow-md: 0 18px 50px rgba(0, 0, 0, 0.34);
 
-  /* ── Text ── */
-  --vect-text: #e8e4da;
-  --vect-text-secondary: #9fa69d;
-  --vect-text-muted: #a6aca4;
-  --vect-text-caption: #8e958e;
+  --vect-width-reading: 740px;
+  --vect-width-content: 760px;
+  --vect-width-wide: 960px;
+  --vect-width-shell: 1280px;
 
-  /* ── Borders ── */
-  --vect-border: #282d35;
-  --vect-border-subtle: #20242b;
-
-  /* ── Accent (sparingly — links, focus, small decor) ── */
-  --vect-accent: #8fa997;
-  --vect-accent-soft: rgba(143, 169, 151, 0.09);
-  --vect-accent-hover: #a9beaf;
-  --vect-rust: #c77b66;
-
-  /* ── Code ── */
-  --vect-code-bg: #181b20;
-
-  /* ── Shadows ── */
-  --vect-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --vect-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
-
-  /* ── Layout widths ── */
-  --vect-width-reading: 740px;    /* article body */
-  --vect-width-content: 760px;    /* article + padding */
-  --vect-width-wide: 960px;       /* wider content (home sections) */
-  --vect-width-shell: 1280px;     /* header / footer / article shell */
-
-  /* ── Typography ── */
   --vect-font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
   --vect-font-body: 'Noto Sans SC', -apple-system, 'PingFang SC', 'Microsoft YaHei', 'WenQuanYi Micro Hei', sans-serif;
   --vect-font-literary: 'Noto Serif SC', 'Songti SC', Georgia, serif;
-  --vect-font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Consolas', monospace;
-  --vect-font-ui-size: 0.875rem;
+  --vect-font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+  --vect-font-ui-size: .875rem;
   --vect-font-body-size: 1rem;
-  --vect-font-code-size: 0.8125rem;
+  --vect-font-code-size: .8125rem;
   --vect-line-height-body: 1.8;
   --vect-line-height-heading: 1.35;
+  --vect-radius-sm: 3px;
+  --vect-radius-md: 6px;
 
-  /* ── Radii ── */
-  --vect-radius-sm: 6px;
-  --vect-radius-md: 10px;
-
-  /* ── Map VECT tokens → PaperMod variables (dark default) ── */
   --theme: var(--vect-bg);
   --entry: var(--vect-surface);
   --primary: var(--vect-text);
@@ -65,34 +52,27 @@
   color-scheme: dark;
 }
 
-/* ── Light mode overrides ── */
 [data-theme="light"] {
-  --vect-bg: #f2efe6;
-  --vect-surface: #f8f5ed;
-  --vect-surface-hover: #f0eee9;
-  --vect-surface-raised: #faf8f5;
-  --vect-text: #20231f;
-  --vect-text-secondary: #676a61;
-  --vect-text-muted: #676a61;
-  --vect-text-caption: #76786f;
-  --vect-border: #c9c3b6;
-  --vect-border-subtle: #d9d4c8;
-  --vect-accent: #405849;
-  --vect-accent-soft: rgba(64, 88, 73, 0.08);
-  --vect-accent-hover: #304638;
-  --vect-rust: #984a37;
-  --vect-code-bg: #edebe6;
-  --vect-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --vect-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.04);
-
-  --theme: var(--vect-bg);
-  --entry: var(--vect-surface);
-  --primary: var(--vect-text);
-  --secondary: var(--vect-text-secondary);
-  --tertiary: var(--vect-border);
-  --content: var(--vect-text);
-  --code-block-bg: var(--vect-code-bg);
-  --code-bg: var(--vect-surface);
-  --border: var(--vect-border);
+  /* Day: warm paper, carbon ink, pine green and cinnabar. */
+  --vect-bg: #f3efe4;
+  --vect-surface: #faf7ee;
+  --vect-surface-hover: #eee8da;
+  --vect-surface-raised: #e9e2d3;
+  --vect-text: #242721;
+  --vect-text-secondary: #64685f;
+  --vect-text-muted: #777b72;
+  --vect-text-caption: #878a80;
+  --vect-border: #bcb5a6;
+  --vect-border-subtle: #d7d0c2;
+  --vect-rule-strong: #9d9688;
+  --vect-accent: #3f5d4b;
+  --vect-accent-soft: rgba(63, 93, 75, 0.085);
+  --vect-accent-hover: #2f493a;
+  --vect-rust: #9e4d38;
+  --vect-rust-soft: rgba(158, 77, 56, 0.09);
+  --vect-code-bg: #e6e0d4;
+  --vect-overlay: rgba(35, 36, 31, 0.42);
+  --vect-shadow-sm: 0 1px 0 rgba(60, 50, 35, 0.08);
+  --vect-shadow-md: 0 18px 50px rgba(60, 50, 35, 0.12);
   color-scheme: light;
 }

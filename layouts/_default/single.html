@@ -21,8 +21,23 @@
     </div>
     {{- end }}
     {{- if $isArticle }}<div class="vect-post-taxonomy">
-      {{- with .Params.categories }}{{ range . }}<span>{{ . }}</span>{{ end }}{{ else }}{{ with .Params.topic }}<span>{{ . }}</span>{{ end }}{{ end -}}
-      {{- range .Params.tags }}<span>#{{ . }}</span>{{ end -}}
+      {{- $seenLabels := newScratch -}}
+      {{- with .Params.categories -}}
+        {{- range . -}}
+          {{- $key := lower (strings.TrimSpace .) -}}
+          {{- if not ($seenLabels.Get $key) }}<span>{{ . }}</span>{{ $seenLabels.Set $key true }}{{ end -}}
+        {{- end -}}
+      {{- else -}}
+        {{- with .Params.topic -}}
+          {{- $key := lower (strings.TrimSpace .) -}}
+          {{- if not ($seenLabels.Get $key) }}<span>{{ . }}</span>{{ $seenLabels.Set $key true }}{{ end -}}
+        {{- end -}}
+      {{- end -}}
+      {{- range .Params.tags -}}
+        {{- $tag := . -}}
+        {{- $key := lower (strings.TrimSpace $tag) -}}
+        {{- if not ($seenLabels.Get $key) }}<span>#{{ $tag }}</span>{{ $seenLabels.Set $key true }}{{ end -}}
+      {{- end -}}
     </div>{{- end }}
     {{- if and $isArticle .Params.series }}<a class="vect-series-note" href="{{ printf "paths/#%s" (index .Params.series 0 | urlize) | relURL }}">{{ index .Params.series 0 }} · 第 {{ .Params.seriesOrder }} 篇 →</a>{{ end }}
     {{- if not (.Param "hideMeta") }}
@@ -96,13 +111,18 @@
 <script defer src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}"></script>
 {{- end }}
 
-{{- $hasMath := and $isArticle (or (strings.Contains .RawContent "$$") (strings.Contains .RawContent "\\(") (strings.Contains .RawContent "\\[")) -}}
-{{- if $hasMath }}
+{{- if $isArticle }}
 <link rel="stylesheet" href="{{ "vendor/katex/katex.min.css" | relURL }}">
 <script defer src="{{ "vendor/katex/katex.min.js" | relURL }}"></script>
 <script defer src="{{ "vendor/katex/auto-render.min.js" | relURL }}"></script>
 {{- $mathJS := resources.Get "js/math.js" | js.Build (dict "minify" true) | fingerprint }}
 <script defer src="{{ $mathJS.RelPermalink }}" integrity="{{ $mathJS.Data.Integrity }}"></script>
+{{- end }}
+
+{{- $hasMermaid := and $isArticle (strings.Contains .RawContent "```mermaid") -}}
+{{- if $hasMermaid }}
+{{- $mermaidJS := resources.Get "js/mermaid-init.js" | js.Build (dict "minify" true "target" "es2020") | fingerprint }}
+<script defer src="{{ $mermaidJS.RelPermalink }}" integrity="{{ $mermaidJS.Data.Integrity }}"></script>
 {{- end }}
 
 {{- end }}{{/* end main */}}

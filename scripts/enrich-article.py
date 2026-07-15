@@ -56,6 +56,27 @@ TOPIC_ALIASES = {
     "security": "backend",
 }
 
+# Automatic metadata must stay inside the article's declared knowledge domain.
+# Authors can still set any cross-domain tags manually; inference is deliberately conservative.
+PRIMARY_SERIES_BY_TOPIC = {
+    "golang": "Go 底层原理",
+    "data-structures": "数据结构基础",
+    "networks": "计算机网络基础",
+    "os": "操作系统基础",
+    "ai": "AI 工程实践",
+}
+
+TAG_ALLOWLIST_BY_TOPIC = {
+    "golang": {"Go", "内存", "字符串", "切片", "并发", "编译"},
+    "data-structures": {"数据结构", "链表", "算法", "堆"},
+    "algorithms": {"算法", "数据结构", "堆", "链表"},
+    "backend": {"数据库", "缓存", "分布式", "网络", "安全", "测试"},
+    "networks": {"网络", "安全", "分布式"},
+    "os": {"内存", "并发", "编译"},
+    "ai": {"AI", "LLM", "Transformer", "注意力机制"},
+    "devops": {"容器", "测试", "安全"},
+}
+
 KEYWORDS = {
     "Go": (
         "go ", "golang", "goroutine", "channel", "defer", "panic", "interface",
@@ -147,6 +168,12 @@ KEYWORDS = {
     ),
 }
 
+KEYWORDS.update({
+    "LLM": ("llm", "大模型", "语言模型", "large language model"),
+    "Transformer": ("transformer", "encoder", "decoder", "self-attention"),
+    "注意力机制": ("注意力", "attention", "self-attention", "multi-head"),
+})
+
 SERIES_RULES = (
     ("Go 底层原理", (
         "go string", "go slice", "go map", "interface", "defer", "panic", "goroutine", "golang",
@@ -209,8 +236,14 @@ def yaml_list(value: str) -> list[str]:
 
 
 def infer_series(title: str, topic: str, body: str) -> str:
-    """Pick the series with the most keyword matches (not just the first)."""
-    haystack = f" {title} {topic} {body[:4000]} ".lower()
+    """Pick a series from the declared topic, then fall back to title/headings only."""
+    if topic in PRIMARY_SERIES_BY_TOPIC:
+        return PRIMARY_SERIES_BY_TOPIC[topic]
+    headings = " ".join(
+        match.group(1) for line in body.splitlines()
+        if (match := re.match(r"^#{1,6}\s+(.+)", line))
+    )
+    haystack = f" {title} {topic} {headings} ".lower()
     best_name, best_count = "", 0
     for name, words in SERIES_RULES:
         count = sum(1 for w in words if w.lower() in haystack)
@@ -221,11 +254,10 @@ def infer_series(title: str, topic: str, body: str) -> str:
 
 
 def score_tags(title: str, topic: str, body: str) -> list[str]:
-    """Weighted keyword scoring for tag inference.
-    - Title match: weight 3
-    - Section heading match: weight 2
-    - Body text match: weight 1
-    Only tags with total score >= 3 are included.
+    """Infer only high-confidence tags allowed by the declared topic.
+
+    Incidental body mentions never cross topic boundaries. A tag needs a title/heading
+    signal, or at least three distinct body signals inside its topic allowlist.
     """
     title_lower = f" {title.lower()} "
     topic_lower = f" {topic.lower()} "
@@ -240,23 +272,24 @@ def score_tags(title: str, topic: str, body: str) -> list[str]:
 
     body_lower = body.lower()
 
+    allowed = TAG_ALLOWLIST_BY_TOPIC.get(topic, set(KEYWORDS))
     scores: dict[str, int] = {}
     for tag, words in KEYWORDS.items():
-        score = 0
+        if tag not in allowed:
+            continue
+        title_hits = 0
+        heading_hits = 0
+        body_hits = 0
         for word in words:
             w = word.lower()
-            # Title: weight 3
             if w in title_lower:
-                score += 3
-            # Section headings: weight 2 (each heading counted separately)
-            h_count = headings_text.count(w)
-            if h_count > 0:
-                score += min(h_count, 3) * 2  # cap at 3 heading matches
-            # Body: weight 1
+                title_hits += 1
+            if w in headings_text:
+                heading_hits += 1
             if w in body_lower:
-                score += 1
-        if score >= 3:
-            scores[tag] = score
+                body_hits += 1
+        if title_hits or heading_hits or body_hits >= 3:
+            scores[tag] = title_hits * 5 + heading_hits * 3 + min(body_hits, 3)
 
     # Return top 4 tags by score
     ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)

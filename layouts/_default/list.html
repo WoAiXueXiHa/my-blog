@@ -1,14 +1,23 @@
 {{- define "main" }}
-<header class="page-header vect-list-header"><div class="breadcrumbs"><a href="{{ "" | relURL }}">首页</a>{{ if not .IsHome }} » {{ .Title }}{{ end }}</div><h1>{{ .Title }}</h1>{{ with .Description }}<p>{{ . }}</p>{{ end }}</header>
-{{ .Content }}
-<div class="vect-list-grid">
-  {{- range .Pages.ByDate.Reverse }}
-  <article class="post-entry">
-    <header class="entry-header"><span class="vect-entry-topic">{{ with .Params.categories }}{{ delimit . " · " }}{{ else }}{{ .Params.topic | default .Section }}{{ end }}</span><h2>{{ .Title }}</h2></header>
-    {{- with .Params.summary | default .Description | default .Summary }}<div class="entry-content"><p>{{ . | plainify | truncate 160 }}</p></div>{{ end }}
-    <footer class="entry-footer">{{ if not .Lastmod.IsZero }}更新于 {{ .Lastmod.Format "2006-01-02" }}{{ end }}{{ if .ReadingTime }} · {{ .ReadingTime }} 分钟{{ end }}</footer>
-    <a class="entry-link" aria-label="进入 {{ .Title }}" href="{{ .RelPermalink }}"></a>
-  </article>
-  {{- else }}<p class="vect-empty-state">这里还在生长，内容正在准备中。</p>{{- end }}
-</div>
+{{- $pages := .Pages.ByLastmod.Reverse -}}
+<section data-post-browser>
+  <header class="page-header vect-list-header"><div class="breadcrumbs"><a href="{{ "" | relURL }}">首页</a>{{ if not .IsHome }} › {{ .Title }}{{ end }}</div><h1>{{ .Title }}</h1>{{ with .Description }}<p>{{ . }}</p>{{ end }}</header>
+  {{ .Content }}
+  <div class="vect-collection-tools" aria-label="文章筛选">
+    <label><span>在当前列表中搜索</span><input type="search" data-post-search placeholder="输入标题、标签或关键词" autocomplete="off"></label>
+    <div class="vect-filter-row"><button class="is-active" type="button" data-filter="all">全部</button>{{- $tags := slice -}}{{ range $pages }}{{ range .Params.tags }}{{ $tags = $tags | append . }}{{ end }}{{ end }}{{ range first 8 (uniq $tags) }}<button type="button" data-filter="{{ . | lower }}">#{{ . }}</button>{{ end }}</div>
+    <p class="vect-result-count" data-result-count>{{ len $pages }} 篇内容</p>
+  </div>
+  <div class="vect-list-grid">
+    {{- range $pages }}
+    <article class="post-entry" data-post-item data-filters="{{ delimit .Params.tags "|" | lower }}" data-search="{{ .Title }} {{ delimit .Params.tags " " }} {{ delimit .Params.categories " " }} {{ .Params.summary }}">
+      <header class="entry-header"><span class="vect-entry-topic">{{ with .Params.categories }}{{ delimit . " · " }}{{ else }}{{ .Params.topic | default .Section }}{{ end }}</span><h2>{{ .Title }}</h2></header>
+      {{- with .Params.summary | default .Description | default .Summary }}<div class="entry-content"><p>{{ . | plainify | truncate 160 }}</p></div>{{ end }}
+      <footer class="entry-footer">{{ if not .Lastmod.IsZero }}更新于 {{ .Lastmod.Format "2006-01-02" }}{{ end }}{{ if .ReadingTime }} · {{ .ReadingTime }} 分钟{{ end }}</footer>
+      <a class="entry-link" aria-label="进入 {{ .Title }}" href="{{ .RelPermalink }}"></a>
+    </article>
+    {{- end }}
+    <p class="vect-empty-state" data-empty hidden>没有匹配的文章，换一个关键词试试。</p>
+  </div>
+</section>
 {{- end }}

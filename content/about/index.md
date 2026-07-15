@@ -151,7 +151,7 @@ Go 是我当前最主要的工程语言。我会围绕它持续拆解：
 ## 🌐 触点
 
 * **GitHub**: [github.com/WoAiXueXiHa](https://github.com/WoAiXueXiHa)
-* **Email**: [vect0_0@163.com](mailto:vect0_0@163.com)
+* **Email**: [1760198676@qq.com](mailto:1760198676@qq.com)
 * **CSDN**: [blog.csdn.net/Vect__](https://blog.csdn.net/Vect__)
 
 ---

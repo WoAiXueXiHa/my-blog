@@ -1,13 +1,19 @@
 {{- define "main" }}
 {{- $allPosts := where site.RegularPages "Section" "posts" -}}
-<article class="post-single vect-topic-page"><header class="post-header"><div class="breadcrumbs"><a href="{{ "" | relURL }}">首页</a> » 知识地图</div><h1 class="post-title">{{ .Title }}</h1>{{ with .Description }}<p class="post-description">{{ . }}</p>{{ end }}</header>
-{{- if eq .RelPermalink ("topics/" | relURL) }}
-  <div class="vect-topic-directory">{{ range .Pages.ByWeight }}{{ $pages := where $allPosts "Params.topic" .Params.slug }}{{ if gt (len $pages) 0 }}<a href="{{ .RelPermalink }}"><span>{{ .Params.nameEn }}</span><h2>{{ .Title }}</h2><p>{{ .Description }}</p><b>{{ len $pages }} 篇 · 更新于 {{ (index $pages.ByLastmod.Reverse 0).Lastmod.Format "2006-01-02" }} →</b></a>{{ end }}{{ end }}</div>
-{{- else }}
+{{- $isRoot := eq .RelPermalink ("topics/" | relURL) -}}
+<article class="post-single vect-topic-page" data-topic-browser>
+  <header class="post-header"><div class="breadcrumbs"><a href="{{ "" | relURL }}">首页</a> › 知识地图</div><h1 class="post-title">{{ .Title }}</h1>{{ with .Description }}<p class="post-description">{{ . }}</p>{{ end }}</header>
+  {{- if $isRoot }}
+  <div class="vect-collection-tools"><label><span>搜索知识板块</span><input type="search" data-topic-search placeholder="例如：Go、内存、大模型" autocomplete="off"></label><p class="vect-result-count" data-result-count></p></div>
+  <div class="vect-topic-directory">{{ range .Pages.ByWeight }}{{ $pages := where $allPosts "Params.topic" .Params.slug }}{{ if gt (len $pages) 0 }}<a href="{{ .RelPermalink }}" data-topic-item data-search="{{ .Title }} {{ .Params.nameEn }} {{ .Description }}"><span>{{ .Params.nameEn }}</span><h2>{{ .Title }}</h2><p>{{ .Description }}</p><b>{{ len $pages }} 篇 · 更新于 {{ (index $pages.ByLastmod.Reverse 0).Lastmod.Format "2006-01-02" }} →</b></a>{{ end }}{{ end }}</div>
+  {{- else }}
   {{- $pages := where $allPosts "Params.topic" .Params.slug -}}
-  <section class="vect-topic-articles"><h2>主题文章</h2>{{ range $pages.ByLastmod.Reverse }}<article><time>{{ .Lastmod.Format "2006-01-02" }}</time><h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3><p>{{ .Params.summary }}</p><div>{{ range .Params.tags }}<span>#{{ . }}</span>{{ end }}</div></article>{{ end }}</section>
-  {{- $tagSet := slice -}}{{- range $pages }}{{ range .Params.tags }}{{ $tagSet = $tagSet | append . }}{{ end }}{{ end -}}
-  <section class="vect-related-topics"><h2>继续探索</h2>{{ with .Params.related }}{{ range . }}{{ with site.GetPage (printf "/topics/%s" .) }}{{ $relatedPages := where $allPosts "Params.topic" .Params.slug }}{{ if gt (len $relatedPages) 0 }}<a href="{{ .RelPermalink }}">{{ .Title }} ↗</a>{{ end }}{{ end }}{{ end }}{{ else }}<a href="{{ "paths/" | relURL }}">查看学习路径 ↗</a>{{ end }}</section>
-{{- end }}
+  {{- $tagSet := slice -}}{{ range $pages }}{{ range .Params.tags }}{{ $tagSet = $tagSet | append . }}{{ end }}{{ end -}}
+  <nav class="vect-topic-toc" aria-label="本板块目录"><strong>板块目录</strong><ol>{{ range $pages.ByLastmod.Reverse }}<li><a href="#article-{{ .File.UniqueID }}">{{ .Title }}</a></li>{{ end }}</ol></nav>
+  <div class="vect-collection-tools"><label><span>在“{{ .Title }}”中搜索</span><input type="search" data-topic-search placeholder="输入标题、标签或关键词" autocomplete="off"></label><div class="vect-filter-row"><button class="is-active" type="button" data-filter="all">全部</button>{{ range first 8 (uniq $tagSet) }}<button type="button" data-filter="{{ . | lower }}">#{{ . }}</button>{{ end }}</div><p class="vect-result-count" data-result-count>{{ len $pages }} 篇内容</p></div>
+  <section class="vect-topic-articles" aria-labelledby="topic-articles-title"><h2 id="topic-articles-title">主题文章</h2>{{ range $pages.ByLastmod.Reverse }}<article id="article-{{ .File.UniqueID }}" data-topic-item data-filters="{{ delimit .Params.tags "|" | lower }}" data-search="{{ .Title }} {{ delimit .Params.tags " " }} {{ .Params.summary }}"><time>{{ .Lastmod.Format "2006-01-02" }}</time><h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3><p>{{ .Params.summary | default .Summary | plainify }}</p><div>{{ range .Params.tags }}<span>#{{ . }}</span>{{ end }}</div></article>{{ end }}<p class="vect-empty-state" data-empty hidden>当前板块没有匹配内容。</p></section>
+  <section class="vect-related-topics"><h2>继续探索</h2>{{ with .Params.related }}{{ range . }}{{ with site.GetPage (printf "/topics/%s" .) }}<a href="{{ .RelPermalink }}">{{ .Title }} →</a>{{ end }}{{ end }}{{ else }}<a href="{{ "paths/" | relURL }}">查看学习路径 →</a>{{ end }}</section>
+  {{- end }}
+  <p class="vect-empty-state" data-empty hidden>没有匹配的知识板块。</p>
 </article>
 {{- end }}

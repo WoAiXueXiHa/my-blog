@@ -1,58 +1,45 @@
-/* ===== VECT Mode Safeguards ===== */
-
-/* ── List background ── */
+/* ===== VECT mode safeguards and system-auto palette ===== */
 :root[data-theme="dark"] .list,
-[data-theme="light"] .list {
-  background: var(--vect-bg);
-}
+[data-theme="light"] .list { background: var(--vect-bg); }
 
-/* ── Code block backgrounds ── */
-:root[data-theme="dark"] .post-content .highlight:not(table) {
-  background: var(--vect-code-bg);
-}
-
-/* ── TOC background ── */
+:root[data-theme="dark"] .post-content .highlight:not(table) { background: var(--vect-code-bg); }
 :root[data-theme="dark"] details.toc,
-[data-theme="light"] details.toc {
-  background: var(--vect-surface);
-}
-
-/* ── Post tags background ── */
+[data-theme="light"] details.toc { background: var(--vect-surface); }
 :root[data-theme="dark"] .post-tags a,
-[data-theme="light"] .post-tags a {
-  background: var(--vect-surface);
-  border-color: var(--vect-border-subtle);
-}
+[data-theme="light"] .post-tags a { background: var(--vect-surface); border-color: var(--vect-border-subtle); }
+.footer a:hover { color: var(--vect-accent); }
 
-/* ── Footer link ── */
-.footer a:hover {
-  color: var(--vect-accent);
-}
-
-/* System light preference before PaperMod restores an explicit choice. */
+/* Auto is dark-first; this is the complete, intentionally separate day palette. */
 @media (prefers-color-scheme: light) {
   :root[data-theme="auto"] {
-    --vect-bg: #f2efe6;
-    --vect-surface: #f8f5ed;
-    --vect-surface-hover: #ece8de;
-    --vect-surface-raised: #f8f5ed;
-    --vect-text: #20231f;
-    --vect-text-secondary: #676a61;
-    --vect-text-muted: #85877f;
-    --vect-text-caption: #9a9b94;
-    --vect-border: #c9c3b6;
-    --vect-border-subtle: #d9d4c8;
-    --vect-accent: #405849;
-    --vect-accent-soft: rgba(64, 88, 73, 0.08);
-    --vect-accent-hover: #304638;
-    --vect-rust: #984a37;
-    --vect-code-bg: #e8e4da;
+    --vect-bg: #f3efe4;
+    --vect-surface: #faf7ee;
+    --vect-surface-hover: #eee8da;
+    --vect-surface-raised: #e9e2d3;
+    --vect-text: #242721;
+    --vect-text-secondary: #64685f;
+    --vect-text-muted: #777b72;
+    --vect-text-caption: #878a80;
+    --vect-border: #bcb5a6;
+    --vect-border-subtle: #d7d0c2;
+    --vect-rule-strong: #9d9688;
+    --vect-accent: #3f5d4b;
+    --vect-accent-soft: rgba(63, 93, 75, .085);
+    --vect-accent-hover: #2f493a;
+    --vect-rust: #9e4d38;
+    --vect-rust-soft: rgba(158, 77, 56, .09);
+    --vect-code-bg: #e6e0d4;
+    --vect-overlay: rgba(35, 36, 31, .42);
+    --vect-shadow-sm: 0 1px 0 rgba(60, 50, 35, .08);
+    --vect-shadow-md: 0 18px 50px rgba(60, 50, 35, .12);
     --theme: var(--vect-bg);
     --entry: var(--vect-surface);
     --primary: var(--vect-text);
     --secondary: var(--vect-text-secondary);
     --tertiary: var(--vect-border);
     --content: var(--vect-text);
+    --code-block-bg: var(--vect-code-bg);
+    --code-bg: var(--vect-surface);
     --border: var(--vect-border);
     color-scheme: light;
   }
