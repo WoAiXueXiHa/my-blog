@@ -11,9 +11,15 @@ for file in "${changed[@]}"; do
   [[ "$file" == content/posts/* ]] || { echo "检测到非文章变更，已停止: $file"; exit 1; }
 done
 
-NOW=$(date +%Y-%m-%dT%H:%M:%S+08:00)
+articles=()
 for file in "${changed[@]}"; do
-  [[ "$file" == */index.md && -f "$file" ]] || continue
+  [[ "$file" == */index.md && -f "$file" ]] && articles+=("$file")
+done
+(( ${#articles[@]} > 0 )) || { echo '没有检测到可发布的文章 index.md。'; exit 1; }
+python3 ./scripts/validate-utf8.py "${articles[@]}"
+
+NOW=$(date +%Y-%m-%dT%H:%M:%S+08:00)
+for file in "${articles[@]}"; do
   ./scripts/import-images.sh "$file"
   ./scripts/generate-summary.py "$file"
   ./scripts/enrich-article.py "$file"

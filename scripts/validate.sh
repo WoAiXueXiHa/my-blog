@@ -2,6 +2,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+python3 ./scripts/validate-utf8.py
+
 errors=0
 fail(){ printf '错误: %s\n' "$1" >&2; errors=$((errors+1)); }
 while IFS= read -r -d '' file; do
