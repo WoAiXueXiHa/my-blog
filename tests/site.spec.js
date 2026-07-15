@@ -57,7 +57,7 @@ test('global search shows suggestions and matches aliases and multiple terms', a
   await page.locator('[data-search-open]').first().click();
   await expect(page.locator('.vect-search-suggestions button').first()).toBeVisible();
   await page.locator('#vect-search-input').fill('字符串');
-  await expect(page.locator('.vect-search-results')).toContainText('Go 中的字符串');
+  await expect(page.locator('.vect-search-results a[href="/posts/go-string/"]')).toBeVisible();
   await page.locator('#vect-search-input').fill('Go 内存');
   await expect(page.locator('.vect-search-results [role="option"]')).not.toHaveCount(0);
 });
