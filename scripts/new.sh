@@ -15,7 +15,7 @@ if [[ ! "$SLUG" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
   exit 1
 fi
 
-KNOWN_TOPICS=("golang" "data-structures" "algorithms" "backend" "networks" "os" "ai" "reading" "devops" "frontend")
+KNOWN_TOPICS=("golang" "data-structures" "algorithms" "backend" "networks" "os" "ai" "mysql" "reading" "devops" "frontend")
 if [[ ! " ${KNOWN_TOPICS[*]} " =~ " $TOPIC " ]]; then
   echo "⚠️  主题 \"$TOPIC\" 不在已知列表中：${KNOWN_TOPICS[*]}"
   echo "  建议使用上述之一，或在 enrich-article.py 中添加映射"

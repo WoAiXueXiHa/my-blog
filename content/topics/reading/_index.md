@@ -4,7 +4,7 @@ slug: 'reading'
 nameEn: 'READING / REFLECTION'
 description: '技术之外，保留判断、感受与生活。'
 status: 'seedling'
-weight: 8
+weight: 9
 related: ['ai', 'golang']
 ---
 

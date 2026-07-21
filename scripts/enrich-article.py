@@ -14,6 +14,7 @@ CATEGORY_BY_TOPIC = {
     "networks": "计算机网络",
     "os": "操作系统",
     "ai": "AI 工程",
+    "mysql": "MySQL",
     "reading": "阅读与思考",
     "devops": "工程实践",
     "frontend": "前端工程",
@@ -64,6 +65,7 @@ PRIMARY_SERIES_BY_TOPIC = {
     "networks": "计算机网络基础",
     "os": "操作系统基础",
     "ai": "AI 工程实践",
+    "mysql": "MySQL 基础",
 }
 
 TAG_ALLOWLIST_BY_TOPIC = {
@@ -74,6 +76,7 @@ TAG_ALLOWLIST_BY_TOPIC = {
     "networks": {"网络", "安全", "分布式"},
     "os": {"内存", "并发", "编译"},
     "ai": {"AI", "LLM", "Transformer", "注意力机制"},
+    "mysql": {"数据库", "MySQL", "SQL", "DDL", "索引", "事务"},
     "devops": {"容器", "测试", "安全"},
 }
 
@@ -138,6 +141,19 @@ KEYWORDS = {
         "数据库", "database", "sql", "mysql", "postgresql", "mongodb", "redis",
         "索引", "index", "事务", "transaction", "acid", "orm", "连接池",
         "分库分表", "主从", "binlog", "wal", "b+树", "lsm",
+    ),
+    "MySQL": (
+        "mysql", "innodb", "binlog", "redo log", "undo log", "sql", "ddl",
+        "dml", "表", "数据库", "索引", "事务", "主键", "外键", "约束",
+        "explain", "慢查询", "主从复制", "隔离级别",
+    ),
+    "SQL": (
+        "sql", "select", "insert", "update", "delete", "join", "where",
+        "group by", "order by", "having", "limit", "ddl", "dml", "dcl",
+    ),
+    "DDL": (
+        "ddl", "create database", "create table", "alter table", "drop table",
+        "truncate", "建库", "建表", "改表", "删表", "字段类型", "约束",
     ),
     "分布式": (
         "分布式", "distributed", "raft", "paxos", "共识", "consensus", "一致性",
