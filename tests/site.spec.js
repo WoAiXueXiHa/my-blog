@@ -89,7 +89,9 @@ test('topic directory and local search work', async ({ page }) => {
   await page.goto('/topics/golang/');
   await expect(page.locator('.vect-topic-toc')).toBeVisible();
   await page.locator('[data-topic-search]').fill('字符串');
-  await expect(page.locator('[data-topic-item]:visible')).toContainText('字符串');
+  const searchResults = page.locator('[data-topic-item]:visible');
+  await expect(searchResults).not.toHaveCount(0);
+  await expect(searchResults.filter({ hasText: '字符串' })).not.toHaveCount(0);
 });
 
 test('about page renders the complete article and contacts', async ({ page }) => {
