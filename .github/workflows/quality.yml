@@ -18,7 +18,6 @@ permissions:
 
 jobs:
   build-and-browser:
-    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -34,10 +33,21 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - run: npm audit --omit=dev --audit-level=moderate
       - run: npx playwright install --with-deps chromium
       - run: ./scripts/validate.sh
       - run: npm run test:unit
       - run: npm run test:browser
+      - name: Upload Playwright diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-diagnostics-${{ github.run_id }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: warn
+          retention-days: 7
 
   production-smoke:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
@@ -56,7 +66,7 @@ jobs:
           while IFS= read -r file; do
             slug=$(basename "$(dirname "$file")")
             expected_paths+=("/posts/$slug/")
-          done < <(git diff --name-only HEAD^ HEAD -- 'content/posts/*/index.md')
+          done < <(git diff --name-only --diff-filter=AMR HEAD^ HEAD -- 'content/posts/*/index.md')
 
           for attempt in {1..20}; do
             state=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/status" \
