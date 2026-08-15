@@ -1,29 +1,28 @@
-name: Site quality
+name: Quality and production deploy
 
 concurrency:
-  group: site-quality-${{ github.ref }}
+  group: release-${{ github.ref }}
   cancel-in-progress: true
 
 on:
   push:
     branches: [master]
-  pull_request:
-  schedule:
-    - cron: '20 2 * * *'
   workflow_dispatch:
 
 permissions:
   contents: read
-  statuses: read
+  deployments: write
 
 jobs:
-  build-and-browser:
+  quality:
+    name: build-and-browser
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
         with:
           submodules: recursive
+          fetch-depth: 2
       - uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: '0.154.5'
@@ -33,8 +32,15 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: npm audit --omit=dev --audit-level=moderate
-      - run: npx playwright install --with-deps chromium
+      - name: Cache Playwright Chromium
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-chromium-1.61.1
+      - if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install chromium
+      - run: npx playwright install-deps chromium
       - run: ./scripts/validate.sh
       - run: npm run test:unit
       - run: npm run test:browser
@@ -49,39 +55,55 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
 
-  production-smoke:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+  deploy:
+    name: deploy-production
+    needs: quality
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 2
-      - name: Check production after Vercel deployment
-        if: github.event_name == 'push'
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Check Vercel configuration
+        run: |
+          [[ -n "$VERCEL_TOKEN" ]] || { echo 'Missing VERCEL_TOKEN'; exit 1; }
+          [[ -n "$VERCEL_ORG_ID" ]] || { echo 'Missing VERCEL_ORG_ID'; exit 1; }
+          [[ -n "$VERCEL_PROJECT_ID" ]] || { echo 'Missing VERCEL_PROJECT_ID'; exit 1; }
+      - run: npx --yes vercel@59.1.3 pull --yes --environment=production --token="$VERCEL_TOKEN"
+      - run: npx --yes vercel@59.1.3 build --prod --token="$VERCEL_TOKEN"
+      - name: Deploy production
+        id: deploy
+        run: |
+          url=$(npx --yes vercel@59.1.3 deploy --prebuilt --prod --archive=tgz --token="$VERCEL_TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "Production deployment: $url" >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify production
         env:
-          GH_TOKEN: ${{ github.token }}
+          BEFORE_SHA: ${{ github.event.before }}
         run: |
           expected_paths=()
-          while IFS= read -r file; do
-            slug=$(basename "$(dirname "$file")")
-            expected_paths+=("/posts/$slug/")
-          done < <(git diff --name-only --diff-filter=AMR HEAD^ HEAD -- 'content/posts/*/index.md')
-
-          for attempt in {1..20}; do
-            state=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/status" \
-              --jq '[.statuses[] | select(.context == "Vercel")][0].state // "pending"')
-            if [[ "$state" == "success" ]]; then
-              ./scripts/smoke-test.sh "https://code-learn-build-evolve.vercel.app" "${expected_paths[@]}" && exit 0
-            elif [[ "$state" == "failure" || "$state" == "error" ]]; then
-              echo "Vercel deployment failed for $GITHUB_SHA" >&2
-              exit 1
+          if [[ "${{ github.event_name }}" == "push" && -n "$BEFORE_SHA" && ! "$BEFORE_SHA" =~ ^0+$ ]]; then
+            while IFS= read -r file; do
+              slug=$(basename "$(dirname "$file")")
+              expected_paths+=("/posts/$slug/")
+            done < <(git diff --name-only --diff-filter=AMR "$BEFORE_SHA" "$GITHUB_SHA" -- 'content/posts/*/index.md')
+          fi
+          for attempt in {1..6}; do
+            if ./scripts/smoke-test.sh "https://code-learn-build-evolve.vercel.app" "${expected_paths[@]}"; then
+              exit 0
             fi
-            echo "Waiting for Vercel deployment ($attempt/20)..."
-            sleep 15
+            echo "Production smoke retry $attempt/6"
+            sleep 10
           done
-          echo "Timed out waiting for Vercel deployment: $GITHUB_SHA" >&2
           exit 1
-      - name: Check current production
-        if: github.event_name != 'push'
-        run: ./scripts/smoke-test.sh

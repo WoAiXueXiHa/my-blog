@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 seen: dict[tuple[str, int], Path] = {}
 errors: list[str] = []
+now = datetime.now(timezone.utc)
 
 for path in sorted((root / "content/posts").glob("*/index.md")):
     text = path.read_text(encoding="utf-8")
@@ -14,13 +16,35 @@ for path in sorted((root / "content/posts").glob("*/index.md")):
         errors.append(f"{path}: front matter 无效")
         continue
     front = match.group(1)
+
     def value(name: str) -> str:
         item = re.search(rf"(?m)^{name}:\s*(.*)$", front)
         return item.group(1).strip() if item else ""
-    for required in ("title", "topic", "summary", "categories", "tags"):
+
+    for required in ("title", "date", "lastmod", "draft", "topic", "summary", "categories", "tags"):
         raw = value(required).strip('"\' []')
         if not raw:
             errors.append(f"{path}: {required} 不能为空")
+
+    draft = value("draft").strip('"\'').lower()
+    if draft and draft != "false":
+        errors.append(f"{path}: draft 必须为 false 才能发布")
+
+    for name in ("date", "lastmod"):
+        raw = value(name).strip('"\'')
+        if not raw:
+            continue
+        try:
+            parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+        except ValueError:
+            errors.append(f"{path}: {name} 不是合法的 ISO 8601 时间: {raw}")
+            continue
+        if parsed.tzinfo is None:
+            errors.append(f"{path}: {name} 必须包含时区: {raw}")
+            continue
+        if parsed.astimezone(timezone.utc) > now:
+            errors.append(f"{path}: {name} 不能晚于当前时间: {raw}")
+
     series = re.findall(r'["\']([^"\']+)["\']', value("series"))
     order = value("seriesOrder")
     if series:

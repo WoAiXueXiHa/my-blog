@@ -30,7 +30,7 @@ escape_sed(){ printf '%s' "$1" | sed 's/[&|]/\\&/g'; }
 sed -e "s|__TITLE__|$(escape_sed "$TITLE")|g" \
     -e "s|__TOPIC__|$(escape_sed "$TOPIC")|g" \
     -e "s|__NOW__|$NOW|g" archetypes/posts.md > "$DIR/index.md"
-echo "已创建 $DIR/index.md；发布时会自动生成摘要、分类和标签。"
+echo "已创建 $DIR/index.md；请在发布前手动填写摘要、分类、标签、时间和 draft 状态。"
 
 FILE="$DIR/index.md"
 if [[ -n "${EDITOR:-}" ]]; then "$EDITOR" "$FILE"
