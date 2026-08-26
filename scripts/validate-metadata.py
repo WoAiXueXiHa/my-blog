@@ -26,6 +26,16 @@ for path in sorted((root / "content/posts").glob("*/index.md")):
         if not raw:
             errors.append(f"{path}: {required} 不能为空")
 
+    fence_count = len(re.findall(r"(?m)^```", text))
+    if fence_count % 2:
+        errors.append(f"{path}: Markdown 代码围栏数量不是偶数")
+
+    for name in ("title", "summary"):
+        raw = value(name)
+        quoted = re.match(r"""^(['"])(.*)\1$""", raw)
+        if quoted and quoted.group(2) != quoted.group(2).strip():
+            errors.append(f"{path}: {name} 首尾不能包含空白字符")
+
     draft = value("draft").strip('"\'').lower()
     if draft and draft != "false":
         errors.append(f"{path}: draft 必须为 false 才能发布")

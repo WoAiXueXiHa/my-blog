@@ -1,10 +1,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-{{- if hugo.IsProduction | or (eq site.Params.env "production") | and (ne .Params.robotsNoIndex true) }}
+{{- $isProduction := or hugo.IsProduction (eq site.Params.env "production") -}}
+{{- $noindex := or .Params.robotsNoIndex (in (slice "404" "taxonomy" "term") .Kind) (in (slice "search" "archives") .Layout) -}}
+{{- if and $isProduction (not $noindex) }}
 <meta name="robots" content="index, follow">
 {{- else }}
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="noindex, follow">
 {{- end }}
 
 {{- /* Title */}}
@@ -70,7 +72,7 @@
 {{- end }}
 
 {{- /* Search */}}
-{{- if (eq .Layout `search`) -}}
+{{- if and (eq .Layout `search`) .Params.paperModSearch -}}
 <link crossorigin="anonymous" rel="preload" as="fetch" href="../index.json">
 {{- $fastsearch := resources.Get "js/fastsearch.js" | js.Build (dict "params" (dict "fuseOpts" site.Params.fuseOpts)) | resources.Minify }}
 {{- $fusejs := resources.Get "js/fuse.basic.min.js" }}

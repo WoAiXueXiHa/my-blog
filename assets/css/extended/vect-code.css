@@ -42,16 +42,14 @@
 
 @media (max-width: 767px) {
   .post-content .highlight {
-    margin-inline: -20px;
-    border-radius: 0;
-    border-inline: 0;
+    margin-inline: 0;
+    border-radius: var(--vect-radius-sm);
   }
-  .post-content pre code { padding-inline: 20px; }
+  .post-content pre code { padding-inline: 1rem; }
 }
 
 @media (max-width: 380px) {
-  .post-content .highlight { margin-inline: -16px; }
-  .post-content pre code { padding-inline: 16px; }
+  .post-content pre code { padding-inline: 0.875rem; }
 }
 
 /* ── Copy button: always visible on touch, hover on desktop ── */

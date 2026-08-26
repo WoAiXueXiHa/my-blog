@@ -83,11 +83,6 @@ title = 'VECT / FIELD NOTES'
     name = '关于我'
     url = '/about/'
     weight = 4
-  [[menu.main]]
-    name = '搜索'
-    url = '/search/'
-    weight = 5
-
 [taxonomies]
   tag = 'tags'
   category = 'categories'

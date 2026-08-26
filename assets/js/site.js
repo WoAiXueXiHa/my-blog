@@ -3,7 +3,25 @@
   const meta = document.getElementById('vect-theme-color');
   const themeButton = document.getElementById('vect-theme');
   const themeIcon = themeButton?.querySelector('[data-theme-icon]');
-  const system = matchMedia('(prefers-color-scheme: dark)');
+  const safeStorage = {
+    get: key => {
+      try { return localStorage.getItem(key); } catch { return null; }
+    },
+    set: (key, value) => {
+      try { localStorage.setItem(key, value); } catch {}
+    },
+    remove: key => {
+      try { localStorage.removeItem(key); } catch {}
+    }
+  };
+  const safeMatchMedia = query => {
+    try {
+      return window.matchMedia?.(query) || { matches: false, addEventListener: () => {} };
+    } catch {
+      return { matches: false, addEventListener: () => {} };
+    }
+  };
+  const system = safeMatchMedia('(prefers-color-scheme: dark)');
   const modes = ['auto', 'light', 'dark'];
   const labels = { auto: '跟随系统', light: '浅色', dark: '深色' };
   const icons = { auto: '◐', light: '☀', dark: '☾' };
@@ -17,11 +35,11 @@
     themeButton?.setAttribute('aria-label', `颜色模式：${labels[mode]}，点击切换`);
     meta?.setAttribute('content', dark ? '#151a17' : '#f2efe6');
   };
-  let theme = localStorage.getItem('vect-theme') || 'auto';
+  let theme = safeStorage.get('vect-theme') || 'auto';
   applyTheme(theme);
   themeButton?.addEventListener('click', () => {
     theme = modes[(modes.indexOf(theme) + 1) % modes.length];
-    if (theme === 'auto') localStorage.removeItem('vect-theme'); else localStorage.setItem('vect-theme', theme);
+    if (theme === 'auto') safeStorage.remove('vect-theme'); else safeStorage.set('vect-theme', theme);
     applyTheme(theme);
   });
   system.addEventListener?.('change', () => theme === 'auto' && applyTheme(theme));
@@ -49,7 +67,38 @@
   const typeLabel = item => ({ article: '文章', topic: '知识板块', path: '学习路径', page: '页面' }[item.type] || '内容');
   const fieldLabel = key => ({ title: '标题', tags: '标签', keywords: '关键词', series: '系列', headings: '目录', categories: '分类', topic: '板块', summary: '摘要' }[key] || key);
   const setStatus = message => { if (status) status.textContent = message; };
+  const setNodeStatus = (node, message) => { if (node) node.textContent = message; };
   const clearNode = node => { while (node?.firstChild) node.removeChild(node.firstChild); };
+
+  const renderSearchResults = ({ query, resultsNode, suggestionsNode, statusNode, onSelect }) => {
+    if (!resultsNode || !searchData) return -1;
+    clearNode(resultsNode);
+    const normalized = VectSearch.normalize(query);
+    suggestionsNode?.toggleAttribute('hidden', Boolean(normalized));
+    if (!normalized) { setNodeStatus(statusNode, '输入关键词开始搜索'); return -1; }
+    const matches = VectSearch.search(searchData, query, { limit: 8 });
+    if (!matches.length) {
+      const empty = document.createElement('li');
+      empty.className = 'is-empty';
+      const strong = document.createElement('strong'); strong.textContent = '没有找到匹配内容';
+      const text = document.createElement('p'); text.textContent = '试试更短的关键词，或点击上方推荐词。';
+      empty.append(strong, text); resultsNode.append(empty); setNodeStatus(statusNode, '0 条结果'); return -1;
+    }
+    matches.forEach(({ item, matchedFields }, index) => {
+      const li = document.createElement('li');
+      li.setAttribute('role', 'option'); li.setAttribute('aria-selected', String(index === 0));
+      const link = document.createElement('a'); link.href = item.permalink;
+      const title = document.createElement('b'); title.textContent = item.title;
+      const summary = document.createElement('span'); summary.textContent = item.summary || item.excerpt || '';
+      const type = document.createElement('small');
+      const reasons = matchedFields.slice(0, 2).map(fieldLabel).join('、');
+      type.textContent = reasons ? `${typeLabel(item)} · 命中${reasons}` : typeLabel(item);
+      link.append(title, summary, type); li.append(link); resultsNode.append(li);
+    });
+    setNodeStatus(statusNode, `${matches.length} 条结果`);
+    onSelect?.(0);
+    return 0;
+  };
 
   const renderSuggestions = () => {
     if (!suggestions || !searchData) return;
@@ -67,32 +116,7 @@
   };
 
   const renderResults = query => {
-    if (!results || !searchData) return;
-    clearNode(results);
-    const normalized = VectSearch.normalize(query);
-    suggestions?.toggleAttribute('hidden', Boolean(normalized));
-    if (!normalized) { selected = -1; setStatus('输入关键词开始搜索'); return; }
-    const matches = VectSearch.search(searchData, query, { limit: 8 });
-    selected = matches.length ? 0 : -1;
-    if (!matches.length) {
-      const empty = document.createElement('li');
-      empty.className = 'is-empty';
-      const strong = document.createElement('strong'); strong.textContent = '没有找到匹配内容';
-      const text = document.createElement('p'); text.textContent = '试试更短的关键词，或点击上方推荐词。';
-      empty.append(strong, text); results.append(empty); setStatus('0 条结果'); return;
-    }
-    matches.forEach(({ item, matchedFields }, index) => {
-      const li = document.createElement('li');
-      li.setAttribute('role', 'option'); li.setAttribute('aria-selected', String(index === selected));
-      const link = document.createElement('a'); link.href = item.permalink;
-      const title = document.createElement('b'); title.textContent = item.title;
-      const summary = document.createElement('span'); summary.textContent = item.summary || item.excerpt || '';
-      const type = document.createElement('small');
-      const reasons = matchedFields.slice(0, 2).map(fieldLabel).join('、');
-      type.textContent = reasons ? `${typeLabel(item)} · 命中${reasons}` : typeLabel(item);
-      link.append(title, summary, type); li.append(link); results.append(li);
-    });
-    setStatus(`${matches.length} 条结果`);
+    selected = renderSearchResults({ query, resultsNode: results, suggestionsNode: suggestions, statusNode: status });
   };
 
   const loadSearch = async () => {
@@ -105,6 +129,39 @@
     renderSuggestions();
     setStatus(searchData.length ? '输入关键词开始搜索' : '搜索暂时不可用');
   };
+
+  document.querySelectorAll('[data-vect-search-page]').forEach(pageRoot => {
+    const pageInput = pageRoot.querySelector('[data-search-page-input]');
+    const pageResults = pageRoot.querySelector('[data-search-page-results]');
+    const pageSuggestions = pageRoot.querySelector('[data-search-page-suggestions]');
+    const pageStatus = pageRoot.querySelector('[data-search-page-status]');
+
+    const renderPageSuggestions = () => {
+      if (!pageSuggestions || !searchData) return;
+      clearNode(pageSuggestions);
+      const label = document.createElement('span');
+      label.textContent = '推荐关键词';
+      pageSuggestions.append(label);
+      VectSearch.topSuggestions(searchData).forEach(value => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = value;
+        button.addEventListener('click', () => {
+          pageInput.value = value;
+          renderSearchResults({ query: value, resultsNode: pageResults, suggestionsNode: pageSuggestions, statusNode: pageStatus });
+          pageInput.focus();
+        });
+        pageSuggestions.append(button);
+      });
+    };
+
+    loadSearch().then(() => {
+      renderPageSuggestions();
+      setNodeStatus(pageStatus, searchData.length ? '输入关键词开始搜索' : '搜索暂时不可用');
+      renderSearchResults({ query: pageInput?.value || '', resultsNode: pageResults, suggestionsNode: pageSuggestions, statusNode: pageStatus });
+    });
+    pageInput?.addEventListener('input', () => renderSearchResults({ query: pageInput.value, resultsNode: pageResults, suggestionsNode: pageSuggestions, statusNode: pageStatus }));
+  });
 
   const openSearch = async () => {
     if (!dialog) return;
@@ -182,4 +239,6 @@
     const distance = Math.max(1, article.offsetHeight - innerHeight);
     progress.style.transform = `scaleX(${Math.min(1, Math.max(0, (scrollY - start) / distance))})`;
   }, { passive: true });
+
+  root.dataset.vectReady = 'true';
 })();

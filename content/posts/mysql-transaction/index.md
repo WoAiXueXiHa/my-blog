@@ -1,5 +1,5 @@
 ---
-title: " MySQL 事务详解：从 tasks / outbox 一口气吃透 InnoDB 事务"
+title: "MySQL 事务详解：从 tasks / outbox 一口气吃透 InnoDB 事务"
 date: 2026-07-24T20:35:11+08:00
 lastmod: 2026-07-24T20:43:00+08:00
 draft: false

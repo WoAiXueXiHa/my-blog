@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reject non-UTF-8 article sources with a useful location before publishing."""
+"""Reject invalid article source encodings before publishing."""
 
 from __future__ import annotations
 
@@ -29,9 +29,12 @@ def main() -> int:
                 file=sys.stderr,
             )
             failed = True
+        if b"\r\n" in data:
+            print(f"错误: {path} 使用 CRLF 行尾，请改为 LF 后再发布。", file=sys.stderr)
+            failed = True
 
     if failed:
-        print("请先在编辑器中以 UTF-8 重新保存文章；发布流程尚未修改文件。", file=sys.stderr)
+        print("请先在编辑器中以 UTF-8 / LF 重新保存文章；发布流程尚未修改文件。", file=sys.stderr)
         return 1
     return 0
 

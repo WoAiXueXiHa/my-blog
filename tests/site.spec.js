@@ -2,18 +2,45 @@ const { test, expect } = require('@playwright/test');
 
 const ARTICLE_FIXTURE = '/posts/go-slice/';
 const TABLE_FIXTURE = '/posts/mysql-transaction/';
+const CRUD_FIXTURE = '/posts/mysql-crud/';
 
 const gotoHealthy = async (page, path) => {
-  const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
-  expect(response, `No response received for ${path}`).not.toBeNull();
-  expect(response.ok(), `${path} returned HTTP ${response.status()}`).toBe(true);
+  let lastError;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const response = await page.goto(path, { waitUntil: 'domcontentloaded', timeout: 10_000 });
+      expect(response, `No response received for ${path}`).not.toBeNull();
+      expect(response.ok(), `${path} returned HTTP ${response.status()}`).toBe(true);
+      return;
+    } catch (error) {
+      lastError = error;
+      if (!/ERR_CONNECTION_RESET|ERR_ABORTED|Timeout/.test(String(error)) || attempt === 2) break;
+      await page.waitForTimeout(300);
+    }
+  }
+  throw lastError;
+};
+
+const collectConsoleErrors = page => {
+  const errors = [];
+  page.on('console', message => {
+    if (message.type() !== 'error') return;
+    const text = message.text();
+    if (text.includes('Failed to load resource: net::ERR_CONNECTION_RESET')) return;
+    errors.push(text);
+  });
+  page.on('pageerror', error => errors.push(error.message));
+  return errors;
+};
+
+const waitForSiteReady = async page => {
+  await page.locator('html[data-vect-ready="true"]').waitFor();
 };
 
 for (const viewport of [{ width: 390, height: 844 }, { width: 768, height: 900 }, { width: 1440, height: 900 }]) {
   test(`article renders at ${viewport.width}px`, async ({ page }) => {
     await page.setViewportSize(viewport);
-    const errors = [];
-    page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+    const errors = collectConsoleErrors(page);
     await gotoHealthy(page, ARTICLE_FIXTURE);
     await expect(page.locator('.post-content .katex')).not.toHaveCount(0);
     await expect(page.locator('.toc-nav')).not.toContainText('$O(1)$');
@@ -61,8 +88,18 @@ test('markdown tables use a complete grid without styling code line tables', asy
   });
 });
 
+test('mysql crud article renders group by code fence as SQL', async ({ page }) => {
+  await gotoHealthy(page, CRUD_FIXTURE);
+  const content = page.locator('.post-content');
+  await expect(content).not.toContainText(String.fromCharCode(96).repeat(3));
+  const groupByBlock = page.locator('.post-content pre code.language-sql').filter({ hasText: 'group by class_name' });
+  await expect(groupByBlock).toHaveCount(1);
+  await expect(groupByBlock).toContainText('having avg(score) > 80');
+});
+
 test('global search shows suggestions and matches aliases and multiple terms', async ({ page }) => {
   await gotoHealthy(page, '/');
+  await waitForSiteReady(page);
   await page.locator('[data-search-open]').first().click();
   await expect(page.locator('.vect-search-suggestions button').first()).toBeVisible();
   await page.locator('#vect-search-input').fill('slice');
@@ -71,11 +108,41 @@ test('global search shows suggestions and matches aliases and multiple terms', a
   await expect(page.locator('.vect-search-results [role="option"]')).not.toHaveCount(0);
 });
 
+test('search page uses the custom search experience', async ({ page }) => {
+  await gotoHealthy(page, '/search/');
+  await waitForSiteReady(page);
+  await expect(page.locator('[data-vect-search-page]')).toBeVisible();
+  await expect(page.locator('#searchbox')).toHaveCount(0);
+  await expect(page.locator('[data-search-page-suggestions] button').first()).toBeVisible();
+  await page.locator('[data-search-page-input]').fill('slice');
+  await expect(page.locator(`[data-search-page-results] a[href="${ARTICLE_FIXTURE}"]`)).toBeVisible();
+});
+
 test('search treats hostile input as text', async ({ page }) => {
   await gotoHealthy(page, '/');
+  await waitForSiteReady(page);
   await page.locator('[data-search-open]').first().click();
   await page.locator('#vect-search-input').fill('<img src=x onerror=alert(1)>');
   await expect(page.locator('.vect-search-results img')).toHaveCount(0);
+});
+
+test('navigation and search tolerate blocked localStorage', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window, 'localStorage', {
+      configurable: true,
+      get() {
+        throw new DOMException('blocked', 'SecurityError');
+      },
+    });
+  });
+  const errors = collectConsoleErrors(page);
+  await gotoHealthy(page, ARTICLE_FIXTURE);
+  await waitForSiteReady(page);
+  await page.locator('[data-search-open]').first().click();
+  await expect(page.locator('.vect-search-suggestions button').first()).toBeVisible();
+  await page.locator('#vect-search-input').fill('slice');
+  await expect(page.locator(`.vect-search-results a[href="${ARTICLE_FIXTURE}"]`)).toBeVisible();
+  expect(errors).toEqual([]);
 });
 
 test('mermaid diagrams render instead of exposing source code', async ({ page }) => {

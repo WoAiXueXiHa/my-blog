@@ -11,6 +11,14 @@
 
   // ── Toggle 收起/展开 ──
   const STORAGE_KEY = 'toc-sidebar-hidden';
+  const safeStorage = {
+    get: key => {
+      try { return localStorage.getItem(key); } catch { return null; }
+    },
+    set: (key, value) => {
+      try { localStorage.setItem(key, value); } catch {}
+    }
+  };
 
   function applyHidden(hidden) {
     sidebar.setAttribute('aria-hidden', hidden);
@@ -32,7 +40,7 @@
   }
 
   // 恢复上次状态
-  const saved = localStorage.getItem(STORAGE_KEY);
+  const saved = safeStorage.get(STORAGE_KEY);
   if (window.innerWidth >= 640 && saved === 'true') applyHidden(true);
 
   toggleBtn.addEventListener('click', () => {
@@ -43,7 +51,7 @@
     const hidden = sidebar.getAttribute('aria-hidden') === 'true';
     const next = !hidden;
     applyHidden(next);
-    localStorage.setItem(STORAGE_KEY, next);
+    safeStorage.set(STORAGE_KEY, next);
   });
 
   drawerTrigger?.addEventListener('click', () => setDrawer(true));
@@ -54,7 +62,7 @@
   window.addEventListener('resize', () => {
     if (window.innerWidth >= 640) {
       if (sidebar.classList.contains('is-open')) setDrawer(false, false);
-      applyHidden(localStorage.getItem(STORAGE_KEY) === 'true');
+      applyHidden(safeStorage.get(STORAGE_KEY) === 'true');
     }
   });
 

@@ -426,10 +426,11 @@ select count(math) as math_count
 from exam;
 ```
 
-`count(*)` 统计结果行数，`coung avg(score) > 85;
-```
+`count(*)` 统计结果行数，`count(math)` 统计 `math` 非空的行数。
 
-查询结果按平均分降序：
+### 2.6 group by 分组
+
+按班级统计平均分，筛选平均分大于 80 的班级，并按平均分降序展示：
 
 ```sql
 select class_name, avg(score) as avg_score

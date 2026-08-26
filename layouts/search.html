@@ -1,0 +1,21 @@
+{{- define "main" }}
+
+<header class="vect-list-header">
+  <span class="vect-page-kicker">SEARCH</span>
+  <h1>{{ .Title }}</h1>
+  {{- with .Params.summary }}
+  <p>{{ . }}</p>
+  {{- end }}
+</header>
+
+<section class="vect-search-page" data-vect-search-page>
+  <label for="vect-search-page-input">
+    <span>关键词</span>
+    <input id="vect-search-page-input" type="search" placeholder="{{ .Params.placeholder | default "输入关键词" }}" autocomplete="off" spellcheck="false" data-search-page-input>
+  </label>
+  <div class="vect-search-suggestions" aria-label="推荐关键词" data-search-page-suggestions></div>
+  <p class="vect-search-status" aria-live="polite" data-search-page-status>输入关键词开始搜索</p>
+  <ul class="vect-search-results" role="listbox" aria-label="搜索结果" data-search-page-results></ul>
+</section>
+
+{{- end }}{{/* end main */}}

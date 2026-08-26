@@ -39,6 +39,9 @@ kbd,
 samp {
   font-family: var(--vect-font-mono);
   font-size: var(--vect-font-code-size);
+  /* Disable programming ligatures so operators render exactly as typed. */
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
 }
 
 /* ── Inline code ── */
