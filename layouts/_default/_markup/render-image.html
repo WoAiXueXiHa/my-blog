@@ -3,7 +3,7 @@
 {{- with $resource -}}{{- $src = .RelPermalink -}}{{- end -}}
 {{- $small := false -}}
 {{- $large := false -}}
-{{- if and $resource (in (slice "jpeg" "png") $resource.MediaType.SubType) -}}
+{{- if and $resource (eq $resource.MediaType.SubType "jpeg") -}}
   {{- $small = $resource.Fit "720x7200 webp q82" -}}
   {{- $large = $resource.Fit "1200x12000 webp q84" -}}
 {{- end -}}

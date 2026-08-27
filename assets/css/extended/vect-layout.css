@@ -62,9 +62,25 @@ nav ul,
 
 /* ── Images: rounded, contained ── */
 .post-content img {
+  display: block;
   border-radius: 6px;
   max-width: 100%;
   height: auto;
+}
+
+.vect-article-page .post-content img:not(.in-text) {
+  position: relative;
+  left: 50%;
+  width: auto;
+  max-width: min(calc(100vw - 48px), var(--vect-width-wide));
+  margin: 1.75rem 0;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 760px) {
+  .vect-article-page .post-content img:not(.in-text) {
+    max-width: 100%;
+  }
 }
 
 /* ── Nav menu reset ── */
