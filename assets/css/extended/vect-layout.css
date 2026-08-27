@@ -70,12 +70,9 @@ nav ul,
 
 @media (min-width: 900px) {
   .vect-article-page .post-content img:not(.in-text) {
-    position: relative;
-    left: 50%;
     width: auto;
     max-width: min(calc(100vw - 48px), var(--vect-width-wide));
     margin: 1.75rem 0;
-    transform: translateX(-50%);
   }
 }
 

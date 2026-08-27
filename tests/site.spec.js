@@ -61,6 +61,14 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 768, height: 900 }
       expect(tocLayout.position).toBe('fixed');
       expect(tocLayout.trigger).toBe('flex');
     }
+    if (viewport.width >= 900) {
+      const imageAndToc = await page.locator('.post-content img').first().evaluate(image => {
+        const imageBox = image.getBoundingClientRect();
+        const tocBox = document.querySelector('.toc-sidebar').getBoundingClientRect();
+        return { imageLeft: imageBox.left, tocRight: tocBox.right };
+      });
+      expect(imageAndToc.imageLeft).toBeGreaterThanOrEqual(imageAndToc.tocRight);
+    }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
     expect(errors).toEqual([]);
   });
