@@ -5,6 +5,7 @@ BASE_URL="${1:-https://code-learn-build-evolve.vercel.app}"
 BASE_URL="${BASE_URL%/}"
 if (( $# > 0 )); then shift; fi
 EXPECTED_PATHS=("$@")
+EXPECTED_SHA="${EXPECTED_SHA:-}"
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
@@ -27,6 +28,17 @@ for path in / /posts/; do
   fetch_path "$path" "$tmp/body"
 done
 fetch_path /index.json "$tmp/index.json"
+
+if [[ -n "$EXPECTED_SHA" ]]; then
+  fetch_path /__version.json "$tmp/version.json"
+  python3 - "$tmp/version.json" "$EXPECTED_SHA" <<'PY'
+import json, sys
+
+actual = json.load(open(sys.argv[1], encoding="utf-8")).get("sha")
+expected = sys.argv[2]
+assert actual == expected, f"deployment SHA mismatch: expected {expected}, got {actual}"
+PY
+fi
 
 python3 - "$tmp/index.json" "${EXPECTED_PATHS[@]}" > "$tmp/article-paths" <<'PY'
 import json, sys
