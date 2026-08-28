@@ -1,8 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-const ARTICLE_FIXTURE = '/posts/go-slice/';
-const TABLE_FIXTURE = '/posts/mysql-transaction/';
-const CRUD_FIXTURE = '/posts/mysql-crud/';
+const ARTICLE_FIXTURE = '/posts/ui-test-fixture/';
 
 const gotoHealthy = async (page, path) => {
   let lastError;
@@ -35,6 +33,10 @@ const collectConsoleErrors = page => {
 
 const waitForSiteReady = async page => {
   await page.locator('html[data-vect-ready="true"]').waitFor();
+};
+
+const waitForGlobalSearchReady = async page => {
+  await expect(page.locator('.vect-search-status')).toHaveText('输入关键词开始搜索', { timeout: 15_000 });
 };
 
 for (const viewport of [{ width: 390, height: 844 }, { width: 768, height: 900 }, { width: 1440, height: 900 }]) {
@@ -75,7 +77,7 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 768, height: 900 }
 }
 
 test('markdown tables use a complete grid without styling code line tables', async ({ page }) => {
-  await gotoHealthy(page, TABLE_FIXTURE);
+  await gotoHealthy(page, ARTICLE_FIXTURE);
   const borders = await page.locator('.post-content table:not(.lntable):has(th)').first().evaluate(table => {
     const header = table.querySelector('th');
     const cell = table.querySelector('td');
@@ -96,8 +98,8 @@ test('markdown tables use a complete grid without styling code line tables', asy
   });
 });
 
-test('mysql crud article renders group by code fence as SQL', async ({ page }) => {
-  await gotoHealthy(page, CRUD_FIXTURE);
+test('markdown code fence renders as highlighted SQL', async ({ page }) => {
+  await gotoHealthy(page, ARTICLE_FIXTURE);
   const content = page.locator('.post-content');
   await expect(content).not.toContainText(String.fromCharCode(96).repeat(3));
   const groupByBlock = page.locator('.post-content pre code.language-sql').filter({ hasText: 'group by class_name' });
@@ -109,6 +111,7 @@ test('global search shows suggestions and matches aliases and multiple terms', a
   await gotoHealthy(page, '/');
   await waitForSiteReady(page);
   await page.locator('[data-search-open]').first().click();
+  await waitForGlobalSearchReady(page);
   await expect(page.locator('.vect-search-suggestions button').first()).toBeVisible();
   await page.locator('#vect-search-input').fill('slice');
   await expect(page.locator(`.vect-search-results a[href="${ARTICLE_FIXTURE}"]`)).toBeVisible();
@@ -119,6 +122,7 @@ test('global search shows suggestions and matches aliases and multiple terms', a
 test('search page uses the custom search experience', async ({ page }) => {
   await gotoHealthy(page, '/search/');
   await waitForSiteReady(page);
+  await expect(page.locator('[data-search-page-status]')).toHaveText('输入关键词开始搜索', { timeout: 15_000 });
   await expect(page.locator('[data-vect-search-page]')).toBeVisible();
   await expect(page.locator('#searchbox')).toHaveCount(0);
   await expect(page.locator('[data-search-page-suggestions] button').first()).toBeVisible();
@@ -147,6 +151,7 @@ test('navigation and search tolerate blocked localStorage', async ({ page }) => 
   await gotoHealthy(page, ARTICLE_FIXTURE);
   await waitForSiteReady(page);
   await page.locator('[data-search-open]').first().click();
+  await waitForGlobalSearchReady(page);
   await expect(page.locator('.vect-search-suggestions button').first()).toBeVisible();
   await page.locator('#vect-search-input').fill('slice');
   await expect(page.locator(`.vect-search-results a[href="${ARTICLE_FIXTURE}"]`)).toBeVisible();
@@ -154,15 +159,13 @@ test('navigation and search tolerate blocked localStorage', async ({ page }) => 
 });
 
 test('mermaid diagrams render instead of exposing source code', async ({ page }) => {
-  await gotoHealthy(page, '/posts/heap/');
-  await expect(page.locator('.vect-mermaid svg')).toHaveCount(2);
+  await gotoHealthy(page, ARTICLE_FIXTURE);
+  await expect(page.locator('.vect-mermaid')).toHaveCount(1, { timeout: 15_000 });
+  await expect(page.locator('.vect-mermaid svg')).toHaveCount(1, { timeout: 15_000 });
   await expect(page.locator('code.language-mermaid')).toHaveCount(0);
-  for (const slug of ['heap', 'linked-list']) {
-    await gotoHealthy(page, `/posts/${slug}/`);
-    const taxonomy = await page.locator('.vect-post-taxonomy span').allTextContents();
-    const normalized = taxonomy.map(label => label.replace(/^#/, '').trim().toLocaleLowerCase());
-    expect(new Set(normalized).size).toBe(normalized.length);
-  }
+  const taxonomy = await page.locator('.vect-post-taxonomy span').allTextContents();
+  const normalized = taxonomy.map(label => label.replace(/^#/, '').trim().toLocaleLowerCase());
+  expect(new Set(normalized).size).toBe(normalized.length);
 });
 
 test('topic directory and local search work', async ({ page }) => {

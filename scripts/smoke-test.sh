@@ -6,6 +6,11 @@ BASE_URL="${BASE_URL%/}"
 if (( $# > 0 )); then shift; fi
 EXPECTED_PATHS=("$@")
 EXPECTED_SHA="${EXPECTED_SHA:-}"
+SMOKE_SCOPE="${SMOKE_SCOPE:-changed}"
+[[ "$SMOKE_SCOPE" == "changed" || "$SMOKE_SCOPE" == "all" ]] || {
+  echo "SMOKE_SCOPE 只能是 changed 或 all: $SMOKE_SCOPE" >&2
+  exit 1
+}
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
@@ -40,9 +45,11 @@ assert actual == expected, f"deployment SHA mismatch: expected {expected}, got {
 PY
 fi
 
-python3 - "$tmp/index.json" "${EXPECTED_PATHS[@]}" > "$tmp/article-paths" <<'PY'
+python3 - "$tmp/index.json" "$SMOKE_SCOPE" "${EXPECTED_PATHS[@]}" > "$tmp/article-paths" <<'PY'
 import json, sys
 items = json.load(open(sys.argv[1], encoding="utf-8"))
+scope = sys.argv[2]
+expected_paths = sys.argv[3:]
 assert items and all("content" not in item for item in items), "搜索索引不应包含正文"
 required = {"title", "permalink", "type", "summary", "headings", "tags", "lastmod"}
 assert all(required <= set(item) for item in items), "search index fields are incomplete"
@@ -53,9 +60,10 @@ permalinks = {
     if item.get("type") == "article" and item.get("permalink")
 }
 assert permalinks, "search index has no articles"
-missing = [path for path in sys.argv[2:] if path not in permalinks]
+missing = [path for path in expected_paths if path not in permalinks]
 assert not missing, f"new articles missing from search index: {missing}"
-print("\n".join(sorted(permalinks)))
+paths = permalinks if scope == "all" else set(expected_paths)
+print("\n".join(sorted(paths)))
 PY
 mapfile -t ARTICLE_PATHS < "$tmp/article-paths"
 for path in "${ARTICLE_PATHS[@]}"; do

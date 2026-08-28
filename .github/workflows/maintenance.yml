@@ -16,7 +16,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
-      - run: ./scripts/smoke-test.sh
+      - run: SMOKE_SCOPE=all ./scripts/smoke-test.sh
 
   dependency-audit:
     if: github.event_name == 'workflow_dispatch' || github.event.schedule == '40 2 * * 0'
