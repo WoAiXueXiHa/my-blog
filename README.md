@@ -8,7 +8,7 @@
 ./scripts/new.sh "文章标题" golang go-example
 ```
 
-编辑 `content/posts/go-example/index.md`，正文从 `##` 开始，页面标题由 front matter 自动生成。发布前需要手动填写摘要、分类、标签、时间，将 `draft` 改为 `false`。文章中的 Gitee 图床图片会在发布时自动下载到文章目录并改为相对路径；其他外部图片仍会被校验拦截。
+编辑 `content/posts/go-example/index.md`，正文从 `##` 开始，页面标题由 front matter 自动生成。发布前需要手动填写摘要、分类、标签、时间，将 `draft` 改为 `false`。文章中的 Gitee 图床图片会先下载到临时文件，验证图片有效后再原子迁移到文章目录并改为相对路径；其他外部图片仍会被校验拦截。
 
 完成后只需运行：
 
@@ -39,6 +39,8 @@ hugo server
 ```
 
 `check.sh` 是本地发布与 GitHub Actions 共用的完整质量门禁。首次运行前需要执行 `npm ci`，并确保 Playwright Chromium 已安装。
+
+文章资源限制为单文件不超过 8 MiB、单篇文章合计不超过 40 MiB；全站文章资源超过 150 MiB 时会给出容量告警。
 
 GitHub Actions 监听 `master`。质量检查通过后，才会使用 Vercel CLI 构建并部署生产环境；检查失败时，线上继续保留上一成功版本。
 

@@ -8,6 +8,12 @@ cd "$(dirname "$0")/.."
 }
 
 total=0
+TEMP_FILE=""
+cleanup() {
+  [[ -z "$TEMP_FILE" ]] || rm -f -- "$TEMP_FILE"
+}
+trap cleanup EXIT INT TERM
+
 for FILE in "$@"; do
   [[ -f "$FILE" ]] || { echo "文章不存在: $FILE" >&2; exit 1; }
   DIR=$(dirname "$FILE")
@@ -18,6 +24,8 @@ for FILE in "$@"; do
       | sort -rn \
       | cut -d' ' -f2- || true
   )
+  unset target_sources
+  declare -A target_sources=()
   for url in "${urls[@]}"; do
     clean_url=${url%%\?*}
     name=$(basename "$clean_url")
@@ -26,11 +34,30 @@ for FILE in "$@"; do
       exit 1
     }
     target="$DIR/$name"
-    if [[ ! -f "$target" ]]; then
+    if [[ -n "${target_sources[$target]+set}" && "${target_sources[$target]}" != "$clean_url" ]]; then
+      echo "多个图片地址使用了同一文件名: $name" >&2
+      exit 1
+    fi
+    target_sources[$target]="$clean_url"
+  done
+
+  for url in "${urls[@]}"; do
+    clean_url=${url%%\?*}
+    name=$(basename "$clean_url")
+    target="$DIR/$name"
+    valid=false
+    if [[ -f "$target" ]] && python3 ./scripts/image_validation.py "$target"; then
+      valid=true
+    fi
+    if [[ "$valid" != true ]]; then
       echo "下载图片: $FILE -> $name"
+      TEMP_FILE=$(mktemp "$DIR/.${name}.download.XXXXXX")
       curl --fail --location --silent --show-error --retry 3 \
         --connect-timeout 10 --max-time 30 \
-        "$url" --output "$target"
+        "$url" --output "$TEMP_FILE"
+      python3 ./scripts/image_validation.py "$TEMP_FILE" "$name"
+      mv -- "$TEMP_FILE" "$target"
+      TEMP_FILE=""
     fi
     python3 - "$FILE" "$url" "$name" <<'PY'
 from pathlib import Path
