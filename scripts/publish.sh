@@ -47,7 +47,7 @@ done
 
 python3 ./scripts/validate-utf8.py "${articles[@]}"
 ./scripts/import-images.sh "${articles[@]}"
-./scripts/validate.sh
+./scripts/check.sh
 
 git add -- content/posts
 git diff --cached --quiet && {

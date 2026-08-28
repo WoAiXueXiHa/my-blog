@@ -20,7 +20,7 @@
 
 1. 确认当前位于已同步的 `master`，且只有 `content/posts/` 发生变化。
 2. 自动迁移文章中的 Gitee 外链图片。
-3. 校验 UTF-8、元数据、草稿状态、发布时间、图片、Hugo 构建和链接。
+3. 校验 UTF-8、元数据、草稿状态、发布时间、图片、Hugo 构建、链接、单元测试和浏览器回归。
 4. 执行 `git add`、`git commit`、`git push origin master`。
 
 脚本不会生成摘要、补标签、更新时间或取消草稿，也不会创建分支、Pull Request 或执行 merge。发现任何站点配置或主题改动时会立即停止，避免误提交。
@@ -34,9 +34,11 @@
 ## 本地检查
 
 ```bash
-./scripts/validate.sh
+./scripts/check.sh
 hugo server
 ```
+
+`check.sh` 是本地发布与 GitHub Actions 共用的完整质量门禁。首次运行前需要执行 `npm ci`，并确保 Playwright Chromium 已安装。
 
 GitHub Actions 监听 `master`。质量检查通过后，才会使用 Vercel CLI 构建并部署生产环境；检查失败时，线上继续保留上一成功版本。
 

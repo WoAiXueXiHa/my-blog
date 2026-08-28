@@ -41,9 +41,8 @@ jobs:
       - if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install chromium
       - run: npx playwright install-deps chromium
-      - run: ./scripts/validate.sh
-      - run: npm run test:unit
-      - run: npm run test:browser
+      - name: Run complete quality checks
+        run: ./scripts/check.sh
       - name: Upload Playwright diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
