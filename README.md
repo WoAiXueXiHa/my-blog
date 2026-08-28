@@ -8,7 +8,7 @@
 ./scripts/new.sh "文章标题" golang go-example
 ```
 
-编辑 `content/posts/go-example/index.md`，正文从 `##` 开始，页面标题由 front matter 自动生成。发布前需要手动填写摘要、分类、标签、时间，将 `draft` 改为 `false`，并确保图片均为文章目录内的相对路径资源。
+编辑 `content/posts/go-example/index.md`，正文从 `##` 开始，页面标题由 front matter 自动生成。发布前需要手动填写摘要、分类、标签、时间，将 `draft` 改为 `false`。文章中的 Gitee 图床图片会在发布时自动下载到文章目录并改为相对路径；其他外部图片仍会被校验拦截。
 
 完成后只需运行：
 
@@ -19,10 +19,11 @@
 发布脚本只完成以下工作：
 
 1. 确认当前位于已同步的 `master`，且只有 `content/posts/` 发生变化。
-2. 校验 UTF-8、元数据、草稿状态、发布时间、图片、Hugo 构建和链接。
-3. 执行 `git add`、`git commit`、`git push origin master`。
+2. 自动迁移文章中的 Gitee 外链图片。
+3. 校验 UTF-8、元数据、草稿状态、发布时间、图片、Hugo 构建和链接。
+4. 执行 `git add`、`git commit`、`git push origin master`。
 
-脚本不会生成摘要、补标签、更新时间、取消草稿或迁移图片，也不会创建分支、Pull Request 或执行 merge。发现任何站点配置或主题改动时会立即停止，避免误提交。
+脚本不会生成摘要、补标签、更新时间或取消草稿，也不会创建分支、Pull Request 或执行 merge。发现任何站点配置或主题改动时会立即停止，避免误提交。
 
 如需单独检查文章，可运行：
 
