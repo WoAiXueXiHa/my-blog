@@ -47,6 +47,9 @@ done
 
 python3 ./scripts/validate-utf8.py "${articles[@]}"
 ./scripts/import-images.sh "${articles[@]}"
+for article in "${articles[@]}"; do
+  python3 ./scripts/enrich-article.py "$article"
+done
 ./scripts/check.sh
 
 git add -- content/posts

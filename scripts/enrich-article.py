@@ -238,13 +238,22 @@ def plain_paragraphs(body: str) -> list[str]:
     body = re.sub(r"!\[[^]]*]\([^)]*\)", "", body)
     paragraphs: list[str] = []
     for block in re.split(r"\n\s*\n", body):
-        text = " ".join(line.strip() for line in block.splitlines() if not re.match(r"^\s*(#{1,6}|[-*+] |\d+[.)] |>|\||---)", line))
+        text = " ".join(
+            line.strip()
+            for line in block.splitlines()
+            if not re.match(r"^\s*(#{1,6}|[-*+] |\d+[.)] |>|\||---)", line)
+            and not re.match(r"^\s*https?://\S+\s*$", line)
+        )
         text = re.sub(r"[`*_~]", "", text)
         text = re.sub(r"\[([^]]+)]\([^)]*\)", r"\1", text)
         text = re.sub(r"\s+", " ", text).strip()
         if len(text) >= 12:
             paragraphs.append(text)
     return paragraphs
+
+
+def weak_summary(summary: str) -> bool:
+    return summary.startswith(("http://", "https://")) or len(summary) < 20
 
 
 def yaml_list(value: str) -> list[str]:
@@ -342,7 +351,8 @@ def main() -> int:
     title = field(front, "title")
     paragraphs = plain_paragraphs(body)
 
-    if not field(front, "summary"):
+    current_summary = field(front, "summary")
+    if not current_summary or weak_summary(current_summary):
         summary = " ".join(paragraphs[:2])
         if len(summary) > 150:
             summary = summary[:147].rstrip("，。；：,. ") + "…"
