@@ -8,6 +8,7 @@
   const links = [...nav.querySelectorAll('a')];
   const drawerTrigger = document.querySelector('.toc-drawer-trigger');
   const backdrop = document.querySelector('.toc-backdrop');
+  const mobileQuery = window.matchMedia('(max-width: 639px)');
 
   // ── Toggle 收起/展开 ──
   const STORAGE_KEY = 'toc-sidebar-hidden';
@@ -21,7 +22,9 @@
   };
 
   function applyHidden(hidden) {
-    sidebar.setAttribute('aria-hidden', hidden);
+    sidebar.dataset.collapsed = String(hidden);
+    nav.setAttribute('aria-hidden', String(hidden));
+    nav.inert = hidden;
     toggleBtn.setAttribute('aria-expanded', !hidden);
     toggleBtn.setAttribute('aria-label', hidden ? '展开目录' : '收起目录');
   }
@@ -31,8 +34,14 @@
     document.body.classList.toggle('toc-drawer-open', open);
     drawerTrigger?.setAttribute('aria-expanded', String(open));
     if (backdrop) backdrop.hidden = !open;
+    if (mobileQuery.matches) {
+      delete sidebar.dataset.collapsed;
+      nav.removeAttribute('aria-hidden');
+      nav.inert = false;
+      sidebar.setAttribute('aria-hidden', String(!open));
+      sidebar.inert = !open;
+    }
     if (open) {
-      sidebar.setAttribute('aria-hidden', 'false');
       toggleBtn.focus();
     } else if (restoreFocus) {
       drawerTrigger?.focus();
@@ -41,10 +50,11 @@
 
   // 恢复上次状态
   const saved = safeStorage.get(STORAGE_KEY);
-  if (window.innerWidth >= 640 && saved === 'true') applyHidden(true);
+  if (mobileQuery.matches) setDrawer(false, false);
+  else if (saved === 'true') applyHidden(true);
 
   toggleBtn.addEventListener('click', () => {
-    if (window.innerWidth < 640) {
+    if (mobileQuery.matches) {
       setDrawer(false);
       return;
     }
@@ -58,12 +68,28 @@
   backdrop?.addEventListener('click', () => setDrawer(false));
   document.addEventListener('keydown', event => {
     if (event.key === 'Escape' && sidebar.classList.contains('is-open')) setDrawer(false);
-  });
-  window.addEventListener('resize', () => {
-    if (window.innerWidth >= 640) {
-      if (sidebar.classList.contains('is-open')) setDrawer(false, false);
-      applyHidden(safeStorage.get(STORAGE_KEY) === 'true');
+    if (event.key !== 'Tab' || !mobileQuery.matches || !sidebar.classList.contains('is-open')) return;
+    const focusable = [...sidebar.querySelectorAll('a[href], button:not([disabled])')];
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
     }
+  });
+  mobileQuery.addEventListener('change', event => {
+    if (!event.matches) {
+      if (sidebar.classList.contains('is-open')) setDrawer(false, false);
+      sidebar.inert = false;
+      sidebar.removeAttribute('aria-hidden');
+      applyHidden(safeStorage.get(STORAGE_KEY) === 'true');
+      return;
+    }
+    setDrawer(false, false);
   });
 
   // ── Scroll Spy: IntersectionObserver ──
@@ -130,9 +156,9 @@
 
       e.preventDefault();
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      history.pushState(null, '', a.hash);
 
-      // 小屏下点击后自动收起（可选）
-      if (window.innerWidth < 640) setDrawer(false, false);
+      if (mobileQuery.matches) setDrawer(false);
     });
   });
 })();

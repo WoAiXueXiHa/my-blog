@@ -2,6 +2,7 @@
 """Fill empty summary/categories/tags from article content deterministically."""
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -356,7 +357,7 @@ def main() -> int:
         summary = " ".join(paragraphs[:2])
         if len(summary) > 150:
             summary = summary[:147].rstrip("，。；：,. ") + "…"
-        front = replace_field(front, "summary", f'"{summary.replace(chr(34), chr(39))}"')
+        front = replace_field(front, "summary", json.dumps(summary, ensure_ascii=False))
 
     if not field(front, "categories").strip("[] "):
         category = CATEGORY_BY_TOPIC.get(topic, topic.replace("-", " ").title() or "技术笔记")

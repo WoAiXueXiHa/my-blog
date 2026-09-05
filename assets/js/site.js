@@ -61,12 +61,12 @@
   const suggestions = document.querySelector('.vect-search-suggestions');
   const status = document.querySelector('.vect-search-status');
   let searchData = null;
+  let searchLoad = null;
   let selected = -1;
   let previousFocus = null;
 
   const typeLabel = item => ({ article: '文章', topic: '知识板块', path: '学习路径', page: '页面' }[item.type] || '内容');
   const fieldLabel = key => ({ title: '标题', tags: '标签', keywords: '关键词', series: '系列', headings: '目录', categories: '分类', topic: '板块', summary: '摘要' }[key] || key);
-  const setStatus = message => { if (status) status.textContent = message; };
   const setNodeStatus = (node, message) => { if (node) node.textContent = message; };
   const clearNode = node => { while (node?.firstChild) node.removeChild(node.firstChild); };
 
@@ -119,15 +119,26 @@
     selected = renderSearchResults({ query, resultsNode: results, suggestionsNode: suggestions, statusNode: status });
   };
 
-  const loadSearch = async () => {
-    if (searchData) return;
-    setStatus('正在加载搜索索引');
-    searchData = await fetch('/index.json').then(response => {
+  const loadSearch = async (statusNode = status) => {
+    if (searchData) return true;
+    if (searchLoad) return searchLoad;
+    setNodeStatus(statusNode, '正在加载搜索索引');
+    searchLoad = fetch('/index.json').then(response => {
       if (!response.ok) throw new Error(`search index ${response.status}`);
       return response.json();
-    }).catch(() => []);
-    renderSuggestions();
-    setStatus(searchData.length ? '输入关键词开始搜索' : '搜索暂时不可用');
+    }).then(data => {
+      searchData = data;
+      renderSuggestions();
+      setNodeStatus(statusNode, '输入关键词开始搜索');
+      return true;
+    }).catch(() => {
+      searchData = null;
+      setNodeStatus(statusNode, '搜索暂时不可用，请重试');
+      return false;
+    }).finally(() => {
+      searchLoad = null;
+    });
+    return searchLoad;
   };
 
   document.querySelectorAll('[data-vect-search-page]').forEach(pageRoot => {
@@ -155,19 +166,26 @@
       });
     };
 
-    loadSearch().then(() => {
+    loadSearch(pageStatus).then(loaded => {
+      if (!loaded) return;
       renderPageSuggestions();
-      setNodeStatus(pageStatus, searchData.length ? '输入关键词开始搜索' : '搜索暂时不可用');
       renderSearchResults({ query: pageInput?.value || '', resultsNode: pageResults, suggestionsNode: pageSuggestions, statusNode: pageStatus });
     });
-    pageInput?.addEventListener('input', () => renderSearchResults({ query: pageInput.value, resultsNode: pageResults, suggestionsNode: pageSuggestions, statusNode: pageStatus }));
+    pageInput?.addEventListener('input', async () => {
+      if (!await loadSearch(pageStatus)) return;
+      renderPageSuggestions();
+      renderSearchResults({ query: pageInput.value, resultsNode: pageResults, suggestionsNode: pageSuggestions, statusNode: pageStatus });
+    });
   });
 
   const openSearch = async () => {
     if (!dialog) return;
     previousFocus = document.activeElement;
     dialog.hidden = false; document.body.classList.add('vect-modal-open');
-    await loadSearch(); input?.focus(); renderResults(input?.value || '');
+    const loaded = await loadSearch(status);
+    input?.focus();
+    if (loaded) renderResults(input?.value || '');
+    else selected = -1;
   };
   const closeSearch = () => {
     if (!dialog) return;
@@ -181,7 +199,10 @@
     input.value = button.dataset.searchSeed || '';
     renderResults(input.value);
   }));
-  input?.addEventListener('input', () => renderResults(input.value));
+  input?.addEventListener('input', async () => {
+    if (!await loadSearch(status)) return;
+    renderResults(input.value);
+  });
   dialog?.addEventListener('keydown', event => {
     if (event.key !== 'Tab' || !panel) return;
     const focusable = [...panel.querySelectorAll('button:not([hidden]),input,a[href]')].filter(element => !element.disabled);
@@ -201,7 +222,10 @@
       options.forEach((option, index) => option.setAttribute('aria-selected', String(index === selected)));
       options[selected].scrollIntoView({ block: 'nearest' });
     }
-    if (event.key === 'Enter' && selected >= 0) options[selected]?.querySelector('a')?.click();
+    if (event.key === 'Enter' && selected >= 0 && document.activeElement === input) {
+      event.preventDefault();
+      options[selected]?.querySelector('a')?.click();
+    }
   });
 
   const setupCollection = ({ rootSelector, inputSelector, itemSelector, chipSelector, emptySelector, countSelector }) => {

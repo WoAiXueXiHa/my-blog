@@ -7,9 +7,10 @@
 {{- $toc = replace $toc "$" "" -}}
 <aside class="toc-sidebar" id="toc-sidebar" aria-label="文章目录">
   <div class="toc-sidebar-header">
-    <span class="toc-sidebar-title">目录</span>
+    <span class="toc-sidebar-title">本文目录</span>
     <button class="toc-toggle" type="button" aria-label="收起目录" aria-expanded="true" title="收起目录">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      <svg class="toc-toggle-rail-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+      <span class="toc-toggle-close-icon" aria-hidden="true">×</span>
     </button>
   </div>
   <nav class="toc-nav">{{ $toc | safeHTML }}</nav>

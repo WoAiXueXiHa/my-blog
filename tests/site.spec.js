@@ -61,7 +61,7 @@ for (const viewport of [{ width: 390, height: 844 }, { width: 768, height: 900 }
       expect(tocLayout).toEqual({ position: 'sticky', trigger: 'none' });
     } else {
       expect(tocLayout.position).toBe('fixed');
-      expect(tocLayout.trigger).toBe('flex');
+      expect(tocLayout.trigger).toBe('grid');
     }
     if (viewport.width >= 900) {
       const imageAndToc = await page.locator('.post-content img').first().evaluate(image => {
@@ -117,6 +117,39 @@ test('global search shows suggestions and matches aliases and multiple terms', a
   await expect(page.locator(`.vect-search-results a[href="${ARTICLE_FIXTURE}"]`)).toBeVisible();
   await page.locator('#vect-search-input').fill('Go 内存');
   await expect(page.locator('.vect-search-results [role="option"]')).not.toHaveCount(0);
+});
+
+test('global search retries after the index request recovers', async ({ page }) => {
+  let requests = 0;
+  await page.route('**/index.json', async route => {
+    requests += 1;
+    if (requests === 1) await route.abort('failed');
+    else await route.fulfill({ json: [{ title: 'Go fixture', permalink: ARTICLE_FIXTURE, type: 'article', tags: ['Go'] }] });
+  });
+  await gotoHealthy(page, '/');
+  await waitForSiteReady(page);
+  await page.locator('[data-search-open]').first().click();
+  await expect(page.locator('.vect-search-status')).toHaveText('搜索暂时不可用，请重试');
+  await page.locator('[data-search-close]').last().click();
+  await page.locator('[data-search-open]').first().click();
+  await waitForGlobalSearchReady(page);
+  expect(requests).toBe(2);
+});
+
+test('Enter on the search close button closes without opening a result', async ({ page }) => {
+  await page.route('**/index.json', route => route.fulfill({
+    json: [{ title: 'Go fixture', permalink: ARTICLE_FIXTURE, type: 'article', tags: ['Go'] }],
+  }));
+  await gotoHealthy(page, '/');
+  await waitForSiteReady(page);
+  await page.locator('[data-search-open]').first().click();
+  await waitForGlobalSearchReady(page);
+  await page.locator('#vect-search-input').fill('Go');
+  await expect(page.locator('.vect-search-results [role="option"]')).not.toHaveCount(0);
+  await page.locator('[data-search-close]').last().focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.vect-search')).toBeHidden();
+  expect(new URL(page.url()).pathname).toBe('/');
 });
 
 test('search page uses the custom search experience', async ({ page }) => {
@@ -187,4 +220,29 @@ test('about page renders the complete article and contacts', async ({ page }) =>
   await expect(page.locator('[data-full-article]')).toContainText('触点');
   await expect(page.getByRole('link', { name: /GitHub/ }).first()).toHaveAttribute('href', /github\.com\/WoAiXueXiHa/);
   await expect(page.getByRole('link', { name: /Email/ }).first()).toHaveAttribute('href', 'mailto:1760198676@qq.com');
+});
+
+test('mobile table of contents leaves hidden links out of keyboard navigation', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await gotoHealthy(page, ARTICLE_FIXTURE);
+  const sidebar = page.locator('#toc-sidebar');
+  await expect(sidebar).toHaveAttribute('aria-hidden', 'true');
+  await expect(sidebar).toHaveCSS('position', 'fixed');
+  await expect(page.locator('.toc-drawer-trigger')).toHaveCSS('position', 'fixed');
+  await page.locator('.toc-drawer-trigger').click();
+  await expect(sidebar).toHaveAttribute('aria-hidden', 'false');
+  await expect(page.locator('body')).toHaveClass(/toc-drawer-open/);
+  const target = sidebar.locator('a').nth(1);
+  const hash = await target.getAttribute('href');
+  await target.click();
+  await expect(sidebar).toHaveAttribute('aria-hidden', 'true');
+  await expect(page.locator('.toc-drawer-trigger')).toBeFocused();
+  expect(new URL(page.url()).hash).toBe(hash);
+  await page.keyboard.press('Tab');
+  expect(await page.evaluate(() => !document.querySelector('#toc-sidebar').contains(document.activeElement))).toBe(true);
+});
+
+test('single-article series does not link to a missing learning path', async ({ page }) => {
+  await gotoHealthy(page, '/posts/single-series-fixture/');
+  await expect(page.locator('.vect-series-note')).toHaveCount(0);
 });

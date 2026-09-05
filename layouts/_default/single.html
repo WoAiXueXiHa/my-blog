@@ -39,7 +39,11 @@
         {{- if not ($seenLabels.Get $key) }}<span>#{{ $tag }}</span>{{ $seenLabels.Set $key true }}{{ end -}}
       {{- end -}}
     </div>{{- end }}
-    {{- if and $isArticle .Params.series }}<a class="vect-series-note" href="{{ printf "paths/#%s" (index .Params.series 0 | urlize) | relURL }}">{{ index .Params.series 0 }} · 第 {{ .Params.seriesOrder }} 篇 →</a>{{ end }}
+    {{- if and $isArticle .Params.series }}
+      {{- $seriesName := index .Params.series 0 -}}
+      {{- $seriesPage := site.GetPage (printf "/series/%s" ($seriesName | urlize)) -}}
+      {{- if and $seriesPage (ge (len $seriesPage.Pages) 2) }}<a class="vect-series-note" href="{{ printf "paths/#%s" ($seriesName | urlize) | relURL }}">{{ $seriesName }} · 第 {{ .Params.seriesOrder }} 篇 →</a>{{ end }}
+    {{- end }}
     {{- if not (.Param "hideMeta") }}
     <div class="post-meta">
       {{- partial "post_meta.html" . -}}
@@ -53,13 +57,11 @@
   {{- partial "cover.html" (dict "cxt" . "IsSingle" true "isHidden" $isHidden) }}
 
   {{- $showToc := and $isArticle (.Param "ShowToc") }}
-  {{- $hasHeaders := false }}
-  {{- $headers := findRE "<h[1-6].*?>(.|\n])+?</h[1-6]>" .Content }}
-  {{- if ge (len $headers) 1 }}{{ $hasHeaders = true }}{{ end }}
+  {{- $hasHeaders := strings.Contains .TableOfContents "<li>" }}
 
   {{- if and $showToc $hasHeaders }}
   <button class="toc-drawer-trigger" type="button" aria-controls="toc-sidebar" aria-expanded="false">
-    <span>本文目录</span><span aria-hidden="true">☰</span>
+    <span>本文目录</span><span class="toc-drawer-trigger-hint">点击查看</span><span aria-hidden="true">☰</span>
   </button>
   <div class="toc-backdrop" data-toc-close hidden></div>
   {{- end }}

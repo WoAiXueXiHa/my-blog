@@ -5,7 +5,7 @@
     "node": "22.x"
   },
   "scripts": {
-    "test:unit": "node --test tests/search-core.test.js && python3 -m unittest tests/test_enrich_article.py tests/test_import_images.py tests/test_smoke_test.py",
+    "test:unit": "node --test tests/search-core.test.js && python3 -m unittest tests/test_enrich_article.py tests/test_import_images.py tests/test_smoke_test.py tests/test_validate_links.py",
     "test:browser": "playwright test",
     "test": "npm run test:unit && npm run test:browser"
   },
