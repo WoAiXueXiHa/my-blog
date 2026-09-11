@@ -1,7 +1,7 @@
 ---
 title: "interface 使用和剖析"
 date: 2026-08-28T18:02:22+08:00
-lastmod: 2026-08-28T18:02:22+08:00
+lastmod: 2026-08-28T19:31:21+08:00
 draft: false
 status: "evergreen"
 topic: "golang"
@@ -501,11 +501,11 @@ func main() {
 
 定义了一个接口类型实例 `efc`，此时还没有给 `efc` 赋值，结构如下图：
 
-![image-20260828171054413](20260828171057496.png)
+![image-20260828171054413](https://gitee.com/binary-whispers/pic/raw/master///20260828171057496.png)
 
 接着给 `efc` 赋了一个 Apple 类型的变量之后，底层结构变为：
 
-![image-20260828171326857](20260828171328853.png)
+![image-20260828171326857](https://gitee.com/binary-whispers/pic/raw/master///20260828171328853.png)
 
 
 
@@ -819,5 +819,6 @@ Go 不要求类型显式声明实现某个 interface，只要它的 method set �
 
 - 空接口主要通过动态类型信息和 `data` 描述“装了什么”
 - 非空接口则通过 `ITab + data` 进一步建立“接口、具体类型、方法实现”之间的关系，使同一个接口方法能够根据不同动态类型调用不同的具体实现，这也是 interface 实现多态的基础。
+
 
 
