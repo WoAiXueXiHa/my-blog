@@ -69,7 +69,7 @@ type hchan struct {
 }
 ```
 
-![image-20260827205745978](https://gitee.com/binary-whispers/pic/raw/master///20260827205748455.png)
+![image-20260827205745978](20260827205748455.png)
 
 整个 Channel 解决五件事：
 
@@ -85,7 +85,7 @@ type hchan struct {
 
 > 假设容量为 4：
 >
-> ![image-20260827210825058](https://gitee.com/binary-whispers/pic/raw/master///20260827210827632.png)
+> ![image-20260827210825058](20260827210827632.png)
 
 
 

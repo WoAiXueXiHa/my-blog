@@ -27,6 +27,7 @@
     nav.inert = hidden;
     toggleBtn.setAttribute('aria-expanded', !hidden);
     toggleBtn.setAttribute('aria-label', hidden ? '展开目录' : '收起目录');
+    toggleBtn.title = hidden ? '展开目录' : '收起目录';
   }
 
   function setDrawer(open, restoreFocus = true) {
@@ -35,6 +36,9 @@
     drawerTrigger?.setAttribute('aria-expanded', String(open));
     if (backdrop) backdrop.hidden = !open;
     if (mobileQuery.matches) {
+      toggleBtn.setAttribute('aria-label', '关闭目录');
+      toggleBtn.title = '关闭目录';
+      toggleBtn.setAttribute('aria-expanded', String(open));
       delete sidebar.dataset.collapsed;
       nav.removeAttribute('aria-hidden');
       nav.inert = false;
@@ -58,7 +62,7 @@
       setDrawer(false);
       return;
     }
-    const hidden = sidebar.getAttribute('aria-hidden') === 'true';
+    const hidden = sidebar.dataset.collapsed === 'true';
     const next = !hidden;
     applyHidden(next);
     safeStorage.set(STORAGE_KEY, next);

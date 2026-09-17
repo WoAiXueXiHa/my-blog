@@ -1,11 +1,19 @@
 /* Article grid: intentional reading column with a stable navigation rail. */
 .vect-article-page { overflow-x: clip; }
 
+.has-article-toc {
+  --toc-width: clamp(168px, 17vw, 208px);
+  --toc-gap: clamp(32px, 4vw, 56px);
+}
+
+/* The first block starts on the same row as the navigation rail. */
+.vect-article-page .post-content > :first-child { margin-top: 0; }
+
 .post-body.has-toc {
   display: grid;
-  grid-template-columns: clamp(168px, 17vw, 208px) minmax(0, 1fr);
-  gap: clamp(32px, 4vw, 56px);
-  width: min(100%, calc(var(--vect-width-reading) + 264px));
+  grid-template-columns: var(--toc-width) minmax(0, 1fr);
+  gap: var(--toc-gap);
+  width: min(100%, calc(var(--vect-width-reading) + var(--toc-width) + var(--toc-gap)));
   margin-inline: auto;
   justify-content: center;
   align-items: start;
@@ -13,6 +21,7 @@
 
 .post-body.has-toc .post-content {
   grid-column: 2;
+  margin-top: 0;
   min-width: 0;
   width: min(100%, var(--vect-width-reading));
 }
@@ -104,10 +113,15 @@
 .toc-drawer-trigger, .toc-backdrop { display: none; }
 
 @media (min-width: 640px) {
-  .vect-article-page .post-single > .post-header,
-  .vect-article-page .post-single > .post-footer {
-    width: min(100%, var(--vect-width-reading));
+  .vect-article-page .post-single.has-article-toc {
+    width: min(100%, calc(var(--vect-width-reading) + var(--toc-width) + var(--toc-gap)));
     margin-inline: auto;
+  }
+  .vect-article-page .post-single.has-article-toc > .post-header,
+  .vect-article-page .post-single.has-article-toc > .post-footer {
+    width: calc(100% - var(--toc-width) - var(--toc-gap));
+    margin-inline-start: calc(var(--toc-width) + var(--toc-gap));
+    margin-inline-end: 0;
   }
 }
 

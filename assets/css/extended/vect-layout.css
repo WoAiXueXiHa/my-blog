@@ -71,7 +71,7 @@ nav ul,
 @media (min-width: 900px) {
   .vect-article-page .post-content img:not(.in-text) {
     width: auto;
-    max-width: min(calc(100vw - 48px), var(--vect-width-wide));
+    max-width: 100%;
     margin: 1.75rem 0;
   }
 }

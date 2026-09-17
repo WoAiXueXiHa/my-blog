@@ -501,11 +501,11 @@ func main() {
 
 定义了一个接口类型实例 `efc`，此时还没有给 `efc` 赋值，结构如下图：
 
-![image-20260828171054413](https://gitee.com/binary-whispers/pic/raw/master///20260828171057496.png)
+![image-20260828171054413](20260828171057496.png)
 
 接着给 `efc` 赋了一个 Apple 类型的变量之后，底层结构变为：
 
-![image-20260828171326857](https://gitee.com/binary-whispers/pic/raw/master///20260828171328853.png)
+![image-20260828171326857](20260828171328853.png)
 
 
 
