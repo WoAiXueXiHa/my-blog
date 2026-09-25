@@ -136,6 +136,25 @@ test('global search retries after the index request recovers', async ({ page }) 
   expect(requests).toBe(2);
 });
 
+test('closing search while the index loads cancels a pending seed', async ({ page }) => {
+  let releaseIndex;
+  const indexReady = new Promise(resolve => { releaseIndex = resolve; });
+  await page.route('**/index.json', async route => {
+    await indexReady;
+    await route.fulfill({ json: [{ title: 'Go fixture', permalink: ARTICLE_FIXTURE, type: 'article', tags: ['Go'] }] });
+  });
+  await gotoHealthy(page, '/');
+  await waitForSiteReady(page);
+  await page.locator('[data-search-seed]').first().click();
+  await expect(page.locator('.vect-search-status')).toHaveText('正在加载搜索索引');
+  await page.locator('[data-search-close]').last().click();
+  releaseIndex();
+  await expect(page.locator('.vect-search')).toBeHidden();
+  await page.locator('[data-search-open]').first().click();
+  await waitForGlobalSearchReady(page);
+  await expect(page.locator('#vect-search-input')).toHaveValue('');
+});
+
 test('Enter on the search close button closes without opening a result', async ({ page }) => {
   await page.route('**/index.json', route => route.fulfill({
     json: [{ title: 'Go fixture', permalink: ARTICLE_FIXTURE, type: 'article', tags: ['Go'] }],

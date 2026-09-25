@@ -64,6 +64,7 @@
   let searchLoad = null;
   let selected = -1;
   let previousFocus = null;
+  let searchOpenVersion = 0;
 
   const typeLabel = item => ({ article: '文章', topic: '知识板块', path: '学习路径', page: '页面' }[item.type] || '内容');
   const fieldLabel = key => ({ title: '标题', tags: '标签', keywords: '关键词', series: '系列', headings: '目录', categories: '分类', topic: '板块', summary: '摘要' }[key] || key);
@@ -179,23 +180,26 @@
   });
 
   const openSearch = async () => {
-    if (!dialog) return;
+    if (!dialog) return false;
+    const version = ++searchOpenVersion;
     previousFocus = document.activeElement;
     dialog.hidden = false; document.body.classList.add('vect-modal-open');
     const loaded = await loadSearch(status);
+    if (version !== searchOpenVersion || dialog.hidden) return false;
     input?.focus();
     if (loaded) renderResults(input?.value || '');
     else selected = -1;
+    return true;
   };
   const closeSearch = () => {
     if (!dialog) return;
+    ++searchOpenVersion;
     dialog.hidden = true; document.body.classList.remove('vect-modal-open'); previousFocus?.focus();
   };
   document.querySelectorAll('[data-search-open]').forEach(button => button.addEventListener('click', openSearch));
   document.querySelectorAll('[data-search-close]').forEach(button => button.addEventListener('click', closeSearch));
   document.querySelectorAll('[data-search-seed]').forEach(button => button.addEventListener('click', async () => {
-    await openSearch();
-    if (!input) return;
+    if (!await openSearch() || !input) return;
     input.value = button.dataset.searchSeed || '';
     renderResults(input.value);
   }));
