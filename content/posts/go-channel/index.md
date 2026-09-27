@@ -827,4 +827,4 @@ Channel 的核心可以归结为一句话：
 
 这就是 Channel 最核心的模型。
 
-![image-20260927115348940](https://gitee.com/binary-whispers/pic/raw/master///20260927115350804.png)
+![image-20260927115348940](20260927115350804.png)
