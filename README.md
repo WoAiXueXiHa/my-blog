@@ -38,7 +38,7 @@
 
 GitHub OAuth App 的 Authorization callback URL 为 `https://code-learn-build-evolve.vercel.app/api/callback`，Homepage URL 可设为上述编辑器地址。Vercel Production 需配置 `OAUTH_GITHUB_CLIENT_ID`、`OAUTH_GITHUB_CLIENT_SECRET` 和 `OAUTH_REDIRECT_URI`（值为 callback URL）；更新变量后要重新部署。密钥仅保存在 Vercel，不进 Git。回调只向 `https://woaixuexiha.github.io` 这个编辑来源发送令牌；若未来换独立域名，需要同时修改回调来源和 OAuth App 的 Homepage URL。
 
-新文章须填写英文 `slug`，保存为 `content/posts/<slug>/index.md`。旧文的路径字段保持空白；图片直接拖进正文时应存入当前文章目录，正式启用前用测试文章确认。发布时间、修改时间、主题、分类、标签和摘要都必须填写，正文从 `##` 开始。CMS 不运行本地 `publish.sh` 的自动补全或图片迁移；保存会直接提交 `master`，Actions 校验通过后才部署。当前校验要求 `draft: false`，编辑器没有可靠的自动暂存，离开前请保存或复制 Markdown。
+新文章须填写英文 `slug`，保存为 `content/posts/<slug>/index.md`。旧文的路径字段保持空白；正文使用 Markdown 原文模式；通过图片按钮上传时应存入当前文章目录，正式启用前用测试文章确认。发布时间、修改时间、主题、分类、标签和摘要都必须填写，正文从 `##` 开始。CMS 不运行本地 `publish.sh` 的自动补全或图片迁移；保存会直接提交 `master`，Actions 校验通过后才部署。当前校验要求 `draft: false`，编辑器没有可靠的自动暂存，离开前请保存或复制 Markdown。
 
 文章与图片备份位于本机 `backups/content-posts-before-web-editor-20260927.tar.gz`（已加入 `.gitignore`），同目录有 SHA-256 校验和；Git 恢复标记为 `before-web-editor-20260927`。请另复制到可靠的外部存储。
 
