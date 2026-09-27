@@ -1,16 +1,21 @@
 ---
-title: "Channel 剖析"
+title: Channel 剖析
 date: 2026-08-28T17:55:51+08:00
 lastmod: 2026-08-28T17:55:51+08:00
 draft: false
-status: "evergreen"
-topic: "golang"
-categories: ["Go 语言"]
-tags: ["Channel", "Go", "并发"]
+topic: golang
+categories:
+  - Go 语言
+tags:
+  - Channel
+  - Go
+  - 并发
+summary: 本文从 goroutine 通信问题出发，拆解 Go Channel 的 hchan 结构、环形队列、发送接收、阻塞唤醒和关闭语义，帮助理解
+  Channel 的底层运行机制。
 series: []
-seriesOrder:
+seriesOrder: 1
 featured: false
-summary: "本文从 goroutine 通信问题出发，拆解 Go Channel 的 hchan 结构、环形队列、发送接收、阻塞唤醒和关闭语义，帮助理解 Channel 的底层运行机制。"
+status: evergreen
 ---
 ## Channel 是什么
 
@@ -822,3 +827,4 @@ Channel 的核心可以归结为一句话：
 
 这就是 Channel 最核心的模型。
 
+![image-20260927115348940](https://gitee.com/binary-whispers/pic/raw/master///20260927115350804.png)
