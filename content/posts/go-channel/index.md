@@ -13,7 +13,7 @@ tags:
 summary: 本文从 goroutine 通信问题出发，拆解 Go Channel 的 hchan 结构、环形队列、发送接收、阻塞唤醒和关闭语义，帮助理解
   Channel 的底层运行机制。
 series: []
-seriesOrder: 1
+seriesOrder:
 featured: false
 status: evergreen
 ---
