@@ -13,7 +13,7 @@ tags:
 summary: 本文从 goroutine 通信问题出发，拆解 Go Channel 的 hchan 结构、环形队列、发送接收、阻塞唤醒和关闭语义，帮助理解
   Channel 的底层运行机制。
 series: []
-seriesOrder:
+seriesOrder: null
 featured: false
 status: evergreen
 ---
@@ -47,8 +47,6 @@ Producer
 
 但是：**引用计数、共享状态等场景**使用 Mutex 更合理
 
-
-
 ## Channel 的数据结构
 
 这是 Channel 的基本结构定义：
@@ -78,11 +76,11 @@ type hchan struct {
 
 整个 Channel 解决五件事：
 
-- 数据放哪？buf
-- 现在有多少数据？qcount / dataqsiz
-- 下一次去哪里读写？recvx / sendx
-- 条件不满足，goroutine 去哪里等？recvq / sendq
-- 多个 goroutine 同时操作怎么办？lock
+* 数据放哪？buf
+* 现在有多少数据？qcount / dataqsiz
+* 下一次去哪里读写？recvx / sendx
+* 条件不满足，goroutine 去哪里等？recvq / sendq
+* 多个 goroutine 同时操作怎么办？lock
 
 这就是 hchan 的核心设计
 
@@ -91,8 +89,6 @@ type hchan struct {
 > 假设容量为 4：
 >
 > ![image-20260827210825058](20260827210827632.png)
-
-
 
 ## Channel 的操作
 
@@ -142,11 +138,9 @@ func makechan(t *chantype, size int) *hchan {
 
 Channel 开辟内存分为三种情况：
 
-- **Channel 无缓冲 or 元素个数为 0：只分配 hchan 本身结构体大小的内存**
-- **有缓冲区 buf，但元素不包含指针：hchan 和 buf 一起分配**
-- **有缓冲区 buf，且元素包含指针类型，hchan 和 buf 分开分配**
-
-
+* **Channel 无缓冲 or 元素个数为 0：只分配 hchan 本身结构体大小的内存**
+* **有缓冲区 buf，但元素不包含指针：hchan 和 buf 一起分配**
+* **有缓冲区 buf，且元素包含指针类型，hchan 和 buf 分开分配**
 
 ## Channel 写入
 
@@ -209,8 +203,6 @@ func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool {
 }
 ```
 
-
-
 ### case1：写入 nil Channel
 
 ```go
@@ -252,8 +244,6 @@ if c.closed != 0 {
 
 Channel 已经被关闭，再向 Channel 中写数据，会 panic
 
-
-
 ### case3：有读 goroutine 在等待
 
 ```go
@@ -292,13 +282,11 @@ func send(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
 
 具体步骤是：
 
-- 先拿锁
-- 从 recvq（读等待队列中）里弹出队头的 sudog，进入 send 流程
-- 将要写入的数据拷贝到整个 sudog 对应的 elem 数据容器上
-- 释放锁
-- 唤醒 sudog 绑定的 goroutine -> 将这个 goroutine 重新放回 GMP 模型中，等待调度
-
-
+* 先拿锁
+* 从 recvq（读等待队列中）里弹出队头的 sudog，进入 send 流程
+* 将要写入的数据拷贝到整个 sudog 对应的 elem 数据容器上
+* 释放锁
+* 唤醒 sudog 绑定的 goroutine -> 将这个 goroutine 重新放回 GMP 模型中，等待调度
 
 ### case4：没有读 goroutine 在等待，且缓冲区有剩余空间
 
@@ -328,12 +316,10 @@ func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool {
 }
 ```
 
-- 先拿锁
-- 将数据写入到 sendx 指向的位置
-- sendx++，qcount++
-- 释放锁
-
-
+* 先拿锁
+* 将数据写入到 sendx 指向的位置
+* sendx++，qcount++
+* 释放锁
 
 ### case5：没有读 goroutine 在等待，且缓冲区已满
 
@@ -372,12 +358,10 @@ func chansend(c *hchan, ep unsafe.Pointer, block bool, callerpc uintptr) bool {
 }
 ```
 
-- 获取锁
-- 获取一个 sudog 结构绑定对应 Channel、goroutine、ep 指针
-- 将 sudog 放入 Channel 的写等待队列 sendq
-- gopark 操作：释放锁，挂起当前 goroutine，M 调度其它 G，当前 G 等待下一轮调度
-
-
+* 获取锁
+* 获取一个 sudog 结构绑定对应 Channel、goroutine、ep 指针
+* 将 sudog 放入 Channel 的写等待队列 sendq
+* gopark 操作：释放锁，挂起当前 goroutine，M 调度其它 G，当前 G 等待下一轮调度
 
 ## Channel 读取
 
@@ -612,8 +596,6 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 
 当前 Receiver 被加入 `recvq`，随后 **gopark 挂起**；等之后有 Sender 写入或 Channel 被关闭时再被唤醒。
 
-
-
 ## Channel 关闭
 
 Channel关闭非常简单，封装了`close`：
@@ -695,19 +677,16 @@ func closechan(c *hchan) {
 		goready(gp, 3)
 	}
 }
-
 ```
 
 具体步骤为：
 
-- 对一个 nil Channel 执行 close 操作，会 panic
-- 加锁
-- 如果重复 close Channel，会 panic
-- c.closed 设为 1：关闭 Channel
-- 将 sendq 和 recvq 里所有的等待者加入到 glist 中
-- 唤醒 glist 中所有等待着（唤醒 sudog 对应的 goroutine）
-
-
+* 对一个 nil Channel 执行 close 操作，会 panic
+* 加锁
+* 如果重复 close Channel，会 panic
+* c.closed 设为 1：关闭 Channel
+* 将 sendq 和 recvq 里所有的等待者加入到 glist 中
+* 唤醒 glist 中所有等待着（唤醒 sudog 对应的 goroutine）
 
 ## select
 
@@ -717,7 +696,7 @@ select 分为两种：非阻塞型（包含 default 分支）、阻塞型（不�
 
 阻塞型：
 
-```go 
+```go
 package main
 
 func main() {
@@ -757,8 +736,6 @@ select 的核心原理是：
 
 如果当前 goroutine 被某个 case 上的 Channel 操作唤醒后，还需要将当前 goroutine 从所有 case 对应 Channel 的等待队列中剔除
 
-
-
 ## 全文总结
 
 Channel 的核心可以归结为一句话：
@@ -795,11 +772,11 @@ Channel 的核心可以归结为一句话：
 
 因此看到关于 Channel 的代码，先判断 Channel 状态：
 
-| 状态     | 读                             | 写                       | close |
-| -------- | ------------------------------ | ------------------------ | ----- |
-| `nil`    | 永久阻塞                       | 永久阻塞                 | panic |
-| 正常     | 根据等待者和 buffer 判断       | 根据等待者和 buffer 判断 | 正常  |
-| `closed` | 继续读剩余数据，耗尽后返回零值 | panic                    | panic |
+| 状态       | 读                | 写                | close |
+| -------- | ---------------- | ---------------- | ----- |
+| `nil`    | 永久阻塞             | 永久阻塞             | panic |
+| 正常       | 根据等待者和 buffer 判断 | 根据等待者和 buffer 判断 | 正常    |
+| `closed` | 继续读剩余数据，耗尽后返回零值  | panic            | panic |
 
 关闭 Channel 时，会标记 `closed`，并唤醒 `recvq` 和 `sendq` 中等待的 goroutine；Receiver 最终得到零值，Sender 被唤醒后发送失败并 panic。
 
@@ -827,4 +804,4 @@ Channel 的核心可以归结为一句话：
 
 这就是 Channel 最核心的模型。
 
-![image-20260927115348940](20260927115350804.png)
+![image-20260927115348940](https://gitee.com/binary-whispers/pic/raw/master///20260927115350804.png)
