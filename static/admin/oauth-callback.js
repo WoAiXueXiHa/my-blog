@@ -6,16 +6,16 @@
     document.body.textContent = '请从文章管理页面重新登录。';
     return;
   }
-  const origin = location.origin;
+  const editorOrigin = 'https://woaixuexiha.github.io';
   const handshake = 'authorizing:github';
   const onMessage = (event) => {
-    if (event.source !== window.opener || event.origin !== origin || event.data !== handshake) return;
+    if (event.source !== window.opener || event.origin !== editorOrigin || event.data !== handshake) return;
     window.removeEventListener('message', onMessage);
     const result = payload.error
       ? `authorization:github:error:${JSON.stringify({ message: payload.error })}`
       : `authorization:github:success:${JSON.stringify({ token: payload.token, provider: 'github' })}`;
-    window.opener.postMessage(result, origin);
+    window.opener.postMessage(result, editorOrigin);
   };
   window.addEventListener('message', onMessage);
-  window.opener.postMessage(handshake, origin);
+  window.opener.postMessage(handshake, editorOrigin);
 })();

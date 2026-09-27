@@ -75,3 +75,31 @@ test('owner callback returns a token only to the local popup page', async () => 
     assert.match(res.headers['Set-Cookie'], /Max-Age=0/);
   } finally { global.fetch = previous; }
 });
+
+test('popup sends token only to the isolated editor origin after a matching handshake', () => {
+  const { runInNewContext } = require('node:vm');
+  const { readFileSync } = require('node:fs');
+  const script = readFileSync(require('node:path').join(__dirname, '../static/admin/oauth-callback.js'), 'utf8');
+  const sent = [];
+  const listeners = new Map();
+  const opener = { postMessage(message, origin) { sent.push({ message, origin }); } };
+  const window = {
+    opener,
+    addEventListener(name, fn) { listeners.set(name, fn); },
+    removeEventListener(name) { listeners.delete(name); },
+  };
+  const token = encodeURIComponent(JSON.stringify({ token: 'sample-token' }));
+  runInNewContext(script, {
+    location: { hash: `#${token}`, pathname: '/admin/oauth-callback.html' },
+    history: { replaceState() {} },
+    window,
+    document: { body: {} },
+  });
+  assert.deepEqual(sent[0], { message: 'authorizing:github', origin: 'https://woaixuexiha.github.io' });
+  listeners.get('message')({ source: opener, origin: 'https://evil.example', data: 'authorizing:github' });
+  assert.equal(sent.length, 1);
+  listeners.get('message')({ source: opener, origin: 'https://woaixuexiha.github.io', data: 'authorizing:github' });
+  assert.equal(sent.length, 2);
+  assert.equal(sent[1].origin, 'https://woaixuexiha.github.io');
+  assert.match(sent[1].message, /authorization:github:success:/);
+});
