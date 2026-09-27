@@ -32,6 +32,16 @@
 ./scripts/validate.sh
 ```
 
+## 网页编辑（待完成 GitHub OAuth 配置）
+
+Pages CMS 在隔离仓库的验收未通过：旧文章目录无法打开，上传图片落到了 `content/posts/` 根目录。现已改为 Decap CMS，其官方支持 `content/posts/<slug>/index.md` 与文章同目录图片。管理入口为 `/admin/`；只有 GitHub 账号 `WoAiXueXiHa` 能通过 OAuth 回调，且需要该账号对仓库有写入权限。普通访客仍只浏览公开站点。CMS 保存会直接提交 `master`，现有 GitHub Actions 检查通过后才会部署。
+
+首次使用前，在 GitHub Developer Settings 创建 OAuth App：Homepage URL 设为 `https://code-learn-build-evolve.vercel.app/admin/`，Authorization callback URL 设为 `https://code-learn-build-evolve.vercel.app/api/callback`。在 Vercel 项目的 **Production** 环境变量中设置 `OAUTH_GITHUB_CLIENT_ID`、`OAUTH_GITHUB_CLIENT_SECRET`、`OAUTH_REDIRECT_URI`（值为上述 callback URL）。Secret 只输入 Vercel 后台，切勿提交进仓库。购买域名后需同步更新这三个位置及 `static/admin/config.yml` 的 `base_url` 和 `site_domain`。
+
+进入 `/admin/` 后，新文章填写英文 `slug`，文章将保存为 `content/posts/<slug>/index.md`。旧文章的路径字段保持空白。图片直接拖进正文时应存入当前文章目录；正式启用前用测试文章确认。发布时间、修改时间、主题、分类、标签和摘要都必须填写，正文从 `##` 开始。CMS 不运行本地 `publish.sh` 的自动补全或图片迁移。当前校验要求 `draft: false`，保存到 `master` 就会尝试上线；编辑器没有可靠的自动暂存，离开前请保存或复制 Markdown。
+
+文章与图片备份位于本机 `backups/content-posts-before-web-editor-20260927.tar.gz`（已加入 `.gitignore`），同目录有 SHA-256 校验和；Git 恢复标记为 `before-web-editor-20260927`。请另复制到可靠的外部存储。
+
 ## 本地检查
 
 ```bash
