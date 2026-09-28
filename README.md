@@ -38,9 +38,9 @@
 
 GitHub OAuth App 的 Authorization callback URL 为 `https://code-learn-build-evolve.vercel.app/api/callback`，Homepage URL 可设为上述编辑器地址。Vercel Production 需配置 `OAUTH_GITHUB_CLIENT_ID`、`OAUTH_GITHUB_CLIENT_SECRET` 和 `OAUTH_REDIRECT_URI`（值为 callback URL）；更新变量后要重新部署。密钥仅保存在 Vercel，不进 Git。回调只向 `https://woaixuexiha.github.io` 这个编辑来源发送令牌；若未来换独立域名，需要同时修改回调来源和 OAuth App 的 Homepage URL。
 
-新文章须填写英文 `slug`，保存为 `content/posts/<slug>/index.md`。旧文编辑时路径字段保持空白，避免改变公开链接。正文可在 Markdown 原文与可视化模式之间切换；复杂代码和公式建议用原文模式，可视化模式保存前需核对差异。通过图片按钮选择本地文件，图片会保存到当前文章目录；图片 Markdown 必须有说明文字，例如 `![结构图](diagram.png)`。Gitee 外链图片会因防盗链而在编辑器里失效，且现有发布校验禁止外部图片；请先下载到电脑再上传。发布时间、修改时间、主题、分类、标签和摘要都必须填写，正文从 `##` 开始。CMS 不运行本地 `publish.sh` 的自动补全或图片迁移；保存会直接提交 `master`，Actions 校验通过后才部署。当前校验要求 `draft: false`，编辑器没有可靠的自动暂存，离开前请保存或复制 Markdown。
+新文章须填写英文 `slug`，保存为 `content/posts/<slug>/index.md`。旧文编辑时路径字段保持空白；保存前会核对原目录，修改 `slug` 将被拦截，公开链接保持不变。正文可在 Markdown 原文与可视化模式之间切换；复杂代码和公式建议用原文模式，可视化模式保存前需核对差异。通过图片按钮选择本地文件，图片会保存到当前文章目录；图片 Markdown 必须有说明文字，例如 `![结构图](diagram.png)`。Gitee 外链图片会因防盗链而在编辑器里失效，且现有发布校验禁止外部图片；请先下载到电脑再上传。发布时间、修改时间、主题、分类、标签和摘要都必须填写，正文从 `##` 开始。CMS 不运行本地 `publish.sh` 的自动补全或图片迁移。点击发布前，编辑器会用中文提示缺失元数据、非法或未来日期、`draft: true`、正文一级标题、未闭合代码围栏、空图片说明与外链图片，并阻止提交；本地资源是否存在、系列序号是否重复等仍由 Actions 最终检查。编辑器显示“已提交”只代表 GitHub 收到内容，需打开 [质量检查 Actions](https://github.com/WoAiXueXiHa/my-blog/actions/workflows/quality.yml) 确认通过，再检查 Vercel 上的文章。编辑器没有可靠的自动暂存，离开前请保存或复制 Markdown。可先在 [测试新建入口](https://woaixuexiha.github.io/my-blog-editor/sandbox/) 和 [测试旧文入口](https://woaixuexiha.github.io/my-blog-editor/sandbox/edit/) 试用；它们写入 `cms-editor-test`，不会发布到线上。
 
-文章与图片备份位于本机 `backups/content-posts-before-web-editor-20260927.tar.gz`（已加入 `.gitignore`），同目录有 SHA-256 校验和；Git 恢复标记为 `before-web-editor-20260927`。请另复制到可靠的外部存储。
+文章与图片备份位于本机 `backups/content-posts-before-web-editor-20260927.tar.gz`（已加入 `.gitignore`），同目录有 SHA-256 校验和；Git 恢复标记为 `before-web-editor-20260927`。第二份异地备份暂缓，当前只有本机归档。
 
 ## 本地检查
 
