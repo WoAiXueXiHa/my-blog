@@ -2,9 +2,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-MSG="${1:-}"
-[[ -n "$MSG" && $# -eq 1 ]] || {
-  echo '用法: ./scripts/publish.sh "add: 文章标题"'
+[[ $# -le 1 ]] || {
+  echo '用法: ./scripts/publish.sh [提交说明]'
   exit 1
 }
 
@@ -15,10 +14,8 @@ BRANCH=$(git branch --show-current)
 }
 
 git fetch origin master
-LOCAL_HEAD=$(git rev-parse HEAD)
-REMOTE_HEAD=$(git rev-parse origin/master)
-[[ "$LOCAL_HEAD" == "$REMOTE_HEAD" ]] || {
-  echo '本地 master 与 origin/master 不一致，请先同步后再发布。'
+git merge-base --is-ancestor origin/master HEAD || {
+  echo '远端 master 有本地尚未包含的提交，请先同步后再发布。'
   exit 1
 }
 
@@ -38,8 +35,16 @@ for file in "${changed[@]}"; do
     echo "检测到非文章变更，已停止: $file"
     exit 1
   }
-  [[ "$file" == */index.md && -f "$file" ]] && articles+=("$file")
+  article="content/posts/$(cut -d/ -f1 <<< "${file#content/posts/}")/index.md"
+  [[ -f "$article" ]] && articles+=("$article")
 done
+deleted=$(git diff --name-only --diff-filter=D -- content/posts; git diff --cached --name-only --diff-filter=D -- content/posts)
+[[ -z "$deleted" ]] || {
+  echo "检测到文章或图片删除，已停止。请先核对：" >&2
+  printf '%s\n' "$deleted" >&2
+  exit 1
+}
+mapfile -t articles < <(printf '%s\n' "${articles[@]}" | sort -u)
 (( ${#articles[@]} > 0 )) || {
   echo '没有检测到可发布的文章 index.md。'
   exit 1
@@ -50,7 +55,7 @@ python3 ./scripts/validate-utf8.py "${articles[@]}"
 for article in "${articles[@]}"; do
   python3 ./scripts/enrich-article.py "$article"
 done
-./scripts/check.sh
+./scripts/validate.sh
 
 git add -- content/posts
 git diff --cached --quiet && {
@@ -58,6 +63,7 @@ git diff --cached --quiet && {
   exit 1
 }
 
+MSG="${1:-更新文章: $(printf '%s, ' "${articles[@]%/index.md}" | sed 's/, $//')}"
 git commit -m "$MSG"
 git push origin master
 echo '文章已推送到 master；GitHub Actions 检查通过后才会部署到生产环境。'

@@ -30,15 +30,5 @@ escape_sed(){ printf '%s' "$1" | sed 's/[&|]/\\&/g'; }
 sed -e "s|__TITLE__|$(escape_sed "$TITLE")|g" \
     -e "s|__TOPIC__|$(escape_sed "$TOPIC")|g" \
     -e "s|__NOW__|$NOW|g" archetypes/posts.md > "$DIR/index.md"
-echo "已创建 $DIR/index.md；发布时会自动识别摘要、分类、标签和学习系列。请确认正文、时间和 draft 状态。"
-
-FILE="$DIR/index.md"
-if [[ -n "${EDITOR:-}" ]]; then "$EDITOR" "$FILE"
-elif command -v nano >/dev/null 2>&1; then nano "$FILE"
-elif command -v vim >/dev/null 2>&1; then vim "$FILE"
-elif command -v vi >/dev/null 2>&1; then vi "$FILE"
-else echo "未找到终端编辑器，请手动打开 $FILE"; exit 0
-fi
-echo
-echo "文章已保存。确认内容后运行："
-echo "  ./scripts/publish.sh \"add: $TITLE\""
+echo "已创建 $DIR/index.md。请用编辑器写正文，图片放在同一目录。"
+echo "写完运行：./scripts/publish.sh"
